@@ -1,0 +1,57 @@
+﻿const texts = {
+    CheckoutTitle: "تنفيذ الطلب",
+    UpdateOrder: "تعديل الطلب",
+    Hot: "حار",
+    SpecialOrder: "طلب خاص",
+    Item: "الصنف",
+    Quantity: "الكمية",
+    Price: "السعر",
+    Total: "المجموع",
+    Remove: "حذف",
+    EmptyCart: "سلة التسوق فارغة!",
+    Subtotal: "المجموع الفرعي",
+    DeliveryFee: "رسوم التوصيل",
+    FinalTotal: "المجموع النهائي",
+    AddToCartToast: "تمت الإضافة إلى السلة!",
+    CartEmptyTotal: "المجموع: EGP 00.00",
+    ConfirmEmptyCart: "هل أنت متأكد أنك تريد تفريغ السلة؟",
+    CartEmptied: "تم تفريغ السلة!",
+    AddItemDifferentShopTitle: "منتج من متجر مختلف",
+    AddItemDifferentShopText: "هل تريد إضافة هذا المنتج من متجر آخر؟",
+    CannotAddDifferentAreaTitle: "لا يمكن الإضافة",
+    CannotAddDifferentAreaText: "لا يمكنك إضافة منتجات من منطقة مختلفة.",
+    YesAdd: "نعم، أضف المنتج",
+    Cancel: "إلغاء",
+    Ok: "حسناً",
+    Total: "المجموع",
+    Subtotal: "المجموع الفرعي",
+    DeliveryFee: "رسوم التوصيل",
+    FinalTotal: "الإجمالي النهائي",
+    Currency: "ج.م", // جنيه مصري
+    UpdateOrder: "تعديل الطلب",
+
+    // الـ Toast والرسائل
+    AddedToCartDefault: "تمت الإضافة إلى السلة!",
+    AddedToCartPrefix: "تم إضافة",
+    AddedToCartSuffix: "إلى السلة!",
+    CartEmptied: "تم إفراغ سلة التسوق.",
+    AddedFromDifferentShop: "تم إضافة المنتج من متجر مختلف!",
+
+    // رسائل التأكيد والتحذير (Swal)
+    CannotAddDifferentAreaTitle: "عفواً!",
+    CannotAddDifferentAreaText: "لا يمكن إضافة منتجات من منطقتين مختلفتين في نفس الطلب.",
+    AddItemDifferentShopTitle: "تنبيه!",
+    AddItemDifferentShopText: "لديك منتجات من متجر آخر. هل تريد إضافة هذا المنتج وإكمال الطلب من المتجر الجديد؟",
+    YesAdd: "نعم، أضف",
+    ConfirmEmptyCart: "هل أنت متأكد من إفراغ سلة التسوق؟",
+
+    // واجهة صفحة الدفع (Checkout)
+    CartIsEmpty: "سلة التسوق فارغة!",
+    DefaultShopName: "المتجر",
+    Item: "المنتج",
+    SpecialOrder: "ملاحظات خاصة",
+    Quantity: "الكمية",
+    Price: "السعر",
+    Remove: "إزالة",
+    HotSpice: "حار"
+};

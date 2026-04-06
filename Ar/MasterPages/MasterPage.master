@@ -1,0 +1,278 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="MasterPage.master.cs" Inherits="Ar_MasterPages_MasterPage" %>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="<%= CurrentLang %>" dir="<%= CurrentDir %>">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><asp:ContentPlaceHolder id="head" runat="server">
+
+    </asp:ContentPlaceHolder></title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+  
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <!-- Geocoder -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="icon" type="image/png" href="images/logo.png">
+
+
+</head>
+<body>
+    <form id="form1" runat="server">
+        <asp:Literal ID="ltscript" runat="server"></asp:Literal> 
+    <script>
+  
+    function showModal() {
+        
+          var isAuthenticated = <%=HttpContext.Current.User.Identity.IsAuthenticated.ToString().ToLower() %>;
+        if(isAuthenticated){
+            const userDropDown = document.getElementById("userDropDown");
+            const currentDisplay = userDropDown.style.display;
+            if (currentDisplay === 'flex') {
+                // hide it
+                userDropDown.style.setProperty('display', 'none', 'important');
+                userDropDown.style.setProperty('opacity', '0', 'important');
+                userDropDown.style.setProperty('pointer-events', 'none', 'important');
+                userDropDown.style.setProperty('visibility', 'hidden', 'important');
+            } else {
+                // show it
+                userDropDown.style.setProperty('display', 'flex', 'important');
+                userDropDown.style.setProperty('opacity', '1', 'important');
+                userDropDown.style.setProperty('pointer-events', 'auto', 'important');
+                userDropDown.style.setProperty('visibility', 'visible', 'important');
+                userDropDown.style.setProperty('transform', 'scale(1)', 'important');
+            }
+        }
+        else{
+            
+            document.getElementById('popupFrame').src = 'login.aspx';
+            var modal = new bootstrap.Modal(document.getElementById('pageModal'));
+            modal.show();
+        }
+  }
+</script>
+        <div>
+    <header class="header" role="banner">
+        <a href="Default.aspx" class="logo-container">
+            <img src="images/logo.png" alt="Fast Delivery Logo" class="logo">
+        </a> 
+        <nav class="nav-links">
+            <a href="#" data-key="header_link_1"><asp:Literal ID="litLogin" runat="server" Text="<%$ Resources:Texts, Header_Link_1 %>" /></a>
+            <a href="#" data-key="header_link_2"><asp:Literal ID="Literal1" runat="server" Text="<%$ Resources:Texts, Header_Link_2 %>" /></a>
+            <a href="#" data-key="header_link_3"><asp:Literal ID="Literal2" runat="server" Text="<%$ Resources:Texts, Header_Link_3 %>" /></a>
+        </nav>
+
+        <div class="action-buttons">
+             <div class="dropdown">
+    <button class="lang-btn dropdown-toggle d-flex align-items-center" type="button" id="langDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+        <img src="images/flags/<%= CurrentLang %>.png" alt="Flag" style="width:20px; height:14px;" class="me-2">
+        <span id="currentLangText"><%= CurrentLang.ToUpper() %></span>
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="langDropdown">
+        <li>
+            <a class="dropdown-item d-flex align-items-center" href="javascript:setLang('ar')">
+                <img src="images/flags/ar.png" alt="عربي" style="width:20px; height:14px;" class="me-2">
+                عربي
+            </a>
+        </li>
+        <li>
+            <a class="dropdown-item d-flex align-items-center" href="javascript:setLang('en')">
+                <img src="images/flags/en.png" alt="English" style="width:20px; height:14px;" class="me-2">
+                English
+            </a>
+        </li>
+        <li>
+            <a class="dropdown-item d-flex align-items-center" href="javascript:setLang('ru')">
+                <img src="images/flags/ru.png" alt="Русский" style="width:20px; height:14px;" class="me-2">
+                Русский
+            </a>
+        </li>
+    </ul>
+</div>
+
+<style>
+    .dropdown-menu a.dropdown-item {
+        font-weight: 500;
+        padding: 8px 15px;
+        transition: background 0.2s;
+    }
+
+    .dropdown-menu a.dropdown-item:hover {
+        background-color: #f0f0f0;
+        color: #333;
+    }
+</style>
+
+            
+
+<style>
+    .dropdown-menu a.dropdown-item {
+        font-weight: 500;
+        padding: 8px 15px;
+        transition: background 0.2s;
+    }
+
+    .dropdown-menu a.dropdown-item:hover {
+        background-color: #f0f0f0;
+        color: #333;
+    }
+
+    .dropdown-toggle i {
+        font-size: 1rem;
+    }
+</style>
+
+             <button class="icon-btn" id="cartIcon"  role="button" onclick="window.location.href='checkout.aspx';return false;">
+                <i class="fa fa-shopping-basket"></i>
+                <span id="cartItemsNumber">0</span>
+            </button>
+            <button class="icon-btn"  data-key="login_btn" id="login-modal-btn" onclick="showModal(); return false;"><i class="fa fa-user"></i></button>
+            <ul id="userDropDown"
+      aria-modal="true"
+      role="combobox
+      aria-labelledby="login-dropdown">
+        <li tabindex="0"><a href="profile.aspx"><i class="fa-solid fa-user"></i><asp:Literal ID="litProfile" runat="server" Text="<%$ Resources:Texts, Profile %>" /></a></li>
+      
+        <li tabindex="0"><a href="Addresses.aspx"><i class="fa-solid fa-map-location-dot"></i><asp:Literal ID="litAddresses" runat="server" Text="<%$ Resources:Texts, Addresses %>" /></a></li>
+        <li tabindex="0"><a href="POrders.aspx"><i class="fa-solid fa-cart-shopping"></i> <asp:Literal ID="litOrders" runat="server" Text="<%$ Resources:Texts, Orders %>" /></a></li>      
+        <li tabindex="0" id="logOut"><i class="fa-solid fa-right-from-bracket"></i>
+            <asp:LinkButton 
+    ID="lblogout" 
+    runat="server" 
+    OnClick="lblogout_Click"
+    OnClientClick="localStorage.removeItem('cartItems');">
+    <asp:Literal ID="litLogout" runat="server" Text="<%$ Resources:Texts, Logout %>" />
+</asp:LinkButton>  </li>
+    </ul>
+
+            
+        </div>
+        
+    </header>
+       
+        <asp:ContentPlaceHolder id="ContentPlaceHolder1" runat="server">
+        
+        </asp:ContentPlaceHolder>
+         
+           <footer class="footer">
+            <div class="content-container">
+                <div class="footer-grid">
+                    <div class="footer-column">
+                        <h4><asp:Literal ID="litFooterCol1" runat="server" Text="<%$ Resources:Texts, Footer_Col1_Title %>" /></h4>
+                        <a href="#"><asp:Literal ID="litFooterCol1_Link1" runat="server" Text="<%$ Resources:Texts, Footer_Col1_Link1 %>" /></a>
+                        <a href="#"><asp:Literal ID="litFooterCol1_Link2" runat="server" Text="<%$ Resources:Texts, Footer_Col1_Link2 %>" /></a>
+                        <a href="#"><asp:Literal ID="litFooterCol1_Link3" runat="server" Text="<%$ Resources:Texts, Footer_Col1_Link3 %>" /></a>
+                        <a href="#"><asp:Literal ID="litFooterCol1_Link4" runat="server" Text="<%$ Resources:Texts, Footer_Col1_Link4 %>" /></a>
+                    </div>
+                    <div class="footer-column">
+                        <h4><asp:Literal ID="litFooterCol2" runat="server" Text="<%$ Resources:Texts, Footer_Col2_Title %>" /></h4>
+                        <a href="#"><asp:Literal ID="litFooterCol2_Rest1" runat="server" Text="<%$ Resources:Texts, Footer_Col2_Rest1 %>" /></a>
+                        <a href="#"><asp:Literal ID="litFooterCol2_Rest2" runat="server" Text="<%$ Resources:Texts, Footer_Col2_Rest2 %>" /></a>
+                        <a href="#"><asp:Literal ID="litFooterCol2_Rest3" runat="server" Text="<%$ Resources:Texts, Footer_Col2_Rest3 %>" /></a>
+                        <a href="#"><asp:Literal ID="litFooterCol2_Rest4" runat="server" Text="<%$ Resources:Texts, Footer_Col2_Rest4 %>" /></a>
+                    </div>
+                    <div class="footer-column">
+                        <h4><asp:Literal ID="litFooterCol3" runat="server" Text="<%$ Resources:Texts, Footer_Col3_Title %>" /></h4>
+                        <a href="#"><asp:Literal ID="litFooterCol3_City1" runat="server" Text="<%$ Resources:Texts, Footer_Col3_City1 %>" /></a>
+                        <a href="#"><asp:Literal ID="litFooterCol3_City2" runat="server" Text="<%$ Resources:Texts, Footer_Col3_City2 %>" /></a>
+                        <a href="#"><asp:Literal ID="litFooterCol3_City3" runat="server" Text="<%$ Resources:Texts, Footer_Col3_City3 %>" /></a>
+                        <a href="#"><asp:Literal ID="litFooterCol3_City4" runat="server" Text="<%$ Resources:Texts, Footer_Col3_City4 %>" /></a>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <div><asp:Literal ID="litFooterCopyRight" runat="server" Text="<%$ Resources:Texts, Footer_CopyRight %>" /></div>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+         <div class="modal fade" id="pageModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog  modal-dialog-centered d-flex align-items-center justify-content-center">
+    <div class="modal-content" style="max-height:90vh; overflow:hidden;">
+      <div class="modal-header">
+        <button type="button" class="close-btn" data-bs-dismiss="modal"><i class="fa fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <iframe id="popupFrame" src="" width="100%" height="490px" frameborder="0"></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+    </div>
+        <asp:ContentPlaceHolder ID="PageScripts" runat="server"></asp:ContentPlaceHolder>
+    </form>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/main.js"></script>
+    <script src="js/Cart.js"></script>
+    <script src="js/shopPage.js" defer></script>
+    <script src="js/shops.js"></script>
+    <script src="js/selectedLocation.js"></script>
+      <link rel="stylesheet" href="css/main.css"> 
+   <%-- <link href="css/css_web.css" rel="stylesheet" />--%>
+   <script type="text/javascript">
+        function setLang(lang) {
+            var expireDate = new Date();
+            expireDate.setFullYear(expireDate.getFullYear() + 1); // الكوكي لمدة سنة
+            document.cookie = "lang=" + lang + "; expires=" + expireDate.toUTCString() + "; path=/";
+            location.reload();
+        }
+    </script>
+     
+     <script>
+
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+}
+
+function loadTextsOnStart() {
+    const lang = getCookie("lang") || "en";
+
+    // امسح أي سكريبت موجود
+    const old = document.getElementById("dynamic-texts");
+    if (old) old.remove();
+
+    const script = document.createElement("script");
+    script.id = "dynamic-texts";
+
+    // منع الكاش عشان المتصفح مش يشغّل نسخة قديمة
+    const rnd = Math.random();
+    script.src = `js/texts_${lang}.js?v=${rnd}`;
+
+    // تحميل إجباري
+    script.async = false;
+    script.defer = false;
+
+    script.onload = function () {
+        console.log("Loaded:", script.src);
+        try {
+            updateUIWithTexts();
+        } catch (e) {
+            console.warn("updateUIWithTexts missing");
+        }
+    };
+
+    script.onerror = () => console.error("Error loading language file!");
+
+    document.head.appendChild(script);
+}
+
+// تشغيل أول ما الصفحة تحمل
+document.addEventListener("DOMContentLoaded", loadTextsOnStart);
+</script>
+
+</body>
+</html>
