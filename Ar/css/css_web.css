@@ -1423,7 +1423,7 @@ input[type="radio"] {
                 1);
         transform-origin: bottom;
         interpolate-size: allow-keywords;
-        overflow: hidden;
+        
         height: auto;
     }
 

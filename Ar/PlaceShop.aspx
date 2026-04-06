@@ -1,4 +1,4 @@
-<%@ Page Title="" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true"
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true"
     CodeFile="PlaceShop.aspx.cs" Inherits="Ar_PlaceShop" %>
     <asp:Content ID="Content3" ContentPlaceHolderID="head" Runat="Server">
 
@@ -313,7 +313,7 @@
                         1);
                 transform-origin: bottom;
                 interpolate-size: allow-keywords;
-                overflow: hidden;
+               
                 height: auto;
             }
 

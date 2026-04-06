@@ -166,7 +166,7 @@
     scroll-behavior: auto;
     -webkit-overflow-scrolling: touch;
     column-gap: 1rem;
-    overflow: hidden;
+    overflow: auto;
     cursor: grab;
 
     &:active {

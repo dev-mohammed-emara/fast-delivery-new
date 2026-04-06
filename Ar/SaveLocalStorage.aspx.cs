@@ -20,85 +20,94 @@ public partial class Ar_SaveLocalStorage : System.Web.UI.Page
             JArray items = string.IsNullOrEmpty(cart) ? new JArray() : JArray.Parse(cart);
             DataTable dt = ConvertJArrayToDataTable(items);
 
-            // IDs من الكارت
+            if (dt.Rows.Count == 0)
+            {
+                return new { success = false, error = "السلة فارغة" };
+            }
+
+            // تجميع IDs المطاعم الفريدة من الكارت
             List<int> ids = new List<int>();
             foreach (DataRow row in dt.Rows)
             {
                 int shopId;
                 if (int.TryParse(row["shopId"].ToString(), out shopId))
-                    ids.Add(shopId);
+                {
+                    if (!ids.Contains(shopId)) ids.Add(shopId);
+                }
             }
 
             string connStr = ConfigurationManager.ConnectionStrings["Conn"].ConnectionString;
 
-            // 1. الأماكن المتاحة الآن
+            // 1. الأماكن المتاحة الآن بناءً على الجدول الزمني
             string sqlAvailable = @"
-                  SELECT dbo.PlacesDeliverySchedule.PlacesId
-FROM  dbo.PlacesDeliverySchedule INNER JOIN
-               dbo.DaysOfWeek ON dbo.PlacesDeliverySchedule.DayId = dbo.DaysOfWeek.Id
-WHERE (dbo.DaysOfWeek.Dayorder = DATEPART(WEEKDAY, DATEADD(HOUR, 10, GETDATE())) AND (dbo.PlacesDeliverySchedule.IsActive = 1) AND (CAST(DATEADD(HOUR, 10, GETDATE()) AS TIME) BETWEEN 
-               dbo.PlacesDeliverySchedule.StartTime AND dbo.PlacesDeliverySchedule.EndTime))
-        ";
+                SELECT dbo.PlacesDeliverySchedule.PlacesId
+                FROM dbo.PlacesDeliverySchedule 
+                INNER JOIN dbo.DaysOfWeek ON dbo.PlacesDeliverySchedule.DayId = dbo.DaysOfWeek.Id
+                WHERE (dbo.DaysOfWeek.Dayorder = DATEPART(WEEKDAY, DATEADD(HOUR, 10, GETDATE())) 
+                AND (dbo.PlacesDeliverySchedule.IsActive = 1) 
+                AND (CAST(DATEADD(HOUR, 10, GETDATE()) AS TIME) BETWEEN 
+                dbo.PlacesDeliverySchedule.StartTime AND dbo.PlacesDeliverySchedule.EndTime))";
 
-            // 2. أسماء الأماكن كلها (ID + Name)
-            string sqlNames = @"SELECT Id, Name FROM Places WHERE Id IN ({0})";
-
-            // نحول IDs إلى CSV لاستعماله في SQL
+            // 2. جلب الاسم والحد الأدنى للطلب (MinOrder)
             string idsCsv = string.Join(",", ids);
-            sqlNames = string.Format(sqlNames, idsCsv);
+            string sqlNames = string.Format("SELECT Id, Name, ISNULL(MinOrder, 0) as MinOrder FROM Places WHERE Id IN ({0})", idsCsv);
 
-            // جدول للأماكن المتاحة
             DataTable dtAvailable = new DataTable();
-            // جدول لأسماء الأماكن
             DataTable dtNames = new DataTable();
 
             using (SqlConnection conn = new SqlConnection(connStr))
             {
                 conn.Open();
-
-                // الأماكن المتاحة
                 using (SqlCommand cmd = new SqlCommand(sqlAvailable, conn))
                 using (SqlDataReader dr = cmd.ExecuteReader())
                     dtAvailable.Load(dr);
 
-                // أسماء الأماكن
                 using (SqlCommand cmd2 = new SqlCommand(sqlNames, conn))
                 using (SqlDataReader dr2 = cmd2.ExecuteReader())
                     dtNames.Load(dr2);
             }
 
-            // HashSet للمتاح
+            // تحويل المتاح لـ HashSet للسرعة
             HashSet<int> availableIds = new HashSet<int>();
             foreach (DataRow row in dtAvailable.Rows)
                 availableIds.Add(Convert.ToInt32(row["PlacesId"]));
 
-            // الأماكن غير المتاحة مع أسمائهم
-            List<string> notAvailableNames = new List<string>();
-
-            foreach (DataRow row in dtNames.Rows)
+            // التحقق من (المتاح) و (الحد الأدنى للطلب)
+            foreach (DataRow placeRow in dtNames.Rows)
             {
-                int pid = Convert.ToInt32(row["Id"]);
-                if (!availableIds.Contains(pid))
+                int pId = Convert.ToInt32(placeRow["Id"]);
+                string pName = placeRow["Name"].ToString();
+                decimal minOrder = Convert.ToDecimal(placeRow["MinOrder"]);
+
+                // أولاً: هل المطعم متاح حالياً؟
+                if (!availableIds.Contains(pId))
                 {
-                    string name = row["Name"].ToString();
-                    notAvailableNames.Add(name);
+                    string notAvailableMsg = (string)HttpContext.GetGlobalResourceObject("texts", "RestaurantnAvaliable") + pName;
+                    return new { success = false, error = notAvailableMsg };
+                }
+
+                // ثانياً: حساب إجمالي الأصناف التابعة لهذا المطعم
+                decimal placeTotal = 0;
+                foreach (DataRow itemRow in dt.Rows)
+                {
+                    if (itemRow["shopId"].ToString() == pId.ToString())
+                    {
+                        decimal price = Convert.ToDecimal(itemRow["price"]);
+                        int amount = Convert.ToInt32(itemRow["amount"]);
+                        placeTotal += (price * amount);
+                    }
+                }
+
+                // ثالثاً: مقارنة الإجمالي بالحد الأدنى
+                if (placeTotal < minOrder)
+                {
+                    string minOrderMsg = string.Format("عفواً، الحد الأدنى للطلب من مطعم {0} هو {1} ج.م. إجمالي طلبك الحالي هو {2} ج.م.",
+                                                        pName, minOrder, placeTotal);
+                    return new { success = false, error = minOrderMsg };
                 }
             }
 
-            // لو في مطاعم مش متاحة
-            if (notAvailableNames.Count > 0)
-            {
-                string msg = (string)HttpContext.GetGlobalResourceObject("texts", "RestaurantnAvaliable") + string.Join(", ", notAvailableNames);
-
-                return new
-                {
-                    success = false,
-                    error = msg,
-                    notAvailable = notAvailableNames
-                };
-            }
-
-            // الحفظ
+            // إذا مرت كل الفحوصات بسلام، نبدأ عملية الحفظ
             SaveOrderAndDetails(dt, Convert.ToDecimal(deliveryCost));
 
             return new
@@ -109,29 +118,21 @@ WHERE (dbo.DaysOfWeek.Dayorder = DATEPART(WEEKDAY, DATEADD(HOUR, 10, GETDATE()))
         }
         catch (Exception ex)
         {
-            return new
-            {
-                success = false,
-                error = ex.Message
-            };
+            return new { success = false, error = ex.Message };
         }
     }
 
     public static DataTable ConvertJArrayToDataTable(JArray items)
     {
         DataTable dt = new DataTable();
+        if (items == null || items.Count == 0) return dt;
 
-        if (items == null || items.Count == 0)
-            return dt;
-
-        // جلب الأعمدة تلقائياً من أول عنصر
         JObject first = (JObject)items[0];
         foreach (var prop in first.Properties())
         {
             dt.Columns.Add(prop.Name, typeof(string));
         }
 
-        // تعبئة الصفوف
         foreach (JObject obj in items)
         {
             DataRow row = dt.NewRow();
@@ -141,56 +142,47 @@ WHERE (dbo.DaysOfWeek.Dayorder = DATEPART(WEEKDAY, DATEADD(HOUR, 10, GETDATE()))
             }
             dt.Rows.Add(row);
         }
-
         return dt;
     }
+
     public static void SaveOrderAndDetails(DataTable dt, decimal deliveryCost)
     {
         using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["Conn"].ConnectionString))
         {
             con.Open();
-
             SqlTransaction trans = con.BeginTransaction();
-
             try
             {
                 int newOrderId = 0;
-
-                // Insert Order
+                // إدخال الطلب الرئيسي
                 using (SqlCommand cmd = new SqlCommand(@"
-                INSERT INTO Orders (Address_id, Odate, DeliveryCost, delivered)
-                VALUES (@Address_id, GETDATE(), @DeliveryCost, 0);
-                SELECT SCOPE_IDENTITY();
-            ", con, trans))
+                    INSERT INTO Orders (Address_id, Odate, DeliveryCost, delivered)
+                    VALUES (@Address_id, GETDATE(), @DeliveryCost, 0);
+                    SELECT SCOPE_IDENTITY();", con, trans))
                 {
                     cmd.Parameters.AddWithValue("@Address_id", dt.Rows[0]["addid"]);
                     cmd.Parameters.AddWithValue("@DeliveryCost", deliveryCost);
                     newOrderId = Convert.ToInt32(cmd.ExecuteScalar());
                 }
 
-                // Insert Order Details
+                // إدخال تفاصيل الطلب
                 foreach (DataRow row in dt.Rows)
                 {
                     using (SqlCommand cmd = new SqlCommand(@"
-                    INSERT INTO Order_Details (Order_id, MenuItems_id, amount, price)
-                    VALUES (@Order_id, @MenuItems_id, @amount, @price)
-                ", con, trans))
+                        INSERT INTO Order_Details (Order_id, MenuItems_id, amount, price)
+                        VALUES (@Order_id, @MenuItems_id, @amount, @price)", con, trans))
                     {
                         cmd.Parameters.AddWithValue("@Order_id", newOrderId);
                         cmd.Parameters.AddWithValue("@MenuItems_id", row["id"]);
                         cmd.Parameters.AddWithValue("@amount", row["amount"]);
                         cmd.Parameters.AddWithValue("@price", row["price"]);
-
                         cmd.ExecuteNonQuery();
                     }
                 }
-
-                // لو كل شيء تمام
                 trans.Commit();
             }
-            catch(Exception ex)
+            catch (Exception)
             {
-                // لو في Error
                 trans.Rollback();
                 throw;
             }
