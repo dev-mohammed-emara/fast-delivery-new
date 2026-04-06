@@ -764,6 +764,7 @@ function renderCheckoutArticles(items, summary) {
     <div class="checkoutBoxTitle">
       <h2>${texts.Total}</h2>
     </div>
+
     <div class="orderInfo">
       <div class="orderStats">
         <span>${texts.Subtotal}:</span>

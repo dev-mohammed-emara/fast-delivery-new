@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true" CodeFile="PlaceShop.aspx.cs" Inherits="Ar_PlaceShop" %>
+<%@ Page Title="" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true" CodeFile="PlaceShop.aspx.cs" Inherits="Ar_PlaceShop" %>
 <asp:Content ID="Content3" ContentPlaceHolderID="head" Runat="Server">
 
         <asp:Literal ID="ltPageTitle" runat="server" Text="<%$ Resources:texts, PagePlaceShopTitle %>"></asp:Literal>
@@ -229,6 +229,9 @@
         position: sticky;
         max-height: 450px;
         overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        touch-action: pan-y;
         top: 100px;
         line-height: 1.2;
         height: fit-content;
@@ -649,6 +652,8 @@ border-radius: inherit;
     display: flex;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    touch-action: pan-x pan-y;
     gap: 20px; /* مسافة أكبر بين الكلمات */
     padding: 0 15px;
     justify-content: flex-start; /* ترتيب العناصر من البداية */
