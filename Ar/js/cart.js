@@ -32,82 +32,61 @@ document.addEventListener("DOMContentLoaded", () => {
 
         },
 
-
         saveSummary() {
-            const rawSubtotal = this.getSubtotal(); // raw sum of all items
-            const delivery = this.deliveryFee || 0;
+            const rawSubtotal = this.getSubtotal();
+            let totalDiscountAmount = 0; 
+            let finalDeliveryToPay = 0;
 
-            // =====================================
-            // 💥 DELIVERY DISCOUNT LOGIC
-            // =====================================
-            let totalDeliveryCost = 0; // سنستخدم هذا لتخزين إجمالي رسوم التوصيل قبل الخصم
-            let discountAmount = 0;
-            let discountedDelivery = 0; // هذا هو إجمالي رسوم التوصيل بعد الخصم
+            const DISCOUNT_RATE = (typeof GLOBAL_AREA_DISCOUNT !== 'undefined') ? parseFloat(GLOBAL_AREA_DISCOUNT) / 100 : 0; 
+    
+            // 1. تجميع رسوم المتاجر حسب الـ AreaId
+            const areaMap = this.items.reduce((acc, item) => {
+                // تأكد إن الـ IDs نصوص ونضيف trim عشان نمنع أي مسافات مخفية
+                const aId = String(item.shopAreaId || "").trim();
+                const sId = String(item.shopId || "").trim();
+                const fee = parseFloat(item.deliveryFee) || 0;
 
-            // نسبة الخصم (تحويل النسبة المئوية إلى كسر عشري)
-            const DISCOUNT_RATE = GLOBAL_AREA_DISCOUNT / 100; 
-            
-            // 1. تجميع رسوم التوصيل حسب ShopAreaId
-            // افتراض: item.deliveryFee هو رسوم التوصيل الخاصة بالمتجر
-            const areaFees = this.items.reduce((acc, item) => {
-                // يجب التأكد من وجود shopAreaId وقيمة التوصيل
-                if (item.shopAreaId) {
-                    // نستخدم قيمة التوصيل الأساسية لكل متجر وهي 'delivery' من الكود القديم
-                    const fee = item.deliveryFee; 
-                    ;
-                   
-                    if (!acc[item.shopAreaId]) {
-                        acc[item.shopAreaId] = [];
+                if (aId && sId) {
+                    if (!acc[aId]) {
+                        acc[aId] = {}; 
                     }
-                    acc[item.shopAreaId].push(fee);
+                    // بنخزن رسوم المتجر الواحد (مرة واحدة) جوه منطقته
+                    acc[aId][sId] = fee;
                 }
                 return acc;
             }, {});
 
-            // 2. حساب رسوم التوصيل النهائية (المخفضة) وتحديد قيمة الخصم
+            // لعمل Debug في الكونسول وتشوف الـ Structure اللي اتكون
+            console.log("Area Map Structure:", areaMap);
 
-            for (const areaId in areaFees) {
-               
-                const fees = areaFees[areaId];
-                const sumFees = fees.reduce((sum, fee) => sum + fee, 0); // مجموع رسوم المنطقة الواحدة
-                
-                // الشرط: إذا كان هناك أكثر من متجر يشترك في نفس المنطقة (مثل 3 و 3)
-                if (fees.length > 1) {
-                    
-                    // حساب قيمة الخصم للمجموعة المتشابهة
-                    const areaDiscount = sumFees * DISCOUNT_RATE;
-        
-                    // تجميع قيمة الخصم الكلية
-                    discountAmount += areaDiscount; 
-        
-                    // إضافة المجموع المخفض إلى التكلفة الإجمالية بعد الخصم
-                    discountedDelivery += sumFees - areaDiscount;
+            // 2. الحساب لكل منطقة
+            for (const aId in areaMap) {
+                const shopsInThisArea = areaMap[aId]; 
+                const feesArray = Object.values(shopsInThisArea); 
+                const sumFeesInArea = feesArray.reduce((sum, f) => sum + f, 0);
 
-        
+                console.log(`Area: ${aId}, Shops Count: ${feesArray.length}, Total Fees: ${sumFeesInArea}`);
+
+                if (feesArray.length > 1) {
+                    // ✅ أكتر من متجر في نفس الـ Area
+                    const areaDiscount = sumFeesInArea * DISCOUNT_RATE;
+                    totalDiscountAmount += areaDiscount;
+                    finalDeliveryToPay += (sumFeesInArea - areaDiscount);
                 } else {
-                    // المنطقة فريدة (مثل 2) - لا يوجد خصم، تُضاف التكلفة كاملة
-                    discountedDelivery += sumFees;
+                    // ❌ متجر واحد بس في المنطقة
+                    finalDeliveryToPay += sumFeesInArea;
                 }
             }
 
-            // الآن المتغيرات لديك محدثة:
-            // * discountAmount: يحتوي على إجمالي الخصم المطبق (مثلاً 49 في مثالك)
-            // * discountedDelivery: يحتوي على إجمالي رسوم التوصيل النهائية بعد تطبيق الخصم (مثلاً 151 في مثالك)
-
-
-            // =====================================
-
             const summary = {
-                subtotal: rawSubtotal.toFixed(2),          // raw subtotal of items
-                delivery: discountedDelivery.toFixed(2),   // delivery after discount
-                total: (rawSubtotal + discountedDelivery).toFixed(2), // total includes discounted delivery
-                discount: discountAmount.toFixed(2),       // only delivery discount
+                subtotal: rawSubtotal.toFixed(2),
+                delivery: finalDeliveryToPay.toFixed(2),
+                total: (rawSubtotal + finalDeliveryToPay).toFixed(2),
+                discount: totalDiscountAmount.toFixed(2),
             };
 
             localStorage.setItem("cartSummary", JSON.stringify(summary));
         }
-
-
     ,
 
         getSubtotal() {
@@ -257,7 +236,7 @@ let GLOBAL_PLACE_ID = placeIdEl ? placeIdEl.textContent.trim() : null;
 let GLOBAL_AREA_ID = areaIdEl ? areaIdEl.textContent.trim() : null;
 let GLOBAL_shop_ID = shopIdEl ? shopIdEl.textContent.trim() : null;
 let GLOBAL_addid_ID = addidEl ? addidEl.textContent.trim() : null;
-let GLOBAL_shopArea_ID = shopAreaIdEl ? shopIdEl.textContent.trim() : null;
+let GLOBAL_shopArea_ID = shopAreaIdEl ? shopAreaIdEl.textContent.trim() : null;
 
 let GLOBAL_DELIVERY_FEE =
     parseFloat(localStorage.getItem("GLOBAL_DELIVERY_FEE")) || 0;

@@ -9,8 +9,8 @@ using System.Web.UI.WebControls;
 
 public partial class Ar_MasterPages_MasterPage : System.Web.UI.MasterPage
 {
-    public string CurrentLang = "ru"; // كل مرة تعيد تحميل الصفحة تبدأ من عربي
-    public string CurrentDir = "ltr";
+    public string CurrentLang = "ar"; // كل مرة تعيد تحميل الصفحة تبدأ من عربي
+    public string CurrentDir = "rtl";
     protected void Page_Load(object sender, EventArgs e)
     {
         HttpCookie langCookie = Request.Cookies["lang"];
