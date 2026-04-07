@@ -287,7 +287,7 @@
                 span {
                     display: flex;
                     flex-direction: column;
-                    line-height: 1;
+                    line-height: 1.5;
                     justify-content: center;
                     padding: 0.5rem 0;
                 }
@@ -326,7 +326,7 @@
             }
 
             .checkoutSelectedLocation {
-                line-height: 1;
+                line-height: 1.5;
                 display: flex;
                 flex-direction: column;
                 gap: 0.75rem;

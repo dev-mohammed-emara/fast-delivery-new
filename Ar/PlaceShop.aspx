@@ -104,7 +104,7 @@
 
             .availableShopName,
             .shopFoods {
-                line-height: 1;
+                line-height: 1.5;
                 margin-bottom: 0.5rem;
                 transition: var(--transition);
             }
@@ -313,12 +313,14 @@
                         1);
                 transform-origin: bottom;
                 interpolate-size: allow-keywords;
-               
+                overflow:initial;
                 height: auto;
+                padding:0px;
             }
 
             .foodDrowdown.active {
                 height: 0;
+                overflow:hidden;
             }
 
             .foodList {
