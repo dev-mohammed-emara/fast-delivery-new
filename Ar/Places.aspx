@@ -472,7 +472,7 @@
         <asp:Repeater ID="CategoryRepeater" runat="server">
             <ItemTemplate>
         
-                <a href='Places.aspx?id=<%# Eval("ID") %>&addid=<%# Request.QueryString["addid"].ToString() %>&page=1' class="category-item<%# GetActiveClass(Eval("ID").ToString()) %>">
+                <a href='Places.aspx?id=<%# Eval("ID") %>&addid=<%# Request.QueryString["addid"].ToString() %>' class="category-item<%# GetActiveClass(Eval("ID").ToString()) %>">
                     <img src='<%# Eval("PhotoPath") %>' />
                     <span><%# 
         System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName == "en" 
@@ -537,68 +537,38 @@
         <div class="allAvailableShops">
         
             <asp:Repeater ID="rptplaces" runat="server" OnItemDataBound="rpt_ItemDataBound">
-
-                <ItemTemplate>
-     <a href='<%# "Placeshop.aspx?id=" + Eval("id") + "&addid=" + Request.QueryString["addid"].ToString() %>' class="availableShop">
+    <ItemTemplate>
+        <a href='<%# "Placeshop.aspx?id=" + Eval("id") + "&addid=" + Request.QueryString["addid"] %>' 
+           class='<%# "availableShop " + (Eval("IsOpened").ToString() == "0" ? "shop-closed" : "") %>'
+           onclick='<%# Eval("IsOpened").ToString() == "0" ? "return showClosedAlert();" : "" %>'>
 
             <span class="shopRatingStars" hidden><%# Eval("Rate")%></span>
-
-            
-              <asp:Image  ID="Image2" ImageUrl='<%# "~/ar/" + Eval("PhotoPath") %>'  runat="server"/>                             
+            <asp:Image ID="Image2" ImageUrl='<%# "~/ar/" + Eval("PhotoPath") %>' runat="server" />
 
             <div class="availableShopDesc">
-              <h3 class="availableShopName"><%# 
-        System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName == "en" 
-        ? DataBinder.Eval(Container.DataItem, "NameEn") 
-        : System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName == "ru"
-          ? DataBinder.Eval(Container.DataItem, "NameRu")
-          : DataBinder.Eval(Container.DataItem, "Name")
-    %></h3>
-              <p class="shopFoods">
-                <%# 
-        System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName == "en" 
-        ? DataBinder.Eval(Container.DataItem, "DescriptionEn") 
-        : System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName == "ru"
-          ? DataBinder.Eval(Container.DataItem, "DescriptionRu")
-          : DataBinder.Eval(Container.DataItem, "Description")
-    %>
-              </p>
-              <span class="shopRating" id="shopRating" runat="server"></span>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h3 class="availableShopName">
+                        <%# System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName == "en" ? Eval("NameEn") : Eval("Name") %>
+                    </h3>
+                    <span class='<%# Eval("IsOpened").ToString() == "1" ? "status-badge open" : "status-badge closed" %>'>
+                        <%# Eval("IsOpened").ToString() == "1" ? (GetGlobalResourceObject("texts", "Open") ?? "مفتوح") : (GetGlobalResourceObject("texts", "Closed") ?? "مغلق الآن") %>
+                    </span>
+                </div>
 
-              <div class="shopDelivery">
-                <span class="deliveryTime">
-   <asp:Literal ID="ltReceiveIn" runat="server" Text="<%$ Resources:texts, ReceiveIn %>"></asp:Literal>
-   <span class="timer"><%# Eval("DeliveredTime") %></span>
-   <asp:Literal ID="ltMinutes" runat="server" Text="<%$ Resources:texts, Minutes %>"></asp:Literal>
-</span>
-                <span class="deliveryPayment">    <asp:Literal ID="ltDeliveryService" runat="server" Text="<%$ Resources:texts, DeliveryService %>"></asp:Literal>:&nbsp; <span class="deliveryPaymentAmount"><%# Eval("DeliveryCost", "{0:##.##}") %></span> <%= Resources.Texts.Currency %></span>
-     
-               
-                   <span class="minPay"> <asp:Literal ID="ltMinOrderText" runat="server" Text="<%$ Resources:texts, MinOrder %>"></asp:Literal>:&nbsp;<span class="minPayAmount"><%# Eval("MinOrder", "{0:##.##}") %></span> <%= Resources.Texts.Currency %></span>
+                <p class="shopFoods"><%# Eval("Description") %></p>
+                <span class="shopRating" id="shopRating" runat="server"></span>
 
-       
-              </div>
-   <div class="trustBadge">
-    <p>
-        <asp:Literal ID="ltLiveTracking" runat="server" 
-            Text="<%$ Resources:texts, LiveTracking %>"></asp:Literal>
-    </p>
-
-    <p class="circleBadge">
-        <asp:Literal ID="ltSafeDelivery" runat="server" 
-            Text="<%$ Resources:texts, SafeDelivery %>"></asp:Literal>
-    </p>
-
-    <p class="circleBadge" style="color:red">
-        <asp:Literal ID="ltFirstOrderFree" runat="server" 
-            Text="<%$ Resources:texts, FirstOrderFree %>"></asp:Literal>
-    </p>
-</div>
-
+                <div class="shopDelivery">
+                    <span class="deliveryTime">
+                        <asp:Literal ID="ltReceiveIn" runat="server" Text="<%$ Resources:texts, ReceiveIn %>"></asp:Literal>
+                        <span class="timer"><%# Eval("DeliveredTime") %></span> دقيقة
+                    </span>
+                    <span class="deliveryPayment">خدمة التوصيل: <%# Eval("DeliveryCost", "{0:N2}") %> ج.م</span>
+                </div>
             </div>
-          </a>
-                </ItemTemplate>
-            </asp:Repeater>
+        </a>
+    </ItemTemplate>
+</asp:Repeater>
             
              
 
@@ -683,8 +653,41 @@ function formatAddress(state) {
     max-height: 300px;
     overflow-y: auto;
 }
+/* شكل الحالة (مفتوح/مغلق) */
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+.status-badge.open {
+    background-color: #d4edda;
+    color: #28a745; /* أخضر */
+}
+.status-badge.closed {
+    background-color: #f8d7da;
+    color: #dc3545; /* أحمر */
+}
 
+/* تأثير المطعم المغلق (باهت شوية) */
+.shop-closed {
+    opacity: 0.7;
+    filter: grayscale(0.5);
+    cursor: pointer;
+}
     </style>
-    <link href="css/css_web.css" rel="stylesheet" />
+ <script>
+     function showClosedAlert() {
+         Swal.fire({
+             title: 'المطعم مغلق حالياً',
+             text: 'نعتذر منك، المطعم لا يستقبل طلبات في الوقت الحالي. يمكنك تصفح مطاعم أخرى مفتوحة.',
+             icon: 'info',
+             confirmButtonText: 'موافق',
+             confirmButtonColor: '#dc3545'
+         });
+         return false; // يمنع الرابط من الانتقال لصفحة المنتجات
+     }
+ </script>
+       <link href="css/css_web.css" rel="stylesheet" />
 </asp:Content>
 

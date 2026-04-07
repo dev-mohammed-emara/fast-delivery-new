@@ -14,7 +14,7 @@
         HttpCookie langCookie = Request.Cookies["lang"];
         string lang = (langCookie != null && !string.IsNullOrEmpty(langCookie.Value))
                         ? langCookie.Value
-                        : "ru"; // افتراضي عربي
+                        : "ar"; // افتراضي عربي
 
         // حاول تعيين culture و uiCulture
         try
@@ -46,7 +46,7 @@
         HttpCookie langCookie = HttpContext.Current.Request.Cookies["lang"];
         string lang = (langCookie != null && !string.IsNullOrEmpty(langCookie.Value))
                         ? langCookie.Value
-                        : "ru"; // افتراضي
+                        : "ar"; // افتراضي
 
         System.Globalization.CultureInfo ci;
         switch (lang)

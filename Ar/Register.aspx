@@ -6,7 +6,20 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
      <script src="https://accounts.google.com/gsi/client" async defer></script>
-
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+    function showSwal(title, message, icon) {
+        Swal.fire({
+            title: title,
+            text: message,
+            icon: icon, // ممكن يكون 'success', 'error', 'warning', 'info'
+            confirmButtonText: 'تسجيل',
+            confirmButtonColor: '#3085d6',
+            timer: 3000 // يختفي لوحده بعد 3 ثواني
+        });
+    }
+</script>
     <script>
         // Google callback
         function handleCredentialResponse(response) {

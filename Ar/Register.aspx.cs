@@ -50,11 +50,21 @@ public partial class Ar_Register : System.Web.UI.Page
             authCookie.Expires = ticket.Expiration;
             Response.Cookies.Add(authCookie);
             FormsAuthentication.SetAuthCookie(usr.Email, true);
-            Response.Redirect("Default.aspx");
+            Response.Redirect("Addresses.aspx");
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
-            if (ex.Message.Contains("UQ__Users__A9D1053409DE7BCC")) { }
+            if (ex.Message.Contains("UQ__Users__A9D1053409DE7BCC"))
+            {
+                // استدعاء الـ SweetAlert في حالة المستخدم موجود
+                string script = "showSwal('خطأ!', 'البريد الإلكتروني مسجل  بالفعل.', 'error');";
+                ClientScript.RegisterStartupScript(this.GetType(), "Popup", script, true);
+            }
+            else
+            {
+                string script = "showSwal('عفواً!', 'حصلت مشكلة فنية، برجاء المحاولة فى وقت لاحق.', 'warning');";
+                ClientScript.RegisterStartupScript(this.GetType(), "Popup", script, true);
+            }
         }
     }
 }

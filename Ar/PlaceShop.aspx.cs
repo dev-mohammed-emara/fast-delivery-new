@@ -31,9 +31,9 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
             place.LoadByPrimaryKey(Convert.ToInt32(Request.QueryString["id"].ToString()));
             var lang = System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName;
 
-            ltlocation.Text = lang == "en" ? "<a href='Places.aspx?id=" + place.Categories_id + "&addid=" + addr.ID + "&page=1'>" + gov.NameEn + "-" + area.NameEn + "</a>" :
-                          lang == "ru" ? "<a href='Places.aspx?id=" + place.Categories_id + "&addid=" + addr.ID + "&page=1'>" + gov.NameRu + "-" + area.NameRu + "</a>" :
-                          "<a href='Places.aspx?id=" + place.Categories_id + "&addid=" + addr.ID + "&page=1'>" + gov.Name + "-" + area.Name + "</a>";
+            ltlocation.Text = lang == "en" ? "<a href='Places.aspx?id=" + place.Categories_id + "&addid=" + addr.ID + "'>" + gov.NameEn + "-" + area.NameEn + "</a>" :
+                          lang == "ru" ? "<a href='Places.aspx?id=" + place.Categories_id + "&addid=" + addr.ID + "'>" + gov.NameRu + "-" + area.NameRu + "</a>" :
+                          "<a href='Places.aspx?id=" + place.Categories_id + "&addid=" + addr.ID + "'>" + gov.Name + "-" + area.Name + "</a>";
             
             
             DeliveryZones dzone = new DeliveryZones();
