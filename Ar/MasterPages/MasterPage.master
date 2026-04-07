@@ -216,8 +216,8 @@
     <script src="js/main.js"></script>
     <script src="js/Cart.js"></script>
     <script src="js/shopPage.js" defer></script>
-    <script src="js/shops.js"></script>
-    <script src="js/selectedLocation.js"></script>
+    <%--<script src="js/shops.js"></script>--%>
+   <%-- <script src="js/selectedLocation.js"></script>--%>
       <link rel="stylesheet" href="css/main.css"> 
    <%-- <link href="css/css_web.css" rel="stylesheet" />--%>
    <script type="text/javascript">

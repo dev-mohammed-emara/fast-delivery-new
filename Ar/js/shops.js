@@ -165,7 +165,6 @@ function updateSearch() {
       showPage(currentPage);
     }
   };
-
   btnPrev.onclick = () => {
     if (currentPage > 1) {
       currentPage--;

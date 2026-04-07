@@ -563,7 +563,11 @@
                         <asp:Literal ID="ltReceiveIn" runat="server" Text="<%$ Resources:texts, ReceiveIn %>"></asp:Literal>
                         <span class="timer"><%# Eval("DeliveredTime") %></span> دقيقة
                     </span>
-                    <span class="deliveryPayment">خدمة التوصيل: <%# Eval("DeliveryCost", "{0:N2}") %> ج.م</span>
+                    <span class="deliveryPayment">
+                        خدمة التوصيل: <span class="deliveryPaymentAmount"><%# Eval("DeliveryCost", "{0:N2}") %></span> ج.م
+                    </span>
+                    <!-- Hidden min order for sorting -->
+                    <span class="minPay" style="display:none;"><%# Eval("MinOrder") %></span>
                 </div>
             </div>
         </a>
@@ -579,11 +583,11 @@
 </figure>
 
         <span class="shopNavBtns">
-          <button id="shopNavLeft"><i class="fa-solid fa-arrow-right"></i></button>
+          <button id="shopNavLeft" style="display: none;"><i class="fa-solid fa-arrow-right"></i></button>
 
           <div id="shopNavNums"></div> <!-- This is your pagination holder -->
 
-          <button id="shopNavRight"><i class="fa-solid fa-arrow-left"></i></button>
+          <button id="shopNavRight" style="display: inline-block;"><i class="fa-solid fa-arrow-left"></i></button>
         </span>
 
 
@@ -604,9 +608,8 @@
 
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="PageScripts" Runat="Server">
-     <script src="./script/index.js" defer ></script>
-
-<script src="js/shops.js" defer></script>
+    <script src="js/selectedLocation.js?v=1.1"></script>
+    <script>console.log("Places.aspx loaded with dynamic pagination logic");</script>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
