@@ -448,7 +448,7 @@ if (editorForm) {
                 });
                 return;
             }
-            if (newPassword !== confirmPassword) {showPassword
+            if (newPassword !== confirmPassword) {
                 Swal.fire({
                     icon: "error",
                     title: "⚠️ كلمة المرور الجديدة غير متطابقة",

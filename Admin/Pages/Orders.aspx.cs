@@ -35,6 +35,55 @@ public partial class Admin_Pages_Orders : System.Web.UI.Page
             cmd.ExecuteNonQuery();
         }
     }
+    protected void Accepted_CheckedChanged(object sender, EventArgs e)
+    {
+        CheckBox chkbox = (CheckBox)sender;
+        GridViewRow Grow = (GridViewRow)chkbox.NamingContainer;
+        string z = ((HiddenField)Grow.FindControl("hfAccepted")).Value;
+        using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["Conn"].ConnectionString))
+        {
+            string sql = "UPDATE Orders SET Accepted=@Accepted  where ID=@ID";
+            SqlCommand cmd = new SqlCommand(sql, con);
+
+            cmd.Parameters.AddWithValue("@Accepted", chkbox.Checked);
+            cmd.Parameters.AddWithValue("@ID", Convert.ToInt32(z));
+            con.Open();
+            cmd.ExecuteNonQuery();
+        }
+    }
+    protected void Prepared_CheckedChanged(object sender, EventArgs e)
+    {
+        CheckBox chkbox = (CheckBox)sender;
+        GridViewRow Grow = (GridViewRow)chkbox.NamingContainer;
+        string z = ((HiddenField)Grow.FindControl("hfPrepared")).Value;
+        using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["Conn"].ConnectionString))
+        {
+            string sql = "UPDATE Orders SET Prepared=@Prepared  where ID=@ID";
+            SqlCommand cmd = new SqlCommand(sql, con);
+
+            cmd.Parameters.AddWithValue("@Prepared", chkbox.Checked);
+            cmd.Parameters.AddWithValue("@ID", Convert.ToInt32(z));
+            con.Open();
+            cmd.ExecuteNonQuery();
+        }
+    }
+    protected void InWay_CheckedChanged(object sender, EventArgs e)
+    {
+        CheckBox chkbox = (CheckBox)sender;
+        GridViewRow Grow = (GridViewRow)chkbox.NamingContainer;
+        string z = ((HiddenField)Grow.FindControl("hfInWay")).Value;
+        using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["Conn"].ConnectionString))
+        {
+            string sql = "UPDATE Orders SET InWay=@InWay  where ID=@ID";
+            SqlCommand cmd = new SqlCommand(sql, con);
+
+            cmd.Parameters.AddWithValue("@InWay", chkbox.Checked);
+            cmd.Parameters.AddWithValue("@ID", Convert.ToInt32(z));
+            con.Open();
+            cmd.ExecuteNonQuery();
+        }
+    }
+
     private void LoadGovs()
     {
         string connStr = ConfigurationManager.ConnectionStrings["Conn"].ConnectionString;
@@ -98,7 +147,7 @@ public partial class Admin_Pages_Orders : System.Web.UI.Page
                        SUM(od.Amount * od.Price) AS total,
                        o.DeliveryCost,
                        SUM(od.Amount * od.Price) + o.DeliveryCost AS net,
-                       o.Delivered,
+                       o.Delivered,o.Accepted,o.Prepared,o.InWay,
                        CAST(o.Odate AS DATE) AS Odate
                 FROM Orders o
                 INNER JOIN Order_Details od ON o.id = od.Order_id
@@ -143,7 +192,7 @@ public partial class Admin_Pages_Orders : System.Web.UI.Page
             }
 
             query += @"
-                GROUP BY o.id, u.Name, u.Lname, g.Name, a.Name, o.DeliveryCost, o.Delivered, o.Odate
+                GROUP BY o.id, u.Name, u.Lname, g.Name, a.Name, o.DeliveryCost, o.Delivered,o.Accepted,o.Prepared,o.InWay, o.Odate
                 ORDER BY o.Odate DESC";
 
             cmd.CommandText = query;

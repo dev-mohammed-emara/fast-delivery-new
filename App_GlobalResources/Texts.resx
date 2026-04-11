@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -746,5 +746,71 @@
   </data>
   <data name="RestaurantnAvaliable" xml:space="preserve">
     <value>بعض المطاعم غير متاحة حاليا:</value>
+  </data>
+    <data name="OrderNum" xml:space="preserve">
+    <value>رقم الطلب</value>
+  </data>
+    <data name="OrderDate" xml:space="preserve">
+    <value>تاريخ الطلب</value>
+  </data>
+    <data name="DeliveryAddress" xml:space="preserve">
+    <value>عنوان التوصيل</value>
+  </data>
+    <data name="ContactPhone" xml:space="preserve">
+    <value>رقم التواصل</value>
+  </data>
+    <data name="OrderStatusNow" xml:space="preserve">
+    <value>حالة الطلب الآن</value>
+  </data>
+    <data name="CartDetails" xml:space="preserve">
+    <value>تفاصيل السلة</value>
+  </data>
+    <data name="UnitPrice" xml:space="preserve">
+    <value>سعر الوحدة</value>
+  </data>
+    <data name="Quantity" xml:space="preserve">
+    <value>الكمية</value>
+  </data>
+    <data name="Currency" xml:space="preserve">
+    <value>ج.م</value>
+  </data>
+    <data name="Subtotal" xml:space="preserve">
+    <value>إجمالي الأصناف</value>
+  </data>
+    <data name="DeliveryFees" xml:space="preserve">
+    <value>مصاريف التوصيل</value>
+  </data>
+    <data name="Total" xml:space="preserve">
+    <value>الإجمالي الكلي</value>
+  </data>
+    <data name="StatusDelivered" xml:space="preserve">
+    <value>تم التسليم</value>
+  </data>
+    <data name="StatusProcessing" xml:space="preserve">
+    <value>جاري المعالجة</value>
+  </data>
+    <data name="StepWait" xml:space="preserve">
+    <value>في الانتظار</value>
+  </data>
+    <data name="StepAcc" xml:space="preserve">
+    <value>مقبول</value>
+  </data>
+    <data name="StepPrep" xml:space="preserve">
+    <value>جاري التحضير</value>
+  </data>
+    <data name="StepWay" xml:space="preserve">
+    <value>في الطريق</value>
+  </data>
+    <data name="StepDev" xml:space="preserve">
+    <value>تم التسليم</value>
+  </data>
+    <data name="Street" xml:space="preserve">
+    <value>شارع</value>
+  </data>
+    <data name="Build" xml:space="preserve">
+    <value>عمارة</value>
+  </data>
+    <data name="MultiOrderTag" xml:space="preserve">
+    <value>طلب مشترك</value>
   </data>
 </root>

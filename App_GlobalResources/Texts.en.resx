@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -746,5 +746,71 @@
   </data>
   <data name="RestaurantnAvaliable" xml:space="preserve">
     <value>Some restaurants are currently unavailable:</value>
+  </data>
+  <data name="OrderNum" xml:space="preserve">
+    <value>Order No.</value>
+  </data>
+  <data name="OrderDate" xml:space="preserve">
+    <value>Order Date</value>
+  </data>
+  <data name="DeliveryAddress" xml:space="preserve">
+    <value>Delivery Address</value>
+  </data>
+  <data name="ContactPhone" xml:space="preserve">
+    <value>Contact Phone</value>
+  </data>
+  <data name="OrderStatusNow" xml:space="preserve">
+    <value>Order Status</value>
+  </data>
+  <data name="CartDetails" xml:space="preserve">
+    <value>Cart Details</value>
+  </data>
+  <data name="UnitPrice" xml:space="preserve">
+    <value>Unit Price</value>
+  </data>
+  <data name="Quantity" xml:space="preserve">
+    <value>Qty</value>
+  </data>
+  <data name="Currency" xml:space="preserve">
+    <value>EGP</value>
+  </data>
+  <data name="Subtotal" xml:space="preserve">
+    <value>Subtotal</value>
+  </data>
+  <data name="DeliveryFees" xml:space="preserve">
+    <value>Delivery Fee</value>
+  </data>
+  <data name="Total" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="StatusDelivered" xml:space="preserve">
+    <value>Delivered</value>
+  </data>
+  <data name="StatusProcessing" xml:space="preserve">
+    <value>Processing</value>
+  </data>
+  <data name="StepWait" xml:space="preserve">
+    <value>Pending</value>
+  </data>
+  <data name="StepAcc" xml:space="preserve">
+    <value>Accepted</value>
+  </data>
+  <data name="StepPrep" xml:space="preserve">
+    <value>Preparing</value>
+  </data>
+  <data name="StepWay" xml:space="preserve">
+    <value>On Way</value>
+  </data>
+  <data name="StepDev" xml:space="preserve">
+    <value>Delivered</value>
+  </data>
+  <data name="Street" xml:space="preserve">
+    <value>St.</value>
+  </data>
+  <data name="Build" xml:space="preserve">
+    <value>Bldg.</value>
+  </data>
+  <data name="MultiOrderTag" xml:space="preserve">
+    <value>Shared Order</value>
   </data>
 </root>

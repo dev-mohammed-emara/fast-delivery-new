@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -761,5 +761,71 @@
   </data>
   <data name="RestaurantnAvaliable" xml:space="preserve">
     <value>Некоторые рестораны временно недоступны:</value>
+  </data>
+  <data name="OrderNum" xml:space="preserve">
+    <value>Номер заказа</value>
+  </data>
+  <data name="OrderDate" xml:space="preserve">
+    <value>Дата заказа</value>
+  </data>
+  <data name="DeliveryAddress" xml:space="preserve">
+    <value>Адрес доставки</value>
+  </data>
+  <data name="ContactPhone" xml:space="preserve">
+    <value>Телефон</value>
+  </data>
+  <data name="OrderStatusNow" xml:space="preserve">
+    <value>Текущий статус</value>
+  </data>
+  <data name="CartDetails" xml:space="preserve">
+    <value>Детали корзины</value>
+  </data>
+  <data name="UnitPrice" xml:space="preserve">
+    <value>Цена</value>
+  </data>
+  <data name="Quantity" xml:space="preserve">
+    <value>Кол-во</value>
+  </data>
+  <data name="Currency" xml:space="preserve">
+    <value>фунт</value>
+  </data>
+  <data name="Subtotal" xml:space="preserve">
+    <value>Стоимость</value>
+  </data>
+  <data name="DeliveryFees" xml:space="preserve">
+    <value>Доставка</value>
+  </data>
+  <data name="Total" xml:space="preserve">
+    <value>Итого</value>
+  </data>
+  <data name="StatusDelivered" xml:space="preserve">
+    <value>Доставлено</value>
+  </data>
+  <data name="StatusProcessing" xml:space="preserve">
+    <value>В обработке</value>
+  </data>
+  <data name="StepWait" xml:space="preserve">
+    <value>Ожидание</value>
+  </data>
+  <data name="StepAcc" xml:space="preserve">
+    <value>Принят</value>
+  </data>
+  <data name="StepPrep" xml:space="preserve">
+    <value>Готовится</value>
+  </data>
+  <data name="StepWay" xml:space="preserve">
+    <value>В пути</value>
+  </data>
+  <data name="StepDev" xml:space="preserve">
+    <value>Доставлено</value>
+  </data>
+  <data name="Street" xml:space="preserve">
+    <value>ул.</value>
+  </data>
+  <data name="Build" xml:space="preserve">
+    <value>дом</value>
+  </data>
+  <data name="MultiOrderTag" xml:space="preserve">
+    <value>Общий заказ</value>
   </data>
 </root>

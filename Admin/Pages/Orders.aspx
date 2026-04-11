@@ -223,7 +223,46 @@ padding: 0;
                 : "<i class='fa fa-times text-danger'></i>" %>
     </ItemTemplate>
 </asp:TemplateField>
-                                <asp:TemplateField HeaderText="نشط">
+                                <asp:TemplateField HeaderText="مقبول">
+            <EditItemTemplate>
+                <asp:CheckBox ID="CheckBox1Accepted" runat="server" Checked='<%# Bind("Accepted") %>'  />
+            </EditItemTemplate>
+            <ItemTemplate>
+                           <asp:HiddenField ID="hfAccepted" Value='<%# Bind("id") %>'  runat="server"/>
+		        <label class="switchToggle">
+                                                     <asp:CheckBox ID="CheckBoxAccepted"  runat="server" Checked='<%# Bind("Accepted") %>'   AutoPostBack="true"  OnCheckedChanged="Accepted_CheckedChanged" />
+                                                                      <span class="slider green round"></span>
+                                            </label>
+
+            </ItemTemplate>
+        </asp:TemplateField>
+                                <asp:TemplateField HeaderText="جارى التحضير">
+            <EditItemTemplate>
+                <asp:CheckBox ID="CheckBoxPrepared" runat="server" Checked='<%# Bind("Prepared") %>'  />
+            </EditItemTemplate>
+            <ItemTemplate>
+                           <asp:HiddenField ID="hfPrepared" Value='<%# Bind("id") %>'  runat="server"/>
+		        <label class="switchToggle">
+                                                     <asp:CheckBox ID="ChPrepared"  runat="server" Checked='<%# Bind("Prepared") %>'   AutoPostBack="true"  OnCheckedChanged="Prepared_CheckedChanged" />
+                                                                      <span class="slider green round"></span>
+                                            </label>
+
+            </ItemTemplate>
+        </asp:TemplateField>
+                                <asp:TemplateField HeaderText="فى الطريق">
+            <EditItemTemplate>
+                <asp:CheckBox ID="CheckBox1InWay" runat="server" Checked='<%# Bind("InWay") %>'  />
+            </EditItemTemplate>
+            <ItemTemplate>
+                           <asp:HiddenField ID="hfInWay" Value='<%# Bind("id") %>'  runat="server"/>
+		        <label class="switchToggle">
+                                                     <asp:CheckBox ID="ChInWay"  runat="server" Checked='<%# Bind("InWay") %>'   AutoPostBack="true"  OnCheckedChanged="InWay_CheckedChanged" />
+                                                                      <span class="slider green round"></span>
+                                            </label>
+
+            </ItemTemplate>
+        </asp:TemplateField>
+                                <asp:TemplateField HeaderText="تم التسليم">
             <EditItemTemplate>
                 <asp:CheckBox ID="CheckBox1" runat="server" Checked='<%# Bind("Delivered") %>'  />
             </EditItemTemplate>
