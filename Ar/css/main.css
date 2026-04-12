@@ -1477,7 +1477,9 @@ input[type="radio"] {
 }
 
 @media (max-width: 600px) {
-
+#ContentPlaceHolder1_ddlAddressP{
+  font-size: 0.8rem !important;
+}
   #emptyLocations p {
     font-size: 20px !important;
   }
