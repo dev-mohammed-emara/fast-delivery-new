@@ -596,15 +596,18 @@
                         <%# System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName=="en" ?
                           Eval("NameEn") : Eval("Name") %>
                       </h3>
-                      <span
-                        class='<%# Eval("IsOpened").ToString() == "1" ? "status-badge open" : "status-badge closed" %>'>
-                        <%# Eval("IsOpened").ToString()=="1" ? (GetGlobalResourceObject("texts", "Open" ) ?? "مفتوح" ) :
-                          (GetGlobalResourceObject("texts", "Closed" ) ?? "مغلق الآن" ) %>
-                      </span>
+                     <span class='<%# Eval("IsOpened").ToString() == "1" ? "status-badge open" : "status-badge closed" %>'>
+    <%# Eval("IsOpened").ToString() == "1" ? 
+        (GetGlobalResourceObject("texts", "Open") ?? "Open") : 
+        (GetGlobalResourceObject("texts", "Closed") ?? "Closed") %>
+</span>
                     </div>
 
                     <p class="shopFoods">
-                      <%# Eval("Description") %>
+                      <%# System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName=="en" ?
+                    DataBinder.Eval(Container.DataItem, "DescriptionEn" ) :
+                    System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName=="ru" ?
+                    DataBinder.Eval(Container.DataItem, "DescriptionRu" ) : DataBinder.Eval(Container.DataItem, "Description" ) %>
                     </p>
                     <span class="shopRating" id="shopRating" runat="server"></span>
 
@@ -614,12 +617,13 @@
                         </asp:Literal>
                         <span class="timer">
                           <%# Eval("DeliveredTime") %>
-                        </span> دقيقة
+                        </span> <%= Resources.Texts.ReceiveInMinutes %>
                       </span>
                       <span class="deliveryPayment">
-                        خدمة التوصيل: <span class="deliveryPaymentAmount">
+                          
+                        <%= Resources.Texts.DeliveryService %>: <span class="deliveryPaymentAmount">
                           <%# Eval("DeliveryCost", "{0:N2}" ) %>
-                        </span> ج.م
+                        </span> <%= Resources.Texts.Currency %>
                       </span>
                       <!-- Hidden min order for sorting -->
                       <span class="minPay" style="display:none;">

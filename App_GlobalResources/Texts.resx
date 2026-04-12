@@ -345,6 +345,12 @@
   <data name="ReceiveInMinutes" xml:space="preserve">
     <value>دقيقة</value>
   </data>
+    <data name="Open" xml:space="preserve">
+    <value>مفتوح</value>
+  </data>
+    <data name="Closed" xml:space="preserve">
+    <value>مغلق الآن</value>
+  </data>
   <data name="ShoppingCartTitle" xml:space="preserve">
     <value>سلة مشترياتك</value>
   </data>

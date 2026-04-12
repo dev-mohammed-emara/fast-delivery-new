@@ -735,6 +735,12 @@
   <data name="LoginButton" xml:space="preserve">
     <value>Login</value>
   </data>
+  <data name="Open" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="Closed" xml:space="preserve">
+    <value>Closed Now</value>
+  </data>
   <data name="NoAccount" xml:space="preserve">
     <value>Don't have an account?</value>
   </data>

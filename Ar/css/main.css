@@ -947,9 +947,19 @@ button[type="submit"] {
 
 
 html[dir="rtl"] {
-  select {
-    direction: ltr;
-  }
+ select{
+  direction: ltr;
+ }
+ #ContentPlaceHolder1_ddlAddress{
+  direction: rtl !important;
+ }
+}
+
+
+.modal-body.p-2{
+  padding: 0 !important;
+
+  
 }
 
 .gender-btn {
@@ -2041,6 +2051,13 @@ html[dir="ltr"] {
   pointer-events: none;
 }
 
+@media (hover: none) {
+::-webkit-scrollbar{
+  width: 0px !important;
+  height: 0px !important;
+}
+}
+
 #locationDetails {
   background-color: white;
   width: 100%;
@@ -2048,8 +2065,11 @@ html[dir="ltr"] {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  padding: 1rem;
 }
-
+.modal-header .btn-close {
+margin: 0 !important;
+}
 .locationDataField {
   & .inputHolder {
     input {

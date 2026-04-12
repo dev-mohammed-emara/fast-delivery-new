@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true" CodeFile="Addresses.aspx.cs" Inherits="Ar_Addresses"  EnableEventValidation="false"%>
+<%@ Page Title="" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true" CodeFile="Addresses.aspx.cs" Inherits="Ar_Addresses"  EnableEventValidation="false"%>
 <%@ Import Namespace="System.Web" %>
 <%@ Import Namespace="System.Globalization" %>
 <asp:Content ID="Content3" ContentPlaceHolderID="head" Runat="Server">
@@ -79,7 +79,7 @@
     </section>
    
     <div class="modal fade" id="OmapModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered d-flex align-items-center justify-content-center">
+    <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">

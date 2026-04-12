@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="Ar_Default" %>
+<%@ Page Title="" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="Ar_Default" %>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="head" Runat="Server">
  <asp:Literal ID="litPageTitle" runat="server" Text="<%$ Resources:Texts, Default_PageTitle %>" />
@@ -208,7 +208,7 @@ document.getElementById('location-btn').addEventListener('click', function() {
     </section>
 
   <div class="modal fade" id="mapModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog  modal-dialog-centered d-flex align-items-center justify-content-center">
+  <div class="modal-dialog modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
             <h5 class="modal-title">Select Location</h5>
@@ -351,7 +351,7 @@ function reverseGeocode(latlng) {
 
 <!-- Modal -->
 <div class="modal fade" id="locationModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog  modal-dialog-centered d-flex align-items-center justify-content-center">
+  <div class="modal-dialog modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title"><asp:Literal ID="Literal1" runat="server" Text="<%$ Resources:Texts, Select_Location %>" />

@@ -816,6 +816,12 @@
   <data name="StepWay" xml:space="preserve">
     <value>В пути</value>
   </data>
+  <data name="Open" xml:space="preserve">
+    <value>Открыто</value>
+  </data>
+  <data name="Closed" xml:space="preserve">
+    <value>Сейчас закрыто</value>
+  </data>
   <data name="StepDev" xml:space="preserve">
     <value>Доставлено</value>
   </data>

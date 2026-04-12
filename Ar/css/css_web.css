@@ -2376,7 +2376,7 @@ body:has(#openedShopFoods) #cartShower {
 
   #selectedLocationShops h2,
   .profile-head {
-    font-size: 1.25rem !important;
+    font-size: 0.9rem !important;
   }
 
   #foodListsNav {
@@ -2397,8 +2397,8 @@ body:has(#openedShopFoods) #cartShower {
 
   .availableShop {
     img {
-      width: 80px !important;
-      height: 80px !important;
+      width: 120px !important;
+      height: 120px !important;
     }
 
     .shopDelivery {
@@ -2509,23 +2509,31 @@ body:has(#openedShopFoods) #cartShower {
   }
 
   .availableShop {
-    flex-direction: column;
-    justify-content: center;
     align-items: center;
-    text-align: center;
+    padding-top: 0;
+    padding-inline: 0;
+    .shopFoods,.shopDelivery{
+      font-size: 0.65rem !important;
+    }
+    
   }
+.status-badge{
+  font-size: 0.65rem;
+}
 
-  .shopRating,
-  .shopDelivery,
+.availableShopDesc{
+  gap: 4px;
+}
+
+  
+  
   .trustBadge,
   .shopPayMethods {
     justify-content: center !important;
+    font-size: 0.7rem;
+    white-space: nowrap;
   }
 
-  .foodItem,
-  .foodDetails {
-    flex-wrap: wrap;
-  }
 
   .addToCart {
     align-items: start !important;

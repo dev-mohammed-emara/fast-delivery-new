@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="AddAddress.aspx.cs" Inherits="Ar_AddAddress" EnableEventValidation="false" %>
+<%@ Page Language="C#" AutoEventWireup="true" CodeFile="AddAddress.aspx.cs" Inherits="Ar_AddAddress" EnableEventValidation="false" %>
 <!DOCTYPE html>
 <html lang="<%= CurrentLang %>" dir="<%= CurrentDir %>">
 <head>
@@ -30,7 +30,7 @@
         .profileSettings li { padding:10px; }
         .profileSettings li.active { border-right:2px solid #0056b3; color:#0056b3; }
         #map { height:500px; }
-        .modal-dialog { max-width:700px; width:95%; }
+        .modal-dialog { max-width:800px; width:100%; }
         .modal-body { padding:0 !important; }
         .addLocationBtn, .editLocationBtn, .deleteLocationBtn, .setLocationBtn, .current-location-btn { cursor:pointer; }
         /* ضف باقي الستايلات كما هي */
@@ -86,7 +86,7 @@
        
 <!-- Modal -->
 <div class="modal fade" id="OmapModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered d-flex align-items-center justify-content-center">
+    <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">
@@ -1036,8 +1036,18 @@ function reverseGeocode(latlng, retries = 2) {
     <style>
         /* make the modal wider */
 #OmapModal .modal-dialog {
-    max-width: 700px; /* wider modal, adjust as needed */
-    width: 95%; /* keeps it responsive */
+    max-width: 800px; /* wider modal, adjust as needed */
+    width: 100%; /* keeps it responsive */
+    margin: 0 auto; /* Standard Bootstrap top margin */
+}
+
+#OmapModal .modal-header {
+    display: none;
+}
+
+#locationModal .modal-dialog{
+    width: 100%;
+    max-width: 800px !important;
 }
 
 /* remove padding and polish edges */
