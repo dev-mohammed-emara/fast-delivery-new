@@ -142,7 +142,15 @@
                                         Display="Dynamic" CssClass="text-danger" ValidationGroup="MenuItemGroup" />
                                 </div>
                             </div>
-
+                            <div class="form-group row">
+    <label class="control-label col-sm-2">وقت التحضير (بالدقائق)</label>
+    <div class="col-md-3">
+        <asp:TextBox ID="txtPrepearMin" runat="server" CssClass="form-control input-height" TextMode="Number"></asp:TextBox>
+        <asp:RegularExpressionValidator ID="revPrepearMin" runat="server" ControlToValidate="txtPrepearMin"
+            ValidationExpression="^\d+$" ErrorMessage="يجب إدخال أرقام فقط"
+            Display="Dynamic" CssClass="text-danger" ValidationGroup="MenuItemGroup" />
+    </div>
+</div>
                             <!-- الصورة -->
                             <div class="form-group row">
                                 <label class="control-label col-sm-2">الصورة</label>
@@ -186,6 +194,7 @@
                                 <asp:GridView ID="gvMenuItems" runat="server" AutoGenerateColumns="False" 
                                     CssClass="table table-striped table-bordered table-hover" AllowPaging="True" PageSize="10"
                                     OnPageIndexChanging="gvMenuItems_PageIndexChanging" OnRowCommand="gvMenuItems_RowCommand">
+                                
                                     <Columns>
                                         <asp:TemplateField HeaderText="الصورة">
                                             <ItemTemplate>
@@ -200,6 +209,7 @@
                                         <asp:BoundField HeaderText="القائمة" DataField="MenuName" />
                                         <asp:BoundField HeaderText="السعر" DataField="Price" DataFormatString="{0:N2}" />
                                         <asp:BoundField HeaderText="الخصم" DataField="DiscountValue" DataFormatString="{0:N2}" />
+                                        <asp:BoundField HeaderText="وقت التحضير" DataField="PrepearMin" />
                                         <asp:TemplateField HeaderText="متاح؟">
                                             <ItemTemplate>
                                                 <%# (bool)Eval("IsAvailable") ? "نعم" : "لا" %>

@@ -102,7 +102,14 @@ padding: 0;
 
 <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional" ChildrenAsTriggers="true">
     <ContentTemplate>
+        <asp:Timer ID="tmrNewOrders" runat="server" Interval="30000" OnTick="tmrNewOrders_Tick"></asp:Timer>
+        
+        <asp:HiddenField ID="hfLastOrderId" runat="server" Value="0" />
         <script type="text/javascript">
+            function alertNewOrder() {
+                alert("يوجد طلب جديد! تم تحديث القائمة تلقائياً.");
+                // يمكنك استبدال الـ alert بـ Toastr أو صوت تنبيه لو عندك المكتبة
+            }
 	    var modal_scrollTop = $('.modal-body').scrollTop();
 	    var modal_scrollHeight = $('.modal-body').prop('scrollHeight');
 	    var modal_innerHeight = $('.modal-body').innerHeight();

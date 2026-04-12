@@ -64,11 +64,12 @@ public partial class Admin_Pages_MenuItems : System.Web.UI.Page
         using (SqlConnection conn = new SqlConnection(connStr))
         {
             string sql = @"
-                SELECT mi.ID, mi.Name, mi.NameEn ,mi.NameRu, mi.Description,mi.DescriptionEn,mi.DescriptionRu, mi.Price, mi.DiscountValue, mi.IsAvailable,
-                       mi.PhotoUrl, m.Name AS MenuName, p.Name AS PlaceName
-                FROM MenuItems mi
-                INNER JOIN Menus m ON mi.MenuID = m.ID
-                INNER JOIN Places p ON mi.PlaceID = p.ID";
+    SELECT mi.ID, mi.Name, mi.NameEn, mi.NameRu, mi.Description, mi.DescriptionEn, mi.DescriptionRu, 
+           mi.Price, mi.DiscountValue, mi.IsAvailable, mi.PhotoUrl, mi.PrepearMin, 
+           m.Name AS MenuName, p.Name AS PlaceName
+    FROM MenuItems mi
+    INNER JOIN Menus m ON mi.MenuID = m.ID
+    INNER JOIN Places p ON mi.PlaceID = p.ID";
 
             if (!string.IsNullOrEmpty(search))
                 sql += " WHERE mi.Name LIKE @Search OR mi.Description LIKE @Search";
@@ -114,7 +115,7 @@ public partial class Admin_Pages_MenuItems : System.Web.UI.Page
         decimal discount = string.IsNullOrEmpty(txtDiscount.Text) ? 0 : decimal.Parse(txtDiscount.Text);
         string photo = hfPhotoPath.Value; // المسار بعد رفع الصورة
         bool isAvailable = chkAvailable.Checked;
-
+        int prepearMin = string.IsNullOrEmpty(txtPrepearMin.Text) ? 0 : int.Parse(txtPrepearMin.Text.Trim());
         if (menuId == 0 || placeId == 0 || string.IsNullOrEmpty(name)) return;
 
         if (ViewState["EditID"] != null) // تعديل
@@ -123,9 +124,11 @@ public partial class Admin_Pages_MenuItems : System.Web.UI.Page
             using (SqlConnection conn = new SqlConnection(connStr))
             {
                 SqlCommand cmd = new SqlCommand(@"
-                    UPDATE MenuItems SET MenuID=@MenuID, PlaceID=@PlaceID, Name=@Name , NameEn=@NameEn , NameRu=@NameRu , Description=@Desc,DescriptionEn=@DescEn,DescriptionRu=@DescRu,
-                                          Price=@Price, DiscountValue=@Discount, PhotoUrl=@Photo, IsAvailable=@IsAvailable
-                    WHERE ID=@ID", conn);
+    UPDATE MenuItems SET MenuID=@MenuID, PlaceID=@PlaceID, Name=@Name, NameEn=@NameEn, NameRu=@NameRu, 
+                         Description=@Desc, DescriptionEn=@DescEn, DescriptionRu=@DescRu,
+                         Price=@Price, DiscountValue=@Discount, PhotoUrl=@Photo, 
+                         IsAvailable=@IsAvailable, PrepearMin=@PrepearMin
+    WHERE ID=@ID", conn);
                 cmd.Parameters.AddWithValue("@MenuID", menuId);
                 cmd.Parameters.AddWithValue("@PlaceID", placeId);
                 cmd.Parameters.AddWithValue("@Name", name);
@@ -138,6 +141,7 @@ public partial class Admin_Pages_MenuItems : System.Web.UI.Page
                 cmd.Parameters.AddWithValue("@Discount", discount);
                 cmd.Parameters.AddWithValue("@Photo", string.IsNullOrEmpty(photoPath) ? (object)DBNull.Value : photoPath);
                 cmd.Parameters.AddWithValue("@IsAvailable", isAvailable);
+                cmd.Parameters.AddWithValue("@PrepearMin", prepearMin);
                 cmd.Parameters.AddWithValue("@ID", id);
                 conn.Open();
                 cmd.ExecuteNonQuery();
@@ -150,8 +154,10 @@ public partial class Admin_Pages_MenuItems : System.Web.UI.Page
             using (SqlConnection conn = new SqlConnection(connStr))
             {
                 SqlCommand cmd = new SqlCommand(@"
-                    INSERT INTO MenuItems (MenuID, PlaceID, Name,NameEn ,NameRu , Description,DescriptionEn,DescriptionRu, Price, DiscountValue, PhotoUrl, IsAvailable, CreatedAt)
-                    VALUES (@MenuID, @PlaceID, @Name, @NameEn ,@NameRu, @Desc,@DescEn,@DescRu, @Price, @Discount, @Photo, @IsAvailable, @CreatedAt)", conn);
+    INSERT INTO MenuItems (MenuID, PlaceID, Name, NameEn, NameRu, Description, DescriptionEn, DescriptionRu, 
+                          Price, DiscountValue, PhotoUrl, IsAvailable, CreatedAt, PrepearMin)
+    VALUES (@MenuID, @PlaceID, @Name, @NameEn, @NameRu, @Desc, @DescEn, @DescRu, 
+            @Price, @Discount, @Photo, @IsAvailable, @CreatedAt, @PrepearMin)", conn);
                 cmd.Parameters.AddWithValue("@MenuID", menuId);
                 cmd.Parameters.AddWithValue("@PlaceID", placeId);
                 cmd.Parameters.AddWithValue("@Name", name);
@@ -165,6 +171,7 @@ public partial class Admin_Pages_MenuItems : System.Web.UI.Page
                 cmd.Parameters.AddWithValue("@Photo", string.IsNullOrEmpty(photoPath) ? (object)DBNull.Value : photoPath);
                 cmd.Parameters.AddWithValue("@IsAvailable", isAvailable);
                 cmd.Parameters.AddWithValue("@CreatedAt", DateTime.Now);
+                cmd.Parameters.AddWithValue("@PrepearMin", prepearMin);
                 conn.Open();
                 cmd.ExecuteNonQuery();
             }
@@ -218,8 +225,8 @@ public partial class Admin_Pages_MenuItems : System.Web.UI.Page
                     ddlPlace.SelectedValue = dr["PlaceID"].ToString();
                     BindMenus();
                     ddlMenu.SelectedValue = dr["MenuID"].ToString();
-                   
-                   
+
+                    txtPrepearMin.Text = dr["PrepearMin"].ToString();
                     txtName.Text = dr["Name"].ToString();
                     txtNameEn.Text = dr["NameEn"].ToString();
                     txtNameRu.Text = dr["NameRu"].ToString();
@@ -242,6 +249,7 @@ public partial class Admin_Pages_MenuItems : System.Web.UI.Page
     {
         ddlMenu.SelectedValue = "0";
         ddlPlace.SelectedValue = "0";
+        txtPrepearMin.Text = "0";
         txtName.Text = "";
         txtNameEn.Text = "";
         txtDescription.Text = "";

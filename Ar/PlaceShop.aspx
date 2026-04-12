@@ -996,8 +996,11 @@
                                                                         DataBinder.Eval(Container.DataItem, "Description"
                                                                         ) %>
                                                                 </p>
+                                                            <%# Convert.ToInt32(Eval("PrepearMin")) > 0 ? 
+    string.Format("<small style='color: #e67e22; font-weight: bold;'><i class='fa-solid fa-utensils'></i> {0} دقيقة</small>", Eval("PrepearMin")) 
+    : "" %>
                                                             </span>
-
+    
                                                             <div class="foodPricing">
                                                                 <%# (Eval("NewPrice").ToString())
                                                                     !=(Eval("OldPrice").ToString())

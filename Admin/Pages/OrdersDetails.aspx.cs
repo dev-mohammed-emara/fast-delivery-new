@@ -2,6 +2,7 @@
 using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Linq;
 
@@ -28,9 +29,10 @@ public partial class Admin_Pages_OrdersDetails : System.Web.UI.Page
         {
             conn.Open();
 
+            // أضفنا mi.PrepearMin في الاستعلام
             string query = @"
                 SELECT od.id, od.Order_id, p.Name AS Place, p.Address AS PlaceAddress, a.Name AS Area, g.Name AS Gov,
-                       m.Name AS Menu, mi.Name AS Item, od.Amount, od.Price, od.Amount * od.Price AS total,
+                       m.Name AS Menu, mi.Name AS Item, mi.PrepearMin, od.Amount, od.Price, od.Amount * od.Price AS total,
                        u.Name AS Fname, u.Lname, addr.AddressName, addr.Mobile, addr.phone, addr.AType, 
                        addr.StreetName, addr.Build, addr.FloorNo, addr.adepartmentNo, addr.Instructions,
                        Gov_1.Name AS UGov, Areas_1.Name AS UArea, o.DeliveryCost,
@@ -61,94 +63,67 @@ public partial class Admin_Pages_OrdersDetails : System.Web.UI.Page
             return;
         }
 
-        // بيانات العميل
+        // --- بيانات العميل ---
         var rowCustomer = dt.Rows[0];
         string custName = string.Format("{0} {1}", rowCustomer["Fname"], rowCustomer["Lname"]);
-        string custMobile = rowCustomer["Mobile"].ToString();
-        string custPhone = rowCustomer["phone"].ToString();
-        string addrName = rowCustomer["AddressName"].ToString();
-        int aType = Convert.ToInt32(rowCustomer["AType"]);
-        string aTypeText = (aType == 0 ? "شقة" : aType == 1 ? "منزل" : "مكتب");
-        string street = rowCustomer["StreetName"].ToString();
-        string build = rowCustomer["Build"].ToString();
-        string floor = rowCustomer["FloorNo"].ToString();
-        string apartment = rowCustomer["adepartmentNo"].ToString();
-        string instructions = rowCustomer["Instructions"].ToString();
-        string uGov = rowCustomer["UGov"].ToString();
-        string uArea = rowCustomer["UArea"].ToString();
-        decimal deliveryCost = Convert.ToDecimal(rowCustomer["DeliveryCost"]);
-        string latitude = rowCustomer["Latitude"].ToString();
-        string longitude = rowCustomer["Longitude"].ToString();
-
         string fullAddress = string.Format("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}",
-            addrName, street, build, floor, apartment, instructions, uArea, uGov);
+            rowCustomer["AddressName"], rowCustomer["StreetName"], rowCustomer["Build"],
+            rowCustomer["FloorNo"], rowCustomer["adepartmentNo"], rowCustomer["Instructions"],
+            rowCustomer["UArea"], rowCustomer["UGov"]);
 
-        // عرض بيانات العميل
         Label lblCustomer = new Label();
         lblCustomer.Text = string.Format(
             "<div class='alert alert-secondary'>" +
             "<div><strong>العميل:</strong> {0}</div>" +
-            "<div><strong>الهاتف:</strong> {1}</div>" +
-            "<div><strong>الموبايل:</strong> {2}</div>" +
-            "<div><strong>العنوان:</strong> {3}</div>" +
-            "<div><strong>نوع العنوان:</strong> {4}</div>" +
-            "</div>" +
-            "<div id='map' style='height: 300px; margin-top:10px;'></div>",
-            custName, custPhone, custMobile, fullAddress, aTypeText
+            "<div><strong>الموبايل:</strong> {1}</div>" +
+            "<div><strong>العنوان:</strong> {2}</div>" +
+            "</div><div id='map' style='height: 300px; margin-top:10px;'></div>",
+            custName, rowCustomer["Mobile"], fullAddress
         );
         phPlaces.Controls.Add(lblCustomer);
-        string safeCustName = custName.Replace("'", "\\'");
-        string safeFullAddress = fullAddress.Replace("'", "\\'");
-        // سكربت Leaflet لإظهار الخريطة
+
+        // سكربت الخريطة
         string mapScript = string.Format(@"
-<script>
-window.onload = function() {{
-    var map = L.map('map').setView([{0}, {1}], 16);
-    L.tileLayer('https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{
-        maxZoom: 19,
-        attribution: '&copy; OpenStreetMap contributors'
-    }}).addTo(map);
-    var marker = L.marker([{0}, {1}]).addTo(map)
-        .bindPopup('<b>{2}</b><br>{3}')
-        .openPopup();
-}};
-</script>
-", latitude, longitude, safeCustName, safeFullAddress);
-
+            <script>
+            window.onload = function() {{
+                var map = L.map('map').setView([{0}, {1}], 16);
+                L.tileLayer('https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png').addTo(map);
+                L.marker([{0}, {1}]).addTo(map).bindPopup('<b>{2}</b>').openPopup();
+            }};
+            </script>", rowCustomer["Latitude"], rowCustomer["Longitude"], custName.Replace("'", "\\'"));
         ltMapScript.Text = mapScript;
 
-        // Literal في ASPX باسم ltMapScript
-        ltMapScript.Text = mapScript;
-
-        // تقسيم حسب المكان
-        var grouped = dt.AsEnumerable()
-                        .GroupBy(r => new
-                        {
-                            Place = r.Field<string>("Place"),
-                            Address = r.Field<string>("PlaceAddress"),
-                            Area = r.Field<string>("Area"),
-                            Gov = r.Field<string>("Gov")
-                        });
+        // --- التقسيم حسب المكان والعرض في GridView ---
+        var grouped = dt.AsEnumerable().GroupBy(r => new {
+            Place = r.Field<string>("Place"),
+            Address = r.Field<string>("PlaceAddress"),
+            Area = r.Field<string>("Area"),
+            Gov = r.Field<string>("Gov")
+        });
 
         decimal grandTotal = 0;
 
         foreach (var grp in grouped)
         {
-            Label lblPlace = new Label();
-            lblPlace.Text = string.Format(
-                "<div class='mt-3'><h5>{0} - {1} | {2} | {3}</h5></div>",
-                grp.Key.Place, grp.Key.Address, grp.Key.Area, grp.Key.Gov
-            );
-            phPlaces.Controls.Add(lblPlace);
+            phPlaces.Controls.Add(new Literal
+            {
+                Text = string.Format("<div class='mt-4'><h5><i class='fa-solid fa-shop'></i> {0} ({1})</h5></div>", grp.Key.Place, grp.Key.Area)
+            });
 
-            GridView gv = new GridView();
-            gv.CssClass = "table table-bordered table-striped";
+            GridView gv = new GridValueConfigurator();
+            gv.CssClass = "table table-bordered table-hover";
             gv.AutoGenerateColumns = false;
-            gv.DataKeyNames = new string[] { "id" };
             gv.ShowFooter = true;
 
-            gv.Columns.Add(new BoundField { HeaderText = "القائمة", DataField = "Menu" });
-            gv.Columns.Add(new BoundField { HeaderText = "المنتج", DataField = "Item" });
+            // الأعمدة
+            gv.Columns.Add(new BoundField { HeaderText = "الصنف", DataField = "Item" });
+
+            // عمود وقت التحضير المخصص
+            TemplateField prepField = new TemplateField();
+            prepField.HeaderText = "وقت التحضير";
+            prepField.ItemTemplate = new PrepTimeTemplate();
+            gv.Columns.Add(prepField);
+
             gv.Columns.Add(new BoundField { HeaderText = "الكمية", DataField = "Amount" });
             gv.Columns.Add(new BoundField { HeaderText = "السعر", DataField = "Price", DataFormatString = "{0:N2}" });
             gv.Columns.Add(new BoundField { HeaderText = "الإجمالي", DataField = "total", DataFormatString = "{0:N2}" });
@@ -162,21 +137,46 @@ window.onload = function() {{
 
             if (gv.FooterRow != null)
             {
-                gv.FooterRow.Cells[0].Text = "المجموع لكل مكان:";
-                gv.FooterRow.Cells[0].ColumnSpan = 4;
-                gv.FooterRow.Cells[0].HorizontalAlign = HorizontalAlign.Right;
+                gv.FooterRow.Cells[0].Text = "إجمالي المكان:";
                 gv.FooterRow.Cells[4].Text = totalPerPlace.ToString("N2");
             }
 
             phPlaces.Controls.Add(gv);
         }
 
-        decimal netTotal = grandTotal + deliveryCost;
-        Label lblSummary = new Label();
-        lblSummary.Text = string.Format(
-            "<div class='alert alert-info mt-3'><strong>المجموع الكلي:</strong> {0:N2} | <strong>تكلفة التوصيل:</strong> {1:N2} | <strong>الصافي:</strong> {2:N2}</div>",
-            grandTotal, deliveryCost, netTotal
-        );
-        phPlaces.Controls.Add(lblSummary);
+        // المجموع النهائي
+        decimal deliveryCost = Convert.ToDecimal(rowCustomer["DeliveryCost"]);
+        phPlaces.Controls.Add(new Literal
+        {
+            Text = string.Format("<div class='alert alert-success mt-3'><strong>الصافي المطلوب: {0:N2} ج.م</strong></div>", grandTotal + deliveryCost)
+        });
     }
 }
+
+// كلاس لتنسيق عرض وقت التحضير داخل الـ GridView
+public class PrepTimeTemplate : ITemplate
+{
+    public void InstantiateIn(Control container)
+    {
+        Literal lit = new Literal();
+        lit.DataBinding += (sender, e) => {
+            var row = (DataRowView)((GridViewRow)lit.NamingContainer).DataItem;
+            int mins = row["PrepearMin"] != DBNull.Value ? Convert.ToInt32(row["PrepearMin"]) : 0;
+
+            if (mins > 0)
+            {
+                lit.Text = string.Format(
+                    "<span style='color: #e67e22; font-weight: bold;'><i class='fa-solid fa-clock-rotate-left'></i> {0} دقيقة</span>",
+                    mins);
+            }
+            else
+            {
+                lit.Text = "<span class='text-muted'>---</span>";
+            }
+        };
+        container.Controls.Add(lit);
+    }
+}
+
+// كلاس مساعد لتسهيل إعداد الـ GridView برمجياً
+public class GridValueConfigurator : GridView { }

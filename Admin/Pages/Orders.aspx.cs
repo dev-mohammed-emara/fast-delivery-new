@@ -204,6 +204,35 @@ public partial class Admin_Pages_Orders : System.Web.UI.Page
             gvOrders.DataSource = dt;
             gvOrders.DataBind();
             lblCount.Text = dt.Rows.Count.ToString();
+            if (dt.Rows.Count > 0)
+            {
+                // نفترض أن الاستعلام مرتب تنازلياً أو نبحث عن أكبر ID
+                object maxId = dt.Compute("Max(id)", "");
+                hfLastOrderId.Value = maxId.ToString();
+            }
+        }
+    }
+    protected void tmrNewOrders_Tick(object sender, EventArgs e)
+    {
+        string connStr = ConfigurationManager.ConnectionStrings["Conn"].ConnectionString;
+        using (SqlConnection conn = new SqlConnection(connStr))
+        {
+            // استعلام يجلب أكبر ID في جدول الطلبات ككل
+            string sql = "SELECT ISNULL(MAX(id), 0) FROM Orders";
+            SqlCommand cmd = new SqlCommand(sql, conn);
+            conn.Open();
+            int latestIdInDb = Convert.ToInt32(cmd.ExecuteScalar());
+            int lastDisplayedId = Convert.ToInt32(hfLastOrderId.Value);
+
+            // إذا كان الرقم في قاعدة البيانات أكبر مما هو معروض
+            if (latestIdInDb > lastDisplayedId)
+            {
+                // 1. إعادة ربط الجريد بالبيانات الجديدة
+                BindOrders();
+
+                // 2. تشغيل رسالة التنبيه للمستخدم
+                ScriptManager.RegisterStartupScript(this, GetType(), "NewOrderAlert", "alertNewOrder();", true);
+            }
         }
     }
     protected void gvOrders_PageIndexChanging(object sender, System.Web.UI.WebControls.GridViewPageEventArgs e)

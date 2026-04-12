@@ -97,7 +97,48 @@ public partial class Ar_OrderDetails : System.Web.UI.Page
             litGrandTotal.Text = (subTotal + Convert.ToDecimal(litDeliveryFee.Text)).ToString("N2");
         }
     }
+    // أضف هذا الحدث داخل الكلاس
+    protected void tmrRefresh_Tick(object sender, EventArgs e)
+    {
+        if (Request.QueryString["orderId"] != null)
+        {
+            int orderId;
+            if (int.TryParse(Request.QueryString["orderId"], out orderId))
+            {
+                // إعادة تحميل البيانات لتحديث الـ Stepper والحالة فقط
+                RefreshOrderStatus(orderId);
+            }
+        }
+    }
 
+    // دالة مصغرة لتحديث الحالة فقط دون إعادة ربط الـ Repeater (لتحسين الأداء)
+    private void RefreshOrderStatus(int orderId)
+    {
+        using (SqlConnection conn = new SqlConnection(connStr))
+        {
+            string sqlStatus = @"SELECT Accepted, Prepared, InWay, Delivered FROM dbo.Orders WHERE id = @oid";
+            SqlCommand cmd = new SqlCommand(sqlStatus, conn);
+            cmd.Parameters.AddWithValue("@oid", orderId);
+            conn.Open();
+            SqlDataReader dr = cmd.ExecuteReader();
+
+            if (dr.Read())
+            {
+                bool isDev = dr["Delivered"] != DBNull.Value && Convert.ToBoolean(dr["Delivered"]);
+
+                // تحديث النص العلوي
+                litStatusHeader.Text = isDev ? GetGlobalResourceObject("texts", "StatusDelivered").ToString() : GetGlobalResourceObject("texts", "StatusProcessing").ToString();
+
+                // تحديث الـ Stepper
+                BuildFullStepper(
+                    dr["Accepted"] != DBNull.Value && Convert.ToBoolean(dr["Accepted"]),
+                    dr["Prepared"] != DBNull.Value && Convert.ToBoolean(dr["Prepared"]),
+                    dr["InWay"] != DBNull.Value && Convert.ToBoolean(dr["InWay"]),
+                    isDev
+                );
+            }
+        }
+    }
     private void BuildFullStepper(bool acc, bool prep, bool way, bool dev)
     {
         string s1 = "completed", s2 = acc ? "completed" : "active", s3 = prep ? "completed" : (acc ? "active" : "");

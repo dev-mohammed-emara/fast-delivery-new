@@ -126,7 +126,7 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
 
             using (SqlConnection con = new SqlConnection(connStr))
             {
-                string query = "SELECT dbo.MenuItems.id,dbo.MenuItems.PlaceID, dbo.MenuItems.MenuID, dbo.MenuItems.Name,dbo.MenuItems.NameEn,dbo.MenuItems.NameRu, dbo.MenuItems.Description,dbo.MenuItems.DescriptionEn,dbo.MenuItems.DescriptionRu, dbo.MenuItems.Price AS OldPrice," + 
+                string query = "SELECT dbo.MenuItems.id,dbo.MenuItems.PlaceID,PrepearMin,dbo.MenuItems.MenuID, dbo.MenuItems.Name,dbo.MenuItems.NameEn,dbo.MenuItems.NameRu, dbo.MenuItems.Description,dbo.MenuItems.DescriptionEn,dbo.MenuItems.DescriptionRu, dbo.MenuItems.Price AS OldPrice," + 
                " dbo.MenuItems.Price - dbo.MenuItems.DiscountValue AS NewPrice , dbo.MenuItems.PhotoUrl "+
 " FROM dbo.Menus INNER JOIN "+
                " dbo.MenuItems ON dbo.Menus.id = dbo.MenuItems.MenuID INNER JOIN "+

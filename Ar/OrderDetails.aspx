@@ -4,9 +4,13 @@
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+    <asp:ScriptManager ID="ScriptManager1" runat="server"></asp:ScriptManager>
     <div class="order-details-wrapper">
         <div class="container" style="max-width: 800px;">
-            
+            <asp:UpdatePanel ID="updStatus" runat="server">
+                <ContentTemplate>
+                    
+                    <asp:Timer ID="tmrRefresh" runat="server" Interval="30000" OnTick="tmrRefresh_Tick"></asp:Timer>
             <div class="order-card">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
@@ -76,6 +80,8 @@
                     </div>
                 </div>
             </div>
+                    </ContentTemplate>
+            </asp:UpdatePanel>
         </div>
     </div>
 </asp:Content>
