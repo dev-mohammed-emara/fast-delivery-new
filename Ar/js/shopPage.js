@@ -1,4 +1,4 @@
-﻿/* ========== Dropdown Toggle for Each Food List ========== */
+/* ========== Dropdown Toggle for Each Food List ========== */
 
 // Get URL params
 const urlParams = new URLSearchParams(window.location.search);

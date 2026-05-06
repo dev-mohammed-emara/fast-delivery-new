@@ -819,4 +819,4 @@
   <data name="MultiOrderTag" xml:space="preserve">
     <value>Shared Order</value>
   </data>
-</root>
+<data name="nav_favorites" xml:space="preserve"><value>Favorites</value></data></root>

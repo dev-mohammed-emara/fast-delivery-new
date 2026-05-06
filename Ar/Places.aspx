@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true"
+<%@ Page Title="" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true"
   CodeFile="Places.aspx.cs" Inherits="Ar_Places" %>
   <asp:Content ID="Content3" ContentPlaceHolderID="head" Runat="Server">
     <asp:Literal ID="ltPageTitle" runat="server" Text="<%$ Resources:texts, Page_Places_Title %>"></asp:Literal>
@@ -68,8 +68,8 @@
         input {
           padding: 0.5rem 1rem;
           border-radius: 0.25rem;
-          background-color: whitesmoke;
-          border: 1px solid rgba(0, 0, 0, 0.25);
+          background-color: #f8f9fa;
+          border: 1px solid rgba(0, 0, 0, 0.1);
           width: 100%;
         }
 
@@ -117,7 +117,7 @@
 
 
       #selectedFilter {
-        background-color: whitesmoke;
+        background-color: #f8f9fa;
       }
 
       .filterFor {
@@ -151,8 +151,8 @@
         display: flex;
         column-gap: 1rem;
         align-items: center;
-        border-top: 1px solid rgba(0, 0, 0, 0.25);
-        border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
         font-weight: bold;
         white-space: nowrap;
         flex-wrap: wrap;
@@ -178,7 +178,7 @@
           cursor: pointer;
           font-weight: 500;
           transition: var(--transition);
-          border: 1px solid rgba(0, 0, 0, 0.25);
+          border: 1px solid rgba(0, 0, 0, 0.1);
           padding: 0.25rem 1rem;
           text-align: center;
           border-radius: 3rem;
@@ -204,7 +204,7 @@
       .availableShop {
         display: flex;
         gap: 1.5rem;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
         padding: 1rem;
         transition: var(--transition);
 
@@ -214,12 +214,12 @@
           aspect-ratio: 1;
           object-position: center;
           object-fit: cover;
-          border: 1px solid rgba(0, 0, 0, 0.25);
+          border: 1px solid rgba(0, 0, 0, 0.1);
           border-radius: 0.5rem;
         }
 
         &:hover {
-          background-color: whitesmoke;
+          background-color: #f8f9fa;
 
           .availableShopName {
             color: var(--fd-blue);
@@ -484,7 +484,7 @@
       .category-pill.active {
         background-color: #ffc119;
         /* اللون المميز */
-        
+
         border-color: #ffc119;
       }
 
@@ -499,10 +499,140 @@
         /* إذا كانت قائمة التصنيفات القديمة تختفي، يمكنك إخفاؤها هنا */
         /* .content-inside-restaurant-menu { display: none; } */
       }
-    </style>
-     
 
-          
+            .availableShop {
+                display: flex !important;
+                gap: 1rem !important;
+                padding: 1.5rem !important;
+                background: white !important;
+                border-radius: 1.25rem !important;
+                border: 1px solid rgba(0, 0, 0, 0.1) !important;
+                box-shadow: 0px 4px 15px rgba(0,0,0,0.05) !important;
+                transition: all 0.3s ease !important;
+                text-decoration: none !important;
+                color: inherit !important;
+                margin-bottom: 2rem !important;
+                height: auto !important;
+            }
+
+            .shop-main-row {
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: flex-start !important;
+                gap: 2rem !important;
+            }
+
+            .shop-info-text {
+                flex: 1 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 0.5rem !important;
+            }
+
+            .availableShopName {
+                display: flex !important;
+                align-items: center !important;
+                gap: 10px !important;
+                font-size: 1.5rem !important;
+                font-weight: 800 !important;
+                color: #222 !important;
+                margin: 0 !important;
+            }
+
+            .status-badge {
+                padding: 4px 12px !important;
+                border-radius: 2rem !important;
+                font-size: 0.75rem !important;
+                font-weight: 700 !important;
+                display: inline-block !important;
+            }
+            .status-badge.open {
+                background: #e8f5e9 !important;
+                color: #2e7d32 !important;
+                border: 1px solid #c8e6c9 !important;
+            }
+            .status-badge.closed {
+                background: #ffebee !important;
+                color: #c62828 !important;
+                border: 1px solid #ffcdd2 !important;
+            }
+
+            .shopFoods {
+                font-size: 0.95rem !important;
+                color: #666 !important;
+                line-height: 1.6 !important;
+                margin: 0 !important;
+            }
+
+            .shop-visual-part {
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                gap: 0.75rem !important;
+            }
+
+            .shop-img-wrapper {
+                width: 130px !important;
+                height: 130px !important;
+                position: relative !important;
+            }
+            .shop-img-wrapper img {
+                width: 100% !important;
+                height: 100% !important;
+                border-radius: 1.25rem !important;
+                object-fit: cover !important;
+                border: 1px solid rgba(0,0,0,0.05) !important;
+            }
+
+            .shop-details-row {
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: center !important;
+                padding-top: 1rem !important;
+                border-top: 1px dashed rgba(0,0,0,0.1) !important;
+                flex-wrap: wrap !important;
+                gap: 1rem !important;
+            }
+
+            .shopDelivery {
+                display: flex !important;
+                gap: 1.5rem !important;
+                font-size: 0.85rem !important;
+                color: #444 !important;
+                font-weight: 600 !important;
+            }
+
+            .shop-features {
+                display: flex !important;
+                gap: 1rem !important;
+                align-items: center !important;
+            }
+            .feature-item {
+                display: flex !important;
+                align-items: center !important;
+                gap: 6px !important;
+                font-size: 0.8rem !important;
+                color: #555 !important;
+                background: #f8f9fa !important;
+                padding: 6px 12px !important;
+                border-radius: 0.5rem !important;
+            }
+            .feature-item i {
+                color: #007bff !important;
+            }
+            .feature-item.promo {
+                color: #e91e63 !important;
+                background: #fdf2f8 !important;
+                font-weight: 700 !important;
+            }
+            .feature-item.promo i {
+                color: #e91e63 !important;
+            }
+
+        </style>
+
+
+
     <section id="selectedLocationShops">
       <div class="categories-bar-wrapper">
         <div class="container categories-bar-scroller">
@@ -580,18 +710,18 @@
           </article>
             <div class="food-categories-mobile-bar" style="display:block; background-color:#fff;">
     <div class="categories-list-scroll">
-      
+
   <a href="javascript:void(0);" class="category-pill active" onclick="filterByJS('0', this)">
         <div class="all-icon-circle">
-             <img src="images/all-categories.png" alt="الكل" /> 
-            
+             <img src="images/all-categories.png" alt="الكل" />
+
              </div>
         <span>الكل(<%= ViewState["AllCount"] %>)</span>
     </a>
 
     <asp:Repeater ID="rptSubCategories" runat="server">
         <ItemTemplate>
-            <a href="javascript:void(0);" class="category-pill" 
+            <a href="javascript:void(0);" class="category-pill"
                onclick='<%# "filterByJS(\"" + Eval("id") + "\", this)" %>'>
                 <img src='<%# Eval("TypeImage") %>' />
                       <%# System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName=="en" ?
@@ -616,7 +746,22 @@
                   <span class="shopRatingStars" hidden>
                     <%# Eval("Rate")%>
                   </span>
-                  <asp:Image ID="Image2" ImageUrl='<%# "~/ar/" + Eval("PhotoPath") %>' runat="server" />
+                  <div class="shop-img-wrapper" style="position: relative; width: 120px; height: 120px; flex-shrink: 0;">
+                    <asp:Image ID="Image2" ImageUrl='<%# "~/ar/" + Eval("PhotoPath") %>' runat="server" style="width:100%; height:100%; border-radius:0.5rem; object-fit:cover;" />
+                    <div class="favorite-heart"
+                         onclick="toggleFavorite(event, this)"
+                         data-id='<%# Eval("id") %>'
+                         data-name='<%# Eval("Name") %>'
+                         data-name-en='<%# Eval("NameEn") %>'
+                         data-img='<%# Eval("PhotoPath") %>'
+                         data-desc='<%# Eval("Description") %>'
+                         data-desc-en='<%# Eval("DescriptionEn") %>'
+                         data-delivery-time='<%# Eval("DeliveredTime") %>'
+                         data-delivery-cost='<%# Eval("DeliveryCost", "{0:F2}") %>'
+                         data-rate='<%# Eval("Rate") %>'>
+                        <i class="fa-regular fa-heart"></i>
+                    </div>
+                  </div>
 
                   <div class="availableShopDesc">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -625,11 +770,11 @@
                     DataBinder.Eval(Container.DataItem, "NameEn" ) :
                     System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName=="ru" ?
                     DataBinder.Eval(Container.DataItem, "NameRu" ) : DataBinder.Eval(Container.DataItem, "Name" ) %>
-                    
+
                       </h3>
                      <span class='<%# Eval("IsOpened").ToString() == "1" ? "status-badge open" : "status-badge closed" %>'>
-    <%# Eval("IsOpened").ToString() == "1" ? 
-        (GetGlobalResourceObject("texts", "Open") ?? "Open") : 
+    <%# Eval("IsOpened").ToString() == "1" ?
+        (GetGlobalResourceObject("texts", "Open") ?? "Open") :
         (GetGlobalResourceObject("texts", "Closed") ?? "Closed") %>
 </span>
                     </div>
@@ -639,7 +784,7 @@
                     DataBinder.Eval(Container.DataItem, "DescriptionEn" ) :
                     System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName=="ru" ?
                     DataBinder.Eval(Container.DataItem, "DescriptionRu" ) : DataBinder.Eval(Container.DataItem, "Description" ) %>
-                    
+
                     </p>
                     <span class="shopRating" id="shopRating" runat="server"></span>
 
@@ -652,9 +797,9 @@
                         </span> <%= Resources.Texts.ReceiveInMinutes %>
                       </span>
                       <span class="deliveryPayment">
-                          
+
                         <%= Resources.Texts.DeliveryService %>: <span class="deliveryPaymentAmount">
-                          <%# Eval("DeliveryCost", "{0:N2}" ) %>
+                           <%# Eval("DeliveryCost", "{0:F2}" ) %>
                         </span> <%= Resources.Texts.Currency %>
                       </span>
                       <!-- Hidden min order for sorting -->
@@ -694,7 +839,7 @@
 
     </section>
 
-        
+
 
 
     <!-- Add Select2 -->
@@ -752,6 +897,66 @@ function filterByJS(typeId, btn) {
         });
     }
 }
+
+// Favorite Functions
+function toggleFavorite(event, element) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const shopId = element.getAttribute('data-id');
+    const favorites = JSON.parse(localStorage.getItem('favoriteShops') || '[]');
+    const index = favorites.findIndex(f => f.id === shopId);
+    const icon = element.querySelector('i');
+
+    if (index === -1) {
+        // Add to favorites
+        const shopData = {
+            id: shopId,
+            name: element.getAttribute('data-name'),
+            nameEn: element.getAttribute('data-name-en'),
+            img: element.getAttribute('data-img'),
+            desc: element.getAttribute('data-desc'),
+            descEn: element.getAttribute('data-desc-en'),
+            deliveryTime: element.getAttribute('data-delivery-time'),
+            deliveryCost: element.getAttribute('data-delivery-cost'),
+            rate: element.getAttribute('data-rate'),
+            url: window.location.href.split('?')[0].replace('Places.aspx', 'PlaceShop.aspx') + '?id=' + shopId + '&addid=' + (new URLSearchParams(window.location.search).get('addid') || '')
+        };
+        favorites.push(shopData);
+        element.classList.add('is-favorite');
+        icon.classList.remove('fa-regular');
+        icon.classList.add('fa-solid');
+        element.classList.add('animate-twirl');
+        setTimeout(() => element.classList.remove('animate-twirl'), 800);
+    } else {
+        // Remove from favorites
+        favorites.splice(index, 1);
+        element.classList.remove('is-favorite');
+        icon.classList.remove('fa-solid');
+        icon.classList.add('fa-regular');
+    }
+
+    localStorage.setItem('favoriteShops', JSON.stringify(favorites));
+}
+
+function initFavorites() {
+    const favorites = JSON.parse(localStorage.getItem('favoriteShops') || '[]');
+    document.querySelectorAll('.favorite-heart').forEach(el => {
+        const shopId = el.getAttribute('data-id');
+        const icon = el.querySelector('i');
+        if (favorites.some(f => f.id === shopId)) {
+            el.classList.add('is-favorite');
+            icon.classList.remove('fa-regular');
+            icon.classList.add('fa-solid');
+        } else {
+            el.classList.remove('is-favorite');
+            icon.classList.remove('fa-solid');
+            icon.classList.add('fa-regular');
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', initFavorites);
 </script>
         <style>
           .select2-container--default .select2-selection--single {
@@ -857,6 +1062,136 @@ function filterByJS(typeId, btn) {
 .category-pill.active span {
     color: #ffc119 !important; /* النص يصفر */
 }
+
+            .availableShop {
+                display: flex !important;
+                gap: 1rem !important;
+                padding: 1.5rem !important;
+                background: white !important;
+                border-radius: 1.25rem !important;
+                border: 1px solid rgba(0, 0, 0, 0.1) !important;
+                box-shadow: 0px 4px 15px rgba(0,0,0,0.05) !important;
+                transition: all 0.3s ease !important;
+                text-decoration: none !important;
+                color: inherit !important;
+                margin-bottom: 2rem !important;
+                height: auto !important;
+            }
+
+            .shop-main-row {
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: flex-start !important;
+                gap: 2rem !important;
+            }
+
+            .shop-info-text {
+                flex: 1 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 0.5rem !important;
+            }
+
+            .availableShopName {
+                display: flex !important;
+                align-items: center !important;
+                gap: 10px !important;
+                font-size: 1.5rem !important;
+                font-weight: 800 !important;
+                color: #222 !important;
+                margin: 0 !important;
+            }
+
+            .status-badge {
+                padding: 4px 12px !important;
+                border-radius: 2rem !important;
+                font-size: 0.75rem !important;
+                font-weight: 700 !important;
+                display: inline-block !important;
+            }
+            .status-badge.open {
+                background: #e8f5e9 !important;
+                color: #2e7d32 !important;
+                border: 1px solid #c8e6c9 !important;
+            }
+            .status-badge.closed {
+                background: #ffebee !important;
+                color: #c62828 !important;
+                border: 1px solid #ffcdd2 !important;
+            }
+
+            .shopFoods {
+                font-size: 0.95rem !important;
+                color: #666 !important;
+                line-height: 1.6 !important;
+                margin: 0 !important;
+            }
+
+            .shop-visual-part {
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                gap: 0.75rem !important;
+            }
+
+            .shop-img-wrapper {
+                width: 130px !important;
+                height: 130px !important;
+                position: relative !important;
+            }
+            .shop-img-wrapper img {
+                width: 100% !important;
+                height: 100% !important;
+                border-radius: 1.25rem !important;
+                object-fit: cover !important;
+                border: 1px solid rgba(0,0,0,0.05) !important;
+            }
+
+            .shop-details-row {
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: center !important;
+                padding-top: 1rem !important;
+                border-top: 1px dashed rgba(0,0,0,0.1) !important;
+                flex-wrap: wrap !important;
+                gap: 1rem !important;
+            }
+
+            .shopDelivery {
+                display: flex !important;
+                gap: 1.5rem !important;
+                font-size: 0.85rem !important;
+                color: #444 !important;
+                font-weight: 600 !important;
+            }
+
+            .shop-features {
+                display: flex !important;
+                gap: 1rem !important;
+                align-items: center !important;
+            }
+            .feature-item {
+                display: flex !important;
+                align-items: center !important;
+                gap: 6px !important;
+                font-size: 0.8rem !important;
+                color: #555 !important;
+                background: #f8f9fa !important;
+                padding: 6px 12px !important;
+                border-radius: 0.5rem !important;
+            }
+            .feature-item i {
+                color: #007bff !important;
+            }
+            .feature-item.promo {
+                color: #e91e63 !important;
+                background: #fdf2f8 !important;
+                font-weight: 700 !important;
+            }
+            .feature-item.promo i {
+                color: #e91e63 !important;
+            }
+
         </style>
         <script>
           function showClosedAlert() {

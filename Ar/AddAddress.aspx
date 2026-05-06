@@ -8,20 +8,20 @@
 </title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/main.css" rel="stylesheet" />
-   
+
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
     <!-- Bootstrap CSS -->
-    
+
 
     <!-- Leaflet CSS --><link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
     <style>
         /* هنا تحط كل الستايلات من الصفحة الأصلية */
-      
+
         #userDashboard { display:flex; justify-content:center; padding:25px; }
         .userProfileField { padding:25px; max-width:1024px; width:100%; margin:auto; box-shadow:0 2px 10px rgba(0,0,0,0.2); border-radius:0.5rem; }
         .profile-head { display:flex; justify-content:space-between; font-size:2rem; font-weight:bold; cursor:pointer; }
@@ -45,16 +45,16 @@
            <div id="emptyLocations">
                     <i class="fa-solid fa-location-dot"></i>
                     <p><asp:Literal runat="server" Text="<%$ Resources:texts, NoAddress %>" /></p>
-                    <button id="userLocationBtn" type="button" data-bs-toggle="modal" 
+                    <button id="userLocationBtn" type="button" data-bs-toggle="modal"
         data-bs-target="#OmapModal" onclick="resetAddressModal()">
     <asp:Literal runat="server" Text="<%$ Resources:texts, AddNewAddress %>" />
 </button>
                 </div>
-                   
+
                 <figure id="fgrdata">
-                <button class="addLocationBtn" type="button" data-bs-toggle="modal" 
+                <button class="addLocationBtn" type="button" data-bs-toggle="modal"
         data-bs-target="#OmapModal" onclick="resetAddressModal()">
-    <i class="fa-solid fa-circle-plus"></i> 
+    <i class="fa-solid fa-circle-plus"></i>
     <asp:Literal runat="server" Text="<%$ Resources:texts, AddNewAddress %>" />
 </button>
 
@@ -63,19 +63,19 @@
                    <ItemTemplate>
                                <div class="user-location">
   <h4><%# Eval("AddressName")%></h4>
-  
+
      <p>
                                     <%# Eval("AType").ToString() == "0" ?
                                         GetLiteralText("Street") + Eval("StreetName") + " | " + GetLiteralText("Building") + Eval("Build") + " | " + GetLiteralText("Floor") + Eval("FloorNo") + " | " + GetLiteralText("Apartment") + Eval("adepartmentNo") :
                                         Eval("AType").ToString() == "1" ?
                                         GetLiteralText("Street") + Eval("StreetName") + " | " + GetLiteralText("House") + Eval("Build") :
-                                        GetLiteralText("Street") + Eval("StreetName") + " | " + GetLiteralText("Building") + Eval("Build") + " | " + GetLiteralText("Floor") + Eval("FloorNo") + " | " + GetLiteralText("Office") + Eval("adepartmentNo") 
+                                        GetLiteralText("Street") + Eval("StreetName") + " | " + GetLiteralText("Building") + Eval("Build") + " | " + GetLiteralText("Floor") + Eval("FloorNo") + " | " + GetLiteralText("Office") + Eval("adepartmentNo")
                                     %>
                                 </p>
    <p><asp:Literal runat="server" Text="<%$ Resources:texts, Mobile %>" />: <%# Eval("Mobile") %></p>
                                 <p><asp:Literal runat="server" Text="<%$ Resources:texts, LocationType %>" />: <%# Eval("AType").ToString() == "0" ? GetLiteralText("Apartment") : Eval("AType").ToString() == "1" ? GetLiteralText("House") : GetLiteralText("Office") %></p>
 
-  
+
  <asp:LinkButton ID="lnkEdit" runat="server" CommandName="EditAddress" CommandArgument='<%# Eval("ID") %>' CssClass="editLocationBtn">
                                     <i class="fa-solid fa-pen"></i> <asp:Literal runat="server" Text="<%$ Resources:texts, Edit %>" />
                                 </asp:LinkButton>
@@ -86,10 +86,10 @@
                                 </asp:LinkButton>
 </div>
                        </ItemTemplate>
-                         
+
                     </asp:Repeater>
                     </figure>
-       
+
 <!-- Modal -->
 <div class="modal fade" id="OmapModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered d-flex align-items-center justify-content-center">
@@ -280,7 +280,7 @@
            alert("m");
 });
    </script>
-        
+
          <script defer>
     // user profile settings
       const profileHead = document.querySelector(".profile-head");
@@ -369,9 +369,9 @@
         // زر الحفظ
         document.getElementById('btnSaveLocation').addEventListener('click', function () {
             if (currentLatLng) {
-                document.getElementById('<%= hiddenCoords.ClientID %>').value = 
+                document.getElementById('<%= hiddenCoords.ClientID %>').value =
                     currentLatLng.lat.toFixed(6) + "," + currentLatLng.lng.toFixed(6);
-                
+
                 document.getElementById('map').style.display = 'none';
                 document.getElementById('locationFormShower').style.display = 'block';
                 document.getElementById('locationSetBtns').style.display = 'flex';
@@ -392,14 +392,14 @@
         function resetAddressModal() {
     // 1. تفريغ الإحداثيات المخفية
     document.getElementById('<%= hiddenCoords.ClientID %>').value = "";
-    
+
     // 2. إعادة ضبط النصوص في الفورم (الاختياري)
     document.getElementById('<%= txtAddress.ClientID %>').value = "";
     document.getElementById('<%= street.ClientID %>').value = "";
     document.getElementById('<%= building.ClientID %>').value = "";
     document.getElementById('<%= floorNumber.ClientID %>').value = "";
     document.getElementById('<%= apartmentNumber.ClientID %>').value = "";
-    
+
     // 3. التأكد من ظهور الخريطة وإخفاء الفورم كبداية
     document.getElementById('map').style.display = 'block';
     document.getElementById('locationFormShower').style.display = 'none';
@@ -413,7 +413,7 @@
         const txtBox = document.getElementById('<%= txtAddress.ClientID %>');
         txtBox.value = 'جارٍ جلب تفاصيل العنوان...';
 
-        const apiKey = 'pk.afdf541d71deba0c2a855813cce14fca'; 
+        const apiKey = 'pk.afdf541d71deba0c2a855813cce14fca';
         const url = `https://us1.locationiq.com/v1/reverse?key=${apiKey}&lat=${latlng.lat}&lon=${latlng.lng}&format=json&zoom=17&accept-language=ar`;
 
         fetch(url)
@@ -422,7 +422,7 @@
                 const a = data.address || {};
                 const fullAddress = [a.state, a.city || a.town, a.road].filter(Boolean).join(' - ');
                 txtBox.value = fullAddress || 'تم تحديد الموقع بنجاح';
-                toggleMapLoader(false); 
+                toggleMapLoader(false);
             })
             .catch(() => {
                 if (retries > 0) {
@@ -439,7 +439,7 @@
         // بنخزن القيم في الـ HiddenField عشان السكريبت اللي فوق يلقطها
         document.getElementById('<%= hiddenCoords.ClientID %>').value = lat + "," + lng;
         // نفتح المودال (لو مش مفتوح)
-        // $('#OmapModal').modal('show'); 
+        // $('#OmapModal').modal('show');
     }
 
     // دالة selectOption (زي ما هي)
@@ -454,7 +454,7 @@
         const isHouse = (radioId === '<%= houseType.ClientID %>');
         txtapt.style.display = isHouse ? 'none' : 'block';
         txtfloor.style.display = isHouse ? 'none' : 'block';
-        
+
         if (radioId === '<%= apartmentType.ClientID %>') txtbuild.placeholder = 'إسم البناية';
         else if (isHouse) txtbuild.placeholder = 'إسم المنزل';
         else txtbuild.placeholder = 'إسم المبنى/الشركة';
@@ -473,24 +473,24 @@
     document.getElementById(radioId).checked = true;
 
     // get the textbox element
-    
+
       var txtfloorNumber= document.getElementById('<%= floorNumber.ClientID %>');
       var txtapartmentNumber= document.getElementById('<%= apartmentNumber.ClientID %>');
       var txtbuilding= document.getElementById('<%= building.ClientID %>');
-     
+
       var rvapartmentNumber = document.getElementById('<%= rvapartmentNumber.ClientID %>');
       var rvfloorNumber = document.getElementById('<%= rvfloorNumber.ClientID %>');
       // hide or show textbox depending on which radio is clicked
       if (radioId === '<%= apartmentType.ClientID %>') {
           document.getElementById('<%= apartmentType.ClientID %>').click()
-      
+
           txtfloorNumber.style.display = 'block';
           txtapartmentNumber.style.display = 'block';
           txtbuilding.placeholder ='إسم البناية';
           txtapartmentNumber.placeholder = 'رقم الشقة';
           ValidatorEnable(rvapartmentNumber, true);
           ValidatorEnable(rvfloorNumber, true);
-          
+
       }
         if (radioId === '<%= houseType.ClientID %>') {
           document.getElementById('<%= houseType.ClientID %>').click()
@@ -508,7 +508,7 @@
           txtapartmentNumber.placeholder = 'المكتب';
           ValidatorEnable(rvapartmentNumber, true);
           ValidatorEnable(rvfloorNumber, true);
-         
+
       }
 
   }
@@ -713,7 +713,7 @@
 
         {
             border-radius: 0.25rem;
-            border: 1px solid rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(0, 0, 0, 0.1);
             padding: 0.2rem 1rem;
             width: 100%;
             max-width: 300px;
@@ -734,7 +734,7 @@
             border-radius: 2rem;
             padding: 0.5rem 1rem;
             font-size: 0.75rem;
-            border: 1px solid rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(0, 0, 0, 0.1);
             background-color: transparent;
             transition: var(--transition);
             font-weight: bold;
@@ -925,7 +925,7 @@
             top: 60px;
             left: 0;
             flex-direction: column;
-            z-index: -1000;            
+            z-index: -1000;
             transition: var(--transition);
             display:none;
         }
@@ -974,7 +974,7 @@
         }
 
             .user-location:nth-child(even) {
-                background-color: whitesmoke;
+                background-color: #f8f9fa;
             }
 
         .editLocationBtn {
@@ -1024,7 +1024,7 @@
         .hidden {
             display: none;
         }
-        
+
         #map {
             height: 500px;
              position: relative;
@@ -1057,21 +1057,21 @@
         background-color: var(--fd-blue) !important;
     font-size: 1rem !important;
     max-width: 250px;
-   
+
     border-color: transparent !important;
 }
         .mapBtns {
-    
+
     display: flex;
     justify-content: space-around;
     align-items: center;
     padding: 1rem;
-    border: 1px solid rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(0, 0, 0, 0.1);
     border-bottom-left-radius: 0.5rem;
     border-bottom-right-radius: 0.5rem;
     width: 100%;
 }
-    </style> 
+    </style>
     <style>
         /* make the modal wider */
 #OmapModal .modal-dialog {
@@ -1103,7 +1103,7 @@
     padding: 10px 15px; /* smaller and tighter */
 }
 
-    </style>  
+    </style>
     <style>
         /* layout the radio buttons horizontally */
 #OmapModal .radio-buttons {
@@ -1138,7 +1138,7 @@
     margin-bottom: 5px;
 }
 
-    </style> 
+    </style>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

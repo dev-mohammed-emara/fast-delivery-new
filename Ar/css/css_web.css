@@ -184,7 +184,7 @@ a {
   /* border-bottom-left-radius: 10px; */
   /* border-bottom-right-radius: 10px; */
   box-sizing: border-box;
-  border: 1px solid rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(0, 0, 0, 0.1);
   border-top: 0;
   overflow: hidden;
 }
@@ -195,7 +195,7 @@ a {
   width: 100%;
   min-height: 60vh;
   padding: 25px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -219,7 +219,7 @@ a {
   select,
   textarea {
     padding: 0.5rem 1rem;
-    border: 1px solid rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 0.5rem;
     resize: none;
     max-height: 250px;
@@ -300,7 +300,7 @@ a {
 
 /* ! MAP POPUP TITLE (GLOBAL) */
 .map-title {
-  background-color: whitesmoke;
+  background-color: #f8f9fa;
   position: relative;
   z-index: 1000;
   width: 100%;
@@ -308,7 +308,7 @@ a {
   border-top-right-radius: 10px;
   display: block;
   padding-block: 6px;
-  border: 1px solid rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(0, 0, 0, 0.1);
   right: 0;
   left: 0;
   font-size: 1rem;
@@ -484,12 +484,12 @@ a {
 
 /* ! MAP BUTTONS WRAPPER (BOTTOM BUTTONS CURRENT LOCATION AND CONFIRM LOCATION) (GLOBAL) */
 .mapBtns {
-  background-color: whitesmoke;
+  background-color: #f8f9fa;
   display: flex;
   justify-content: space-around;
   align-items: center;
   padding: 1rem;
-  border: 1px solid rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(0, 0, 0, 0.1);
   border-top: 0;
   border-bottom-left-radius: 0.5rem;
   border-bottom-right-radius: 0.5rem;
@@ -504,7 +504,7 @@ a {
   width: 100%;
   padding: 10px;
   background: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(0, 0, 0, 0.1);
   border-top: 0;
   position: relative;
   z-index: 9999;
@@ -585,6 +585,10 @@ button[type="submit"],
   }
 }
 
+.custom-item .addToCart {
+  pointer-events: none;
+}
+
 /* CHECKBOX STYLE (GLOBAL) */
 input[type="checkbox"] {
   width: fit-content;
@@ -604,14 +608,14 @@ input[type="checkbox"] {
 
   #shopNavLeft,
   #shopNavRight {
-    background-color: whitesmoke;
+    background-color: #f8f9fa;
     color: black;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 1.25rem;
     border-radius: 0.25rem;
-    border: 1px solid rgba(0, 0, 0, 0.125);
+    border: 1px solid rgba(0, 0, 0, 0.1);
     padding: 0.25rem 0.75rem;
     transition: var(--transition);
 
@@ -629,7 +633,7 @@ input[type="checkbox"] {
 
 #shopNavNums {
   display: flex;
-  border: 1px solid rgba(0, 0, 0, 0.125);
+  border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 0.5rem;
   overflow: hidden;
   align-items: center;
@@ -748,7 +752,8 @@ section#userDashboard {
   list-style-type: none;
   border-left: 1px solid rgba(0, 0, 0, 0.2);
   height: fit-content;
-}
+position: sticky;
+    top: 100px;}
 
 .profileSettings li {
     padding: 10px;
@@ -1220,9 +1225,9 @@ input[type="radio"] {
 
 .availableShop {
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem;
   margin-top: 1rem;
-  /* border-bottom: 1px solid rgba(0, 0, 0, 0.25); */
+  /* border-bottom: 1px solid rgba(0, 0, 0, 0.1); */
   padding: 1rem;
   transition: var(--transition);
 
@@ -1232,12 +1237,12 @@ input[type="radio"] {
     aspect-ratio: 1;
     object-position: center;
     object-fit: cover;
-    border: 1px solid rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 0.5rem;
   }
 
   &:hover {
-    background-color: whitesmoke;
+    background-color: #f8f9fa;
 
     .availableShopName {
       color: var(--fd-blue);
@@ -1299,9 +1304,9 @@ input[type="radio"] {
 
 
 #shopListsOptions {
-  display: flex;
+  display: none;
   margin-block: 25px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   padding-inline: 0.5rem;
   flex-wrap: wrap;
   justify-content: space-evenly;
@@ -1371,7 +1376,7 @@ input[type="radio"] {
     input {
       padding: 0.5rem 1rem;
       border-radius: 0.25rem;
-      border: 1px solid rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(0, 0, 0, 0.1);
       width: 100%;
     }
 
@@ -1389,7 +1394,7 @@ input[type="radio"] {
 
 #shopGrid {
   display: grid;
-  grid-template-columns: 65% 30%;
+  grid-template-columns: 65% 35%;
   /* gap: 1rem; */
 }
 
@@ -1410,7 +1415,7 @@ input[type="radio"] {
   height: fit-content;
   border-radius: 0.25rem;
   padding: 0.5rem;
-  border: 1px solid rgba(0, 0, 0, 0.125);
+  border: 1px solid rgba(0, 0, 0, 0.1);
 
   .foodNavLinks {
     display: flex;
@@ -1421,7 +1426,7 @@ input[type="radio"] {
       transition: var(--transition);
 
       &:hover {
-        background-color: whitesmoke;
+        background-color: #f8f9fa;
         color: var(--fd-blue);
       }
     }
@@ -1436,7 +1441,7 @@ input[type="radio"] {
 }
 
 .foodListTitle {
-  background-color: whitesmoke;
+  background-color: white;
   padding: 0.5rem;
 
   i {
@@ -1515,10 +1520,11 @@ overflow: initial;
   padding: 1rem 0.5rem;
   cursor: pointer;
   transition: var(--transition);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  border-top: 0px !important;
 
   &:hover {
-    background-color: whitesmoke;
+    background-color: #f8f9fa;
 
     .foodName {
       color: var(--fd-blue);
@@ -1526,6 +1532,10 @@ overflow: initial;
   }
 }
 
+.foodItem.custom-item{
+  border-top: 1px solid rgba(0, 0, 0, 0.25) !important;
+
+}
 .foodImage {
   display: flex;
   min-width: 80px;
@@ -1535,7 +1545,7 @@ overflow: initial;
   justify-content: center;
   align-items: center;
   padding: 0.5rem;
-  border: 1px solid rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(0, 0, 0, 0.1);
 
   img {
     width: 100%;
@@ -1576,6 +1586,9 @@ overflow: initial;
   opacity: 0.8;
   text-decoration: line-through;
 }
+.swiper-wrapper:has(.upsell-card-new){
+  max-height: 200px;
+}
 
 .addToCart {
   display: flex;
@@ -1583,7 +1596,7 @@ overflow: initial;
   align-items: end;
   height: 100%;
   color: var(--fd-blue);
-  font-size: 1.5rem;
+  font-size: 1.25rem;
 
   .addToCartBtn {
     height: fit-content;
@@ -1637,12 +1650,13 @@ overflow: initial;
   flex-direction: column;
   gap: 1rem;
   justify-content: center;
-  border: 1px solid rgba(0, 0, 0, 0.125);
+  border: 1px solid rgba(0, 0, 0, 0.1);
   border-bottom-left-radius: inherit;
   border-bottom-right-radius: inherit;
   align-items: center;
+                  margin-bottom: 0px !important;
   text-align: center;
-  background-color: whitesmoke;
+  background-color: #f8f9fa;
   font-size: 1rem;
   padding: 2rem;
   font-weight: bold;
@@ -1737,8 +1751,8 @@ body:has(#openedShopFoods) #cartShower {
   width: 30px;
   height: 30px;
   background-color: white;
-  border-top: 1px solid rgba(0, 0, 0, 0.25);
-  border-right: 1px solid rgba(0, 0, 0, 0.25);
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-right: 1px solid rgba(0, 0, 0, 0.1);
   rotate: 45deg;
   right: -16px;
   top: var(--arrow-top, 50%);
@@ -1753,10 +1767,11 @@ body:has(#openedShopFoods) #cartShower {
   justify-content: center;
   font-size: 1rem;
   background-color: white;
+  margin-bottom: 0px !important;
+
   font-weight: bold;
   padding-bottom: 1rem;
   line-height: 1.2;
-  border: 1px solid rgba(0, 0, 0, 0.125);
   border-top: 0 !important;
   border-bottom-left-radius: inherit;
   border-bottom-right-radius: inherit;
@@ -1765,15 +1780,15 @@ body:has(#openedShopFoods) #cartShower {
 .orderedItem {
   display: flex;
   gap: 0.5rem;
-  border-top: 1px solid rgba(0, 0, 0, 0.125);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   text-align: center;
 
   padding: 0.5rem;
   font-size: 0.75rem;
   align-items: center;
   justify-content: space-between;
-  background-color: whitesmoke;
+  background-color: #f8f9fa;
 }
 
 .removeCartItem {
@@ -1791,13 +1806,13 @@ body:has(#openedShopFoods) #cartShower {
 
 .cartItemAmountHandlers {
   background-color: white;
-  border: 1px solid rgba(0, 0, 0, 0.125);
-  padding: 0.25rem;
-  font-size: 0.9rem;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 0.125rem;
+  font-size: 0.8rem;
   border-radius: 0.25rem;
   width: fit-content;
   height: fit-content;
-  margin: auto;
+  margin: 0;
   overflow: hidden;
   font-weight: bold;
   display: flex;
@@ -1814,7 +1829,7 @@ body:has(#openedShopFoods) #cartShower {
   font-weight: bold;
   height: 30px;
   background-color: transparent;
-  font-size: 1rem;
+  font-size: 0.75rem;
   border-radius: inherit;
   transition: var(--transition);
   color: var(--fd-blue);
@@ -1826,12 +1841,12 @@ body:has(#openedShopFoods) #cartShower {
 }
 
 .increase {
-  border-right: 1px solid rgba(0, 0, 0, 0.125);
+  border-right: 1px solid rgba(0, 0, 0, 0.1);
 
 }
 
 .decrease {
-  border-left: 1px solid rgba(0, 0, 0, 0.125);
+  border-left: 1px solid rgba(0, 0, 0, 0.1);
 
 }
 
@@ -2078,7 +2093,7 @@ body:has(#openedShopFoods) #cartShower {
     grid-template-columns: auto !important;
 
     .profileSettings {
-      border: 1px solid rgba(0, 0, 0, 0.25) !important;
+      border: 1px solid rgba(0, 0, 0, 0.1) !important;
       border-top: 0 !important;
       justify-content: center;
       align-items: center;
@@ -2125,7 +2140,7 @@ body:has(#openedShopFoods) #cartShower {
   }
 
   .profile-head {
-    background-color: whitesmoke;
+    background-color: #f8f9fa;
     margin-top: 10px;
     border-radius: 6px;
     padding-inline: 10px;
@@ -2157,7 +2172,7 @@ body:has(#openedShopFoods) #cartShower {
 
   #selectedLocationShops {
     h2 {
-      background-color: whitesmoke;
+      background-color: #f8f9fa;
       padding: 0.75rem 0.5rem;
       border-radius: 0.5rem;
     }
@@ -2513,27 +2528,26 @@ body:has(#openedShopFoods) #cartShower {
 
   .availableShop {
     align-items: center;
-    padding-top: 0;
-    padding-inline: 0;
+    /* padding-top: 0; */
+    /* padding-inline: 0; */
     .shopFoods,.shopDelivery{
-      font-size: 0.65rem !important;
+      font-size: 0.6rem !important;
     }
-    
+
   }
 .status-badge{
-  font-size: 0.65rem;
+  font-size: 0.6rem;
 }
 
 .availableShopDesc{
   gap: 4px;
 }
 
-  
-  
+
+
   .trustBadge,
   .shopPayMethods {
-    justify-content: center !important;
-    font-size: 0.7rem;
+    font-size: 0.6rem;
     white-space: nowrap;
   }
 
@@ -2543,7 +2557,7 @@ body:has(#openedShopFoods) #cartShower {
     height: fit-content !important;
   }
 
-  
+
 
 
   #cartShower {
@@ -2576,7 +2590,7 @@ body[dir="ltr"] {
 
   .profileSettings {
     border-left: 0 !important;
-    border-right: 1px solid rgba(0, 0, 0, 0.25) !important;
+    border-right: 1px solid rgba(0, 0, 0, 0.1) !important;
   }
 
   .profileSettings li.active {

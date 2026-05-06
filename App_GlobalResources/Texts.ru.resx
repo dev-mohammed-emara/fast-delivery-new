@@ -834,4 +834,4 @@
   <data name="MultiOrderTag" xml:space="preserve">
     <value>Общий заказ</value>
   </data>
-</root>
+<data name="nav_favorites" xml:space="preserve"><value>Избранное</value></data></root>

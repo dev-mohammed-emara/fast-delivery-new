@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true" CodeFile="POrders.aspx.cs" Inherits="Ar_POrders" %>
+<%@ Page Title="" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true" CodeFile="POrders.aspx.cs" Inherits="Ar_POrders" %>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="head" Runat="Server">
     <asp:Literal runat="server" Text="<%$ Resources:texts, PageOtitle %>" />
@@ -19,6 +19,7 @@
             <article class="profileContainer">
                 <ul class="profileSettings">
                     <li><a href="profile.aspx"><asp:Literal ID="litAccountInfo" runat="server" Text="<%$ Resources: texts, AccountInfo %>"></asp:Literal></a></li>
+                    <li><a href="Favorites.aspx"><asp:Literal ID="litFav" runat="server" Text="<%$ Resources: texts, nav_favorites %>"></asp:Literal></a></li>
                     <li><a href="Addresses.aspx"><asp:Literal ID="litAddresses" runat="server" Text="<%$ Resources: texts, Addresses %>"></asp:Literal></a></li>
                     <li class="active"><a href="POrders.aspx"><asp:Literal ID="litOrders" runat="server" Text="<%$ Resources: texts, Orders %>"></asp:Literal></a></li>
                 </ul>

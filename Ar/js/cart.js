@@ -29,16 +29,18 @@ document.addEventListener("DOMContentLoaded", () => {
             if (checkoutCart) {
                 renderCheckoutArticles(this.items, JSON.parse(localStorage.getItem("cartSummary")) || {});
             }
-
+            if (typeof syncProductBadges === 'function') {
+                syncProductBadges();
+            }
         },
 
         saveSummary() {
             const rawSubtotal = this.getSubtotal();
-            let totalDiscountAmount = 0; 
+            let totalDiscountAmount = 0;
             let finalDeliveryToPay = 0;
 
-            const DISCOUNT_RATE = (typeof GLOBAL_AREA_DISCOUNT !== 'undefined') ? parseFloat(GLOBAL_AREA_DISCOUNT) / 100 : 0; 
-    
+            const DISCOUNT_RATE = (typeof GLOBAL_AREA_DISCOUNT !== 'undefined') ? parseFloat(GLOBAL_AREA_DISCOUNT) / 100 : 0;
+
             // 1. تجميع رسوم المتاجر حسب الـ AreaId
             const areaMap = this.items.reduce((acc, item) => {
                 // تأكد إن الـ IDs نصوص ونضيف trim عشان نمنع أي مسافات مخفية
@@ -48,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 if (aId && sId) {
                     if (!acc[aId]) {
-                        acc[aId] = {}; 
+                        acc[aId] = {};
                     }
                     // بنخزن رسوم المتجر الواحد (مرة واحدة) جوه منطقته
                     acc[aId][sId] = fee;
@@ -61,8 +63,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // 2. الحساب لكل منطقة
             for (const aId in areaMap) {
-                const shopsInThisArea = areaMap[aId]; 
-                const feesArray = Object.values(shopsInThisArea); 
+                const shopsInThisArea = areaMap[aId];
+                const feesArray = Object.values(shopsInThisArea);
                 const sumFeesInArea = feesArray.reduce((sum, f) => sum + f, 0);
 
                 console.log(`Area: ${aId}, Shops Count: ${feesArray.length}, Total Fees: ${sumFeesInArea}`);
@@ -97,7 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
 
 
-        addItem(item) {
+        addItem(item, count = 1) {
             const differentAreaExists = this.items.some(i => i.areaId !== GLOBAL_AREA_ID);
 
             if (differentAreaExists) {
@@ -119,7 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!shopExists && this.items.length > 0) {
                 const newItem = {
                   ...item,
-                        amount: 1,
+                        amount: count,
                     placeId: GLOBAL_PLACE_ID,
                 areaId: GLOBAL_AREA_ID,
                 deliveryFee: GLOBAL_DELIVERY_FEE,
@@ -141,7 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (result.isConfirmed) {
                     cart.items.push(newItem); // ✅ use cart instead of this
                     cart.save(); // ✅ use cart.save()
-                    showCartToast(texts.AddedFromDifferentShop); 
+                    showCartToast(texts.AddedFromDifferentShop);
                 }
             });
 
@@ -161,11 +163,11 @@ document.addEventListener("DOMContentLoaded", () => {
         // ✅ Normal flow: find existing item by both id and shopId
             const existing = this.items.find(i => i.id === item.id && i.shopId === GLOBAL_shop_ID);
     if (existing) {
-        existing.amount += 1;
+        existing.amount += count;
     } else {
         this.items.push({
           ...item,
-                amount: 1,
+                amount: count,
         placeId: GLOBAL_PLACE_ID,
         areaId: GLOBAL_AREA_ID,
         deliveryFee: GLOBAL_DELIVERY_FEE,
@@ -210,7 +212,8 @@ increaseItem(id, shopId) {
             }
         }
 
-};
+    };
+    window.cart = cart;
 
 const cartData = JSON.parse(localStorage.getItem("cartItems")) || [];
 const cartSummary = JSON.parse(localStorage.getItem("cartSummary")) || {};
@@ -252,7 +255,7 @@ if (deliveryFeeEl) {
 
 let GLOBAL_shopName= shopNameEl.textContent.trim();
 
-function showCartToast(message = texts.AddedToCartDefault, options = {}) { 
+function showCartToast(message = texts.AddedToCartDefault, options = {}) {
     const {
         background = "#ffc119", // toast background
           color = "#fff", // text color
@@ -332,7 +335,7 @@ function showCartToast(message = texts.AddedToCartDefault, options = {}) {
 
         if (!hasItems) {
             // Cart empty → show zeros
-            el.textContent = `${texts.Total}: EGP 00.00`; 
+            el.textContent = `${texts.Total}: EGP 00.00`;
             return;
         }
 
@@ -341,7 +344,7 @@ function showCartToast(message = texts.AddedToCartDefault, options = {}) {
             total: 0
         };
 
-        el.textContent = `${texts.Total}: EGP ` + Number(summary.total).toFixed(2); 
+        el.textContent = `${texts.Total}: EGP ` + Number(summary.total).toFixed(2);
     }
 
 
@@ -385,7 +388,7 @@ function showCartToast(message = texts.AddedToCartDefault, options = {}) {
         cart.items.forEach(item => {
             if (!itemsByShop[item.shopId]) {
                 itemsByShop[item.shopId] = {
-                    shopName: item.shopName || texts.DefaultShopName, 
+                    shopName: item.shopName || texts.DefaultShopName,
                     items: []
                 };
             }
@@ -399,7 +402,7 @@ function showCartToast(message = texts.AddedToCartDefault, options = {}) {
             // Shop label
             const shopLabel = document.createElement("div");
             shopLabel.classList.add("cartShopLabel");
-            shopLabel.textContent = group.shopName;
+            shopLabel.innerHTML = `<i class="fa-solid fa-store"></i> ${group.shopName}`;
             wrapper.appendChild(shopLabel);
 
             // Render each product in shop
@@ -411,13 +414,17 @@ function showCartToast(message = texts.AddedToCartDefault, options = {}) {
                 article.classList.add("orderedItem");
                 article.innerHTML = `
         <div class="cartItemAmountHandlers">
-          <button class="decrease" type="button">-</button>
+          <button class="decrease" type="button"><i class="fa-solid fa-minus"></i></button>
           <span class="itemAmount">${item.amount}</span>
-          <button class="increase" type="button">+</button>
+          <button class="increase" type="button"><i class="fa-solid fa-plus"></i></button>
         </div>
-        <span class="orderedItemName">${item.name}</span>
+        <div class="orderedItemMain">
+          <span class="orderedItemName">${item.name}</span>
+          ${item.hasAddons ? `<span class="addons-badge">إضافات</span>` : ''}
+          ${item.notes ? `<div class="item-notes"><i class="fa-solid fa-pen-to-square"></i> ${item.notes}</div>` : ''}
+        </div>
         <span class="totalItemPrice">${totalPrice.toLocaleString()} ${texts.Currency}</span>
-        <span class="removeCartItem">✕</span>
+        <span class="removeCartItem"><i class="fa-solid fa-trash-can"></i></span>
       `;
                 wrapper.appendChild(article);
 
@@ -444,9 +451,9 @@ function showCartToast(message = texts.AddedToCartDefault, options = {}) {
         const deliveryEls = document.querySelectorAll(".deliveryFee");
         const totalEl = document.querySelector(".totalAmount");
 
-        if (subtotalEl) subtotalEl.textContent = Number(summary.subtotal).toLocaleString() + ` ${texts.Currency}`; 
-        if (deliveryEls.length >= 1) deliveryEls[0].textContent = Number(summary.delivery).toFixed(2) + ` ${texts.Currency}`; 
-        if (totalEl) totalEl.textContent = Number(summary.total).toLocaleString() + ` ${texts.Currency}`; 
+        if (subtotalEl) subtotalEl.textContent = Number(summary.subtotal).toLocaleString() + ` ${texts.Currency}`;
+        if (deliveryEls.length >= 1) deliveryEls[0].textContent = Number(summary.delivery).toFixed(2) + ` ${texts.Currency}`;
+        if (totalEl) totalEl.textContent = Number(summary.total).toLocaleString() + ` ${texts.Currency}`;
     }
 
 
@@ -494,7 +501,7 @@ function showCartToast(message = texts.AddedToCartDefault, options = {}) {
 
                     // Show toast ONLY if first time clicked
                     if (isNewClick) {
-                        showCartToast(`${texts.AddedToCartPrefix} "${name}" ${texts.AddedToCartSuffix}`); 
+                        showCartToast(`${texts.AddedToCartPrefix} "${name}" ${texts.AddedToCartSuffix}`);
                     }
 
                     console.log("Clicked product IDs:", clickedIds);
@@ -561,15 +568,15 @@ function loadCheckoutSummary() {
     const subtotalEl = document.querySelector(".subtotalAmount");
     const deliveryEl = document.querySelectorAll(".deliveryFee")[0];
     const totalEl = document.querySelector(".totalAmount");
-    if (subtotalEl) subtotalEl.textContent = subtotal + ` ${texts.Currency}`; 
-    if (deliveryEl) deliveryEl.textContent = delivery + ` ${texts.Currency}`; 
-    if (totalEl) totalEl.textContent = total + ` ${texts.Currency}`; 
+    if (subtotalEl) subtotalEl.textContent = subtotal + ` ${texts.Currency}`;
+    if (deliveryEl) deliveryEl.textContent = delivery + ` ${texts.Currency}`;
+    if (totalEl) totalEl.textContent = total + ` ${texts.Currency}`;
 }
 
 
 
 /* ========== INITIALIZE EVERYTHING ========== */
-initAddToCartByCard();
+// initAddToCartByCard();
 updateCartUI();
 updateCartCounter();
 updateTotalPayAmount();
@@ -622,7 +629,7 @@ function renderCheckoutArticles(items, summary) {
 
     if (items.length === 0) {
         const emptyMsg = document.createElement("p");
-        emptyMsg.textContent = texts.CartIsEmpty; 
+        emptyMsg.textContent = texts.CartIsEmpty;
         checkoutCart.appendChild(emptyMsg);
         return;
     }
@@ -654,7 +661,7 @@ function renderCheckoutArticles(items, summary) {
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",  // مهم جداً
                 success: function(res) {
-                    
+
                     var data = res.d;
                     // تحديث العناصر مباشرة
                     document.getElementById("AddName").innerText = data.AddName;
@@ -671,7 +678,7 @@ function renderCheckoutArticles(items, summary) {
 
                     document.getElementById("Instructions").innerText = data.Instructions;
                     document.getElementById("AType").innerText = data.AType;
-                    
+
                     // تحديث HiddenField لو عايز تحتفظ بالـ addId
                     document.getElementById("ContentPlaceHolder1_hfAddId").value = addId;
                 },
@@ -698,7 +705,7 @@ function renderCheckoutArticles(items, summary) {
         labels.classList.add("orderLabels");
         labels.innerHTML = `
       <span class="orderName">${texts.Item}</span>
-      
+
       <span>${texts.Quantity}</span>
       <span>${texts.Price}</span>
       <span>${texts.Total}</span>
@@ -714,7 +721,7 @@ function renderCheckoutArticles(items, summary) {
 
             row.innerHTML = `
         <span class="orderName">${item.name} <span class="specialOrder"></span></span>
-        
+
         <div class="cartItemAmountHandlers">
           <button class="decrease">-</button>
           <span class="itemAmount">${item.amount}</span>

@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true" CodeFile="profile.aspx.cs" Inherits="Ar_profile" %>
+<%@ Page Title="" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true" CodeFile="profile.aspx.cs" Inherits="Ar_profile" %>
 <asp:Content ID="Content3" ContentPlaceHolderID="head" Runat="Server">
     <asp:Literal ID="litPageTitle" runat="server" Text="<%$ Resources: texts, AccountInfoPageTitle %>"></asp:Literal>
 </asp:Content>
@@ -20,6 +20,7 @@
         <article class="profileContainer">
             <ul class="profileSettings">
                 <li class="active"><a href="profile.aspx"><asp:Literal ID="litAccountInfo" runat="server" Text="<%$ Resources: texts, AccountInfo %>"></asp:Literal></a></li>
+                <li><a href="Favorites.aspx"><asp:Literal ID="litFav" runat="server" Text="<%$ Resources: texts, nav_favorites %>"></asp:Literal></a></li>
                 <li><a href="Addresses.aspx"><asp:Literal ID="litAddresses" runat="server" Text="<%$ Resources: texts, Addresses %>"></asp:Literal></a></li>
                 <li><a href="POrders.aspx"><asp:Literal ID="litOrders" runat="server" Text="<%$ Resources: texts, Orders %>"></asp:Literal></a></li>
             </ul>
@@ -286,7 +287,7 @@ const removeFormChange = document.getElementById("removeFormChange");
 
 // ✅ Function to show the popup and the correct container
 function openEditor(formName) {
-  
+
   dataEditorPopup.classList.add("is-visible");
   document.body.style.overflow = "hidden";
 
@@ -310,7 +311,7 @@ showEditPopupBtns.forEach((btn) => {
   btn.addEventListener("click", () => {
     const formName =
       btn.id === "changeEmail" ? "emailEditor" : "passwordEditor";
-    
+
     openEditor(formName);
   });
 });
@@ -501,7 +502,8 @@ if (editorForm) {
   list-style-type: none;
   border-left: 1px solid rgba(0, 0, 0, 0.2);
   height: fit-content;
-
+position: sticky;
+    top: 100px;
   li {
     padding: 10px;
     transition: 0.3s color ease;
@@ -545,7 +547,7 @@ if (editorForm) {
   gap: 1.25rem;
   input {
     border-radius: 0.25rem;
-    border: 1px solid rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(0, 0, 0, 0.1);
     padding: 0.2rem 1rem;
     width: 100%;
     max-width: 300px;
@@ -563,7 +565,7 @@ if (editorForm) {
     border-radius: 2rem;
     padding: 0.5rem 1rem;
     font-size: 0.75rem;
-    border: 1px solid rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(0, 0, 0, 0.1);
     background-color: transparent;
     transition: var(--transition);
     font-weight: bold;
@@ -640,11 +642,11 @@ input[type="radio"]:checked + label {
 input[type="radio"] {
   width: 150px;
 }
-         
+
         .gender-selection input[type="radio"] {
             display: none;
         }
-      
+
 .birthday {
   position: relative;
   isolation: isolate;
@@ -795,7 +797,7 @@ input[type="radio"] {
 
 
     </style>
-    
+
     <style>
         .radio-buttons {
             display: flex;
@@ -857,11 +859,11 @@ input[type="radio"] {
         to { opacity: 1; transform: translateY(0); }
     }
     .header {
-   
+
     background: linear-gradient(135deg, #fffbe6 0%, #ffffff 0%, #fffbe6 10%) !important;
-  
+
 }
-  
+
 </style>
 </asp:Content>
 

@@ -1,4 +1,4 @@
-﻿const texts = {
+const texts = {
     CheckoutTitle: "Checkout",
     UpdateOrder: "تعديل الطلب",
     Hot: "Hot",
