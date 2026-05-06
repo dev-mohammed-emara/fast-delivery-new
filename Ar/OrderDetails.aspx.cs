@@ -30,18 +30,21 @@ public partial class Ar_OrderDetails : System.Web.UI.Page
     private void LoadOrderFullData(int orderId)
     {
         string lang = Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName;
-        // نختار عمود اسم المحافظة والمنطقة حسب اللغة
         string govCol = lang == "en" ? "g.NameEn" : (lang == "ru" ? "g.NameRu" : "g.Name");
         string areaCol = lang == "en" ? "ar.NameEn" : (lang == "ru" ? "ar.NameRu" : "ar.Name");
 
         using (SqlConnection conn = new SqlConnection(connStr))
         {
+            // تم إضافة LEFT JOIN مع جدول DeliveryMen لجلب بيانات المندوب
             string sqlMaster = string.Format(@"SELECT o.Odate, o.Accepted, o.Prepared, o.InWay, o.Delivered, 
                                      o.DeliveryCost, a.Mobile, {0} as GovName, {1} as AreaName,
-                                     a.StreetName, a.Build FROM dbo.Orders o 
+                                     a.StreetName, a.Build,
+                                     d.DriverName, d.Phone as DriverPhone 
+                                     FROM dbo.Orders o 
                                      INNER JOIN dbo.Addresses a ON o.Address_id = a.ID 
                                      INNER JOIN dbo.Areas ar ON a.Area_id = ar.id
                                      INNER JOIN dbo.Gov g ON ar.gov_id = g.id
+                                     LEFT JOIN dbo.DeliveryMen d ON o.DriverID = d.DriverID
                                      WHERE o.id = @oid", govCol, areaCol);
 
             SqlCommand cmd = new SqlCommand(sqlMaster, conn);
@@ -60,33 +63,43 @@ public partial class Ar_OrderDetails : System.Web.UI.Page
                 litFullAddress.Text = String.Format("{0} - {1} - {2} {3} - {4} {5}",
                     dr["GovName"], dr["AreaName"], GetGlobalResourceObject("texts", "Street"), dr["StreetName"], GetGlobalResourceObject("texts", "Build"), dr["Build"]);
 
+                bool isInWay = dr["InWay"] != DBNull.Value && Convert.ToBoolean(dr["InWay"]);
                 bool isDev = dr["Delivered"] != DBNull.Value && Convert.ToBoolean(dr["Delivered"]);
+
                 litStatusHeader.Text = isDev ? GetGlobalResourceObject("texts", "StatusDelivered").ToString() : GetGlobalResourceObject("texts", "StatusProcessing").ToString();
+
+                // إظهار بيانات المندوب إذا كان الطلب في الطريق ولم يتم تسليمه بعد
+                if (isInWay && !isDev && dr["DriverName"] != DBNull.Value)
+                {
+                    phDriverInfo.Visible = true;
+                    litDriverName.Text = dr["DriverName"].ToString();
+                    litDriverPhone.Text = dr["DriverPhone"].ToString();
+                }
+                else
+                {
+                    phDriverInfo.Visible = false;
+                }
 
                 BuildFullStepper(
                     dr["Accepted"] != DBNull.Value && Convert.ToBoolean(dr["Accepted"]),
                     dr["Prepared"] != DBNull.Value && Convert.ToBoolean(dr["Prepared"]),
-                    dr["InWay"] != DBNull.Value && Convert.ToBoolean(dr["InWay"]),
+                    isInWay,
                     isDev
                 );
             }
             dr.Close();
 
-            // جلب المحلات (نفس الفكرة لو فيه اسم محل مترجم)
             string placeNameCol = lang == "en" ? "p.NameEn" : (lang == "ru" ? "p.NameRu" : "p.Name");
-
-            // 2. تعديل الاستعلام ليستخدم العمود المتغير
             string sqlPlaces = string.Format(@"SELECT DISTINCT p.id, {0} as PlaceName FROM dbo.Places p 
-                   INNER JOIN dbo.MenuItems mi ON p.id = mi.PlaceID 
-                   INNER JOIN dbo.Order_Details od ON mi.id = od.MenuItems_id 
-                   WHERE od.Order_id = @oid", placeNameCol);
+                               INNER JOIN dbo.MenuItems mi ON p.id = mi.PlaceID 
+                               INNER JOIN dbo.Order_Details od ON mi.id = od.MenuItems_id 
+                               WHERE od.Order_id = @oid", placeNameCol);
 
             SqlDataAdapter da = new SqlDataAdapter(sqlPlaces, conn);
             da.SelectCommand.Parameters.AddWithValue("@oid", orderId);
             DataTable dtPlaces = new DataTable();
             da.Fill(dtPlaces);
 
-            // ربط البيانات
             rptPlaces.DataSource = dtPlaces;
             rptPlaces.DataBind();
 
@@ -97,7 +110,7 @@ public partial class Ar_OrderDetails : System.Web.UI.Page
             litGrandTotal.Text = (subTotal + Convert.ToDecimal(litDeliveryFee.Text)).ToString("N2");
         }
     }
-    // أضف هذا الحدث داخل الكلاس
+
     protected void tmrRefresh_Tick(object sender, EventArgs e)
     {
         if (Request.QueryString["orderId"] != null)
@@ -105,18 +118,21 @@ public partial class Ar_OrderDetails : System.Web.UI.Page
             int orderId;
             if (int.TryParse(Request.QueryString["orderId"], out orderId))
             {
-                // إعادة تحميل البيانات لتحديث الـ Stepper والحالة فقط
                 RefreshOrderStatus(orderId);
             }
         }
     }
 
-    // دالة مصغرة لتحديث الحالة فقط دون إعادة ربط الـ Repeater (لتحسين الأداء)
     private void RefreshOrderStatus(int orderId)
     {
         using (SqlConnection conn = new SqlConnection(connStr))
         {
-            string sqlStatus = @"SELECT Accepted, Prepared, InWay, Delivered FROM dbo.Orders WHERE id = @oid";
+            // تحديث الاستعلام ليشمل بيانات المندوب في التحديث التلقائي
+            string sqlStatus = @"SELECT o.Accepted, o.Prepared, o.InWay, o.Delivered, 
+                                 d.DriverName, d.Phone as DriverPhone 
+                                 FROM dbo.Orders o
+                                 LEFT JOIN dbo.DeliveryMen d ON o.DriverID = d.DriverID 
+                                 WHERE o.id = @oid";
             SqlCommand cmd = new SqlCommand(sqlStatus, conn);
             cmd.Parameters.AddWithValue("@oid", orderId);
             conn.Open();
@@ -124,21 +140,33 @@ public partial class Ar_OrderDetails : System.Web.UI.Page
 
             if (dr.Read())
             {
+                bool isInWay = dr["InWay"] != DBNull.Value && Convert.ToBoolean(dr["InWay"]);
                 bool isDev = dr["Delivered"] != DBNull.Value && Convert.ToBoolean(dr["Delivered"]);
 
-                // تحديث النص العلوي
                 litStatusHeader.Text = isDev ? GetGlobalResourceObject("texts", "StatusDelivered").ToString() : GetGlobalResourceObject("texts", "StatusProcessing").ToString();
 
-                // تحديث الـ Stepper
+                // تحديث ظهور بيانات المندوب تلقائياً
+                if (isInWay && !isDev && dr["DriverName"] != DBNull.Value)
+                {
+                    phDriverInfo.Visible = true;
+                    litDriverName.Text = dr["DriverName"].ToString();
+                    litDriverPhone.Text = dr["DriverPhone"].ToString();
+                }
+                else
+                {
+                    phDriverInfo.Visible = false;
+                }
+
                 BuildFullStepper(
                     dr["Accepted"] != DBNull.Value && Convert.ToBoolean(dr["Accepted"]),
                     dr["Prepared"] != DBNull.Value && Convert.ToBoolean(dr["Prepared"]),
-                    dr["InWay"] != DBNull.Value && Convert.ToBoolean(dr["InWay"]),
+                    isInWay,
                     isDev
                 );
             }
         }
     }
+
     private void BuildFullStepper(bool acc, bool prep, bool way, bool dev)
     {
         string s1 = "completed", s2 = acc ? "completed" : "active", s3 = prep ? "completed" : (acc ? "active" : "");

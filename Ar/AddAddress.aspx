@@ -1,4 +1,4 @@
-<%@ Page Language="C#" AutoEventWireup="true" CodeFile="AddAddress.aspx.cs" Inherits="Ar_AddAddress" EnableEventValidation="false" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="AddAddress.aspx.cs" Inherits="Ar_AddAddress" EnableEventValidation="false" %>
 <!DOCTYPE html>
 <html lang="<%= CurrentLang %>" dir="<%= CurrentDir %>">
 <head>
@@ -30,7 +30,7 @@
         .profileSettings li { padding:10px; }
         .profileSettings li.active { border-right:2px solid #0056b3; color:#0056b3; }
         #map { height:500px; }
-        .modal-dialog { max-width:800px; width:100%; }
+        .modal-dialog { max-width:700px; width:95%; }
         .modal-body { padding:0 !important; }
         .addLocationBtn, .editLocationBtn, .deleteLocationBtn, .setLocationBtn, .current-location-btn { cursor:pointer; }
         /* ضف باقي الستايلات كما هي */
@@ -45,13 +45,19 @@
            <div id="emptyLocations">
                     <i class="fa-solid fa-location-dot"></i>
                     <p><asp:Literal runat="server" Text="<%$ Resources:texts, NoAddress %>" /></p>
-                    <button id="userLocationBtn" type="button" data-bs-toggle="modal" data-bs-target="#OmapModal">
-                        <asp:Literal runat="server" Text="<%$ Resources:texts, AddNewAddress %>" />
-                    </button>
+                    <button id="userLocationBtn" type="button" data-bs-toggle="modal" 
+        data-bs-target="#OmapModal" onclick="resetAddressModal()">
+    <asp:Literal runat="server" Text="<%$ Resources:texts, AddNewAddress %>" />
+</button>
                 </div>
                    
                 <figure id="fgrdata">
-                <button class="addLocationBtn" type="button" data-bs-toggle="modal" data-bs-target="#OmapModal"><i class="fa-solid fa-circle-plus"></i> <asp:Literal runat="server" Text="<%$ Resources:texts, AddNewAddress %>" /></button>
+                <button class="addLocationBtn" type="button" data-bs-toggle="modal" 
+        data-bs-target="#OmapModal" onclick="resetAddressModal()">
+    <i class="fa-solid fa-circle-plus"></i> 
+    <asp:Literal runat="server" Text="<%$ Resources:texts, AddNewAddress %>" />
+</button>
+
 
                 <asp:Repeater ID="rptAddresses" runat="server" OnItemCommand="rptAddresses_ItemCommand" >
                    <ItemTemplate>
@@ -86,7 +92,7 @@
        
 <!-- Modal -->
 <div class="modal fade" id="OmapModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-dialog modal-dialog-centered d-flex align-items-center justify-content-center">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">
@@ -97,7 +103,10 @@
 
             <div class="modal-body">
                 <div id="map"></div>
-
+                <div id="mapLoader" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); z-index:1000; flex-direction:column; align-items:center; justify-content:center;">
+    <div class="spinner-border text-primary" role="status"></div>
+    <span class="mt-2 fw-bold">جارٍ تحديد موقعك الحالي على الخريطة...</span>
+</div>
                 <figure id="locationFormShower">
                     <div id="locationDetails">
 
@@ -290,152 +299,171 @@
     </script>
 
     <script>
-let map, marker, currentLatLng;
+    let map, marker, currentLatLng;
 
-document.addEventListener("DOMContentLoaded", function () {
-  const mapModal = document.getElementById('OmapModal');
-
-  mapModal.addEventListener('shown.bs.modal', function () {
-      setTimeout(function() {
-          if (window.map) {
-              map.invalidateSize();
-          }
-      }, 300);
-
-      if (!map) {
-      // Initialize map centered on your saved coordinates
-      const defaultLatLng = { lat: 31.037205, lng: 30.457321 };
-      map = L.map('map').setView([defaultLatLng.lat, defaultLatLng.lng], 15);
-
-      // Load map tiles
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        minZoom: 3,
-        attribution: '© OpenStreetMap'
-      }).addTo(map);
-
-      // Add search box (if leaflet-control-geocoder is loaded)
-      if (L.Control && L.Control.geocoder) {
-        const geocoder = L.Control.geocoder({ defaultMarkGeocode: false })
-          .on('markgeocode', function (e) {
-            const latlng = e.geocode.center;
-            setMarker(latlng);
-            map.setView(latlng, 15);
-            reverseGeocode(latlng);
-          })
-          .addTo(map);
-      }
-
-      // Click on map to set location
-      map.on('click', function (e) {
-        setMarker(e.latlng);
-        map.setView(e.latlng, 15);
-        reverseGeocode(e.latlng);
-      });
-
-      // Try to locate user initially (optional)
-      map.locate({ setView: false, maxZoom: 15 });
-      map.on('locationfound', function (e) {
-        // comment next line if you don't want auto-center on user location
-        // map.setView(e.latlng, 15);
-      });
-
-      // Set initial marker
-      setMarker(defaultLatLng);
-      reverseGeocode(defaultLatLng);
+    function toggleMapLoader(show) {
+        const loader = document.getElementById('mapLoader');
+        if (loader) { loader.style.display = show ? 'flex' : 'none'; }
     }
 
-    // Fix map layout when modal opens
-    setTimeout(() => map.invalidateSize(), 300);
-  });
+    document.addEventListener("DOMContentLoaded", function () {
+        const mapModal = document.getElementById('OmapModal');
 
-  // Get current location manually
-  document.getElementById('btnGetLocation').addEventListener('click', function (event) {
-    event.stopPropagation();
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function (pos) {
-        const latlng = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-        setMarker(latlng);
-        map.setView(latlng, 15);
-        reverseGeocode(latlng);
-      }, function () {
-        alert("Unable to get current location.");
-      });
-    } else {
-      alert("Geolocation not supported.");
-    }
-  });
+        mapModal.addEventListener('shown.bs.modal', function () {
+            // 1. التأكد من وجود الخريطة
+            if (!map) {
+                const defaultLatLng = { lat: 31.037205, lng: 30.457321 };
+                map = L.map('map').setView([defaultLatLng.lat, defaultLatLng.lng], 15);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '© OpenStreetMap'
+                }).addTo(map);
 
-  // Save button
-  document.getElementById('btnSaveLocation').addEventListener('click', function () {
-    if (currentLatLng) {
-      document.getElementById('<%= txtAddress.ClientID %>').value =
-        document.getElementById('txtAddress').value;
-      document.getElementById('<%= hiddenCoords.ClientID %>').value =
-        `${currentLatLng.lat},${currentLatLng.lng}`;
-    }
+                map.on('click', function (e) {
+                    setMarker(e.latlng);
+                    reverseGeocode(e.latlng);
+                });
 
-    document.getElementById('map').style.display = 'none';
-    document.getElementById('locationFormShower').style.display = 'block';
-    document.getElementById('locationSetBtns').style.display = 'flex';
-    document.getElementById('map2').style.display = 'none';
-  });
-});
+                map.on('locationfound', function (e) {
+                    setMarker(e.latlng);
+                    map.setView(e.latlng, 15);
+                    reverseGeocode(e.latlng);
+                    toggleMapLoader(false);
+                });
 
-// Marker helper
-function setMarker(latlng) {
-  currentLatLng = latlng;
-  if (marker) map.removeLayer(marker);
-  marker = L.marker([latlng.lat, latlng.lng]).addTo(map)
-    .bindPopup(`Latitude: ${latlng.lat.toFixed(6)}<br>Longitude: ${latlng.lng.toFixed(6)}`)
-    .openPopup();
-}
+                map.on('locationerror', function (e) {
+                    toggleMapLoader(false);
+                    console.warn("Location access denied.");
+                });
+            }
 
-// Reverse geocode address
-function reverseGeocode(latlng, retries = 2) {
-  const txtBox = document.getElementById('<%= txtAddress.ClientID %>');
-  txtBox.value = 'جارٍ تحديد العنوان...';
-  const apiKey = 'pk.afdf541d71deba0c2a855813cce14fca';
-  const url = `https://us1.locationiq.com/v1/reverse?key=${apiKey}&lat=${latlng.lat}&lon=${latlng.lng}&format=json&zoom=17&accept-language=ar`;
+            // 2. اللعبة هنا (تعديل ولا إضافة جديدة؟)
+            // هنشوف الـ HiddenField فيه إحداثيات ولا فاضي
+            const savedCoords = document.getElementById('<%= hiddenCoords.ClientID %>').value;
 
-  fetch(url)
-    .then(res => res.json())
-    .then(data => {
-      const a = data.address || {};
-      const governorate = a.state || '';
-      const city = a.city || a.town || a.village || a.county || '';
-      const street = a.road || a.neighbourhood || a.suburb || '';
+            if (savedCoords && savedCoords.includes(',')) {
+                // حالة التعديل
+                const parts = savedCoords.split(',');
+                const latlng = { lat: parseFloat(parts[0]), lng: parseFloat(parts[1]) };
+                setMarker(latlng);
+                map.setView(latlng, 15);
+                reverseGeocode(latlng);
+            } else {
+                // حالة إضافة جديدة - الآن ستعمل لأننا صفرنا القيمة
+                toggleMapLoader(true);
+                map.locate({ setView: true, maxZoom: 15 });
+                // تأكد من إخفاء الفورم وإظهار الخريطة
+                document.getElementById('map').style.display = 'block';
+                document.getElementById('locationFormShower').style.display = 'none';
+            }
+            setTimeout(() => { map.invalidateSize(); }, 300);
+        });
 
-      if (!street && retries > 0) {
-        setTimeout(() => reverseGeocode(latlng, retries - 1), 800);
-        return;
-      }
+        // زر موقعي الحالي (لو حب يغير الموقع المحفوظ وهو جوه المودال)
+        document.getElementById('btnGetLocation').addEventListener('click', function (event) {
+            event.stopPropagation();
+            toggleMapLoader(true);
+            map.locate({ setView: true, maxZoom: 15 });
+        });
 
-      const fullAddress = `${governorate} - ${city}${street ? ' - ' + street : ''}`;
-      document.getElementById('<%= hiddenCoords.ClientID %>').value =
-        `${currentLatLng.lat.toFixed(6)},${currentLatLng.lng.toFixed(6)}`;
-      txtBox.value = fullAddress || 'تعذر تحديد العنوان';
-    })
-    .catch(() => {
-      if (retries > 0) {
-        setTimeout(() => reverseGeocode(latlng, retries - 1), 800);
-      } else {
-        txtBox.value = 'حدث خطأ أثناء تحديد العنوان';
-      }
+        // زر الحفظ
+        document.getElementById('btnSaveLocation').addEventListener('click', function () {
+            if (currentLatLng) {
+                document.getElementById('<%= hiddenCoords.ClientID %>').value = 
+                    currentLatLng.lat.toFixed(6) + "," + currentLatLng.lng.toFixed(6);
+                
+                document.getElementById('map').style.display = 'none';
+                document.getElementById('locationFormShower').style.display = 'block';
+                document.getElementById('locationSetBtns').style.display = 'flex';
+                document.getElementById('map2').style.display = 'none';
+            } else {
+                alert("يرجى تحديد موقع على الخريطة أولاً");
+            }
+        });
     });
+
+    function setMarker(latlng) {
+        currentLatLng = latlng;
+        if (marker) map.removeLayer(marker);
+        marker = L.marker([latlng.lat, latlng.lng]).addTo(map)
+            .bindPopup("الموقع المحدد")
+            .openPopup();
+    }
+        function resetAddressModal() {
+    // 1. تفريغ الإحداثيات المخفية
+    document.getElementById('<%= hiddenCoords.ClientID %>').value = "";
+    
+    // 2. إعادة ضبط النصوص في الفورم (الاختياري)
+    document.getElementById('<%= txtAddress.ClientID %>').value = "";
+    document.getElementById('<%= street.ClientID %>').value = "";
+    document.getElementById('<%= building.ClientID %>').value = "";
+    document.getElementById('<%= floorNumber.ClientID %>').value = "";
+    document.getElementById('<%= apartmentNumber.ClientID %>').value = "";
+    
+    // 3. التأكد من ظهور الخريطة وإخفاء الفورم كبداية
+    document.getElementById('map').style.display = 'block';
+    document.getElementById('locationFormShower').style.display = 'none';
+    document.getElementById('locationSetBtns').style.display = 'none';
+    document.getElementById('map2').style.display = 'flex';
+
+    // 4. تحديث نص المودال (إذا أردت)
+    document.querySelector('.modal-title').innerText = "إضافة عنوان جديد";
 }
-    function openMap(lat, lng) {
-        const coords = { lat: parseFloat(lat), lng: parseFloat(lng) };
-        if (!map) {
-            // just in case modal not opened yet
-            setTimeout(() => openMap(lat, lng), 300);
-            return;
-        }
-        setMarker(coords);
-        map.setView(coords, 15);
-        reverseGeocode(coords);       
+    function reverseGeocode(latlng, retries = 2) {
+        const txtBox = document.getElementById('<%= txtAddress.ClientID %>');
+        txtBox.value = 'جارٍ جلب تفاصيل العنوان...';
+
+        const apiKey = 'pk.afdf541d71deba0c2a855813cce14fca'; 
+        const url = `https://us1.locationiq.com/v1/reverse?key=${apiKey}&lat=${latlng.lat}&lon=${latlng.lng}&format=json&zoom=17&accept-language=ar`;
+
+        fetch(url)
+            .then(res => res.json())
+            .then(data => {
+                const a = data.address || {};
+                const fullAddress = [a.state, a.city || a.town, a.road].filter(Boolean).join(' - ');
+                txtBox.value = fullAddress || 'تم تحديد الموقع بنجاح';
+                toggleMapLoader(false); 
+            })
+            .catch(() => {
+                if (retries > 0) {
+                    setTimeout(() => reverseGeocode(latlng, retries - 1), 800);
+                } else {
+                    txtBox.value = 'تعذر تحديد العنوان النصي';
+                    toggleMapLoader(false);
+                }
+            });
     }
 
+    // دالة الـ openMap اللي بتناديها من زرار التعديل الخارجي (لو موجود)
+    function openMap(lat, lng) {
+        // بنخزن القيم في الـ HiddenField عشان السكريبت اللي فوق يلقطها
+        document.getElementById('<%= hiddenCoords.ClientID %>').value = lat + "," + lng;
+        // نفتح المودال (لو مش مفتوح)
+        // $('#OmapModal').modal('show'); 
+    }
+
+    // دالة selectOption (زي ما هي)
+    function selectOption(radioId) {
+        document.getElementById(radioId).checked = true;
+        var txtfloor = document.getElementById('<%= floorNumber.ClientID %>');
+        var txtapt = document.getElementById('<%= apartmentNumber.ClientID %>');
+        var txtbuild = document.getElementById('<%= building.ClientID %>');
+        var rvApt = document.getElementById('<%= rvapartmentNumber.ClientID %>');
+        var rvFloor = document.getElementById('<%= rvfloorNumber.ClientID %>');
+
+        const isHouse = (radioId === '<%= houseType.ClientID %>');
+        txtapt.style.display = isHouse ? 'none' : 'block';
+        txtfloor.style.display = isHouse ? 'none' : 'block';
+        
+        if (radioId === '<%= apartmentType.ClientID %>') txtbuild.placeholder = 'إسم البناية';
+        else if (isHouse) txtbuild.placeholder = 'إسم المنزل';
+        else txtbuild.placeholder = 'إسم المبنى/الشركة';
+
+        if (typeof ValidatorEnable === "function") {
+            ValidatorEnable(rvApt, !isHouse);
+            ValidatorEnable(rvFloor, !isHouse);
+        }
+    }
 </script>
 
     <script>
@@ -965,7 +993,17 @@ function reverseGeocode(latlng, retries = 2) {
         }
 
         }
+        .editLocationBtn, .deleteLocationBtn {
+    display: inline-flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    text-decoration: none !important;
+}
 
+.editLocationBtn *, .deleteLocationBtn * {
+    visibility: visible !important;
+    display: inline !important;
+}
         .deleteLocationBtn {
             margin-top: 0.5rem;
             padding: 0.25rem 1.5rem;
@@ -989,6 +1027,7 @@ function reverseGeocode(latlng, retries = 2) {
         
         #map {
             height: 500px;
+             position: relative;
         }
         .current-location-btn {
     /* position: absolute; */
@@ -1036,18 +1075,8 @@ function reverseGeocode(latlng, retries = 2) {
     <style>
         /* make the modal wider */
 #OmapModal .modal-dialog {
-    max-width: 800px; /* wider modal, adjust as needed */
-    width: 100%; /* keeps it responsive */
-    margin: 0 auto; /* Standard Bootstrap top margin */
-}
-
-#OmapModal .modal-header {
-    display: none;
-}
-
-#locationModal .modal-dialog{
-    width: 100%;
-    max-width: 800px !important;
+    max-width: 700px; /* wider modal, adjust as needed */
+    width: 95%; /* keeps it responsive */
 }
 
 /* remove padding and polish edges */

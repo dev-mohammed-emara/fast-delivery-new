@@ -108,6 +108,13 @@ public partial class Admin_Pages_Places: System.Web.UI.Page
             return;
             //Response.Redirect("~/admin/pages/DeliveryZones.aspx");
         }
+        if (e.CommandName == "MapTypes")
+        {
+            ltcontent.Text = "<iframe src='PlaceTypesMap.aspx?place_id=" + e.CommandArgument + "' width='100%' height='100%' style='overflow:hidden;overflow-x:hidden;overflow-y:hidden;height:100%;width:100%;position:absolute;top:0px;left:0px;right:0px;bottom:0px' height='100%' width='100%'></iframe>";
+            string title = "فئات الاماكن";
+            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "Popup", "ShowPopup2('" + title + "');", true);
+            return;
+        }
         if (e.CommandName == "EditPlaces")
         {
 
@@ -252,7 +259,14 @@ public partial class Admin_Pages_Places: System.Web.UI.Page
         Place.MinOrder = Convert.ToDecimal(txtMinOrder.Text);
 
         Place.Active = cbActive.Checked;
-       
+        if (!string.IsNullOrEmpty(txtPOrder.Text))
+        {
+            Place.POrder = Convert.ToInt32(txtPOrder.Text);
+        }
+        else
+        {
+            Place.POrder = 0; // القيمة الافتراضية
+        }
         try
         {
             Place.Save();
@@ -282,7 +296,7 @@ public partial class Admin_Pages_Places: System.Web.UI.Page
         txtName.Text = string.Empty;
         txtNameEn.Text = string.Empty;
         txtNameRu.Text = string.Empty;
-
+        txtPOrder.Text = "0";
         Image2.ImageUrl = "";
         txtAddress.Text = string.Empty;
         txtDescription.Text = string.Empty;

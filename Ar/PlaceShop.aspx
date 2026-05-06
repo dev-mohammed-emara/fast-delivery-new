@@ -7,7 +7,7 @@
 
     <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
         <asp:ScriptManager runat="server" ID="ScriptManager1" EnablePageMethods="true" />
-        <style>
+           <style>
             .header {
                 display: grid;
                 grid-template-columns: 1fr auto 1fr;
@@ -37,6 +37,7 @@
                     justify-content: space-between;
                     gap: 1rem;
                     align-items: start;
+                    margin: 0;
                     line-height: 1.2;
                 }
 
@@ -47,24 +48,32 @@
 
             .availableShop {
                 display: flex;
-                gap: 1.5rem;
-                margin-top: 1rem;
-                /* border-bottom: 1px solid rgba(0, 0, 0, 0.25); */
-                padding: 1rem;
-                transition: var(--transition);
+                gap: 2rem;
+                margin-block: 1.5rem;
+                padding: 1.5rem;
+                background: linear-gradient(to right, #ffffff, #fffdf5);
+                border-radius: 1.25rem;
+                border: 1px solid rgba(0, 0, 0, 0.05);
+                box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+                transition: all 0.3s ease;
+                text-decoration: none;
+                color: inherit;
 
                 img {
-                    width: 120px;
-                    height: 120px;
+                    width: 130px;
+                    height: 130px;
                     aspect-ratio: 1;
                     object-position: center;
                     object-fit: cover;
-                    border: 1px solid rgba(0, 0, 0, 0.25);
-                    border-radius: 0.5rem;
+                    border: 1px solid rgba(0, 0, 0, 0.08);
+                    border-radius: 1rem;
+                    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
                 }
 
                 &:hover {
-                    background-color: whitesmoke;
+                    transform: translateY(-2px);
+                    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+                    background: #fff;
 
                     .availableShopName {
                         color: var(--fd-blue);
@@ -104,7 +113,7 @@
 
             .availableShopName,
             .shopFoods {
-                line-height: 1.5;
+                line-height: 1.25;
                 margin-bottom: 0.5rem;
                 transition: var(--transition);
             }
@@ -292,35 +301,21 @@
             }
 
             .foodDrowdown {
+                padding: 0;
                 display: flex;
                 flex-direction: column;
                 list-style: none;
-                gap: 1rem;
-                transition: all 1000ms linear(0,
-                        0.012 0.9%,
-                        0.05 2%,
-                        0.411 9.2%,
-                        0.517 11.8%,
-                        0.611 14.6%,
-                        0.694 17.7%,
-                        0.765 21.1%,
-                        0.824 24.8%,
-                        0.872 28.9%,
-                        0.91 33.4%,
-                        0.939 38.4%,
-                        0.977 50.9%,
-                        0.994 68.4%,
-                        1);
-                transform-origin: bottom;
-                interpolate-size: allow-keywords;
-                overflow:initial;
+                gap: 1.25rem;
+                transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+                overflow: visible;
                 height: auto;
-                padding:0px;
+                opacity: 1;
+                padding-bottom: 2rem;
             }
 
             .foodDrowdown.active {
-                height: 0;
-                overflow:hidden;
+                /* Preserve active state if JS still toggles it */
+                display: flex !important;
             }
 
             .foodList {
@@ -333,92 +328,270 @@
 
             .foodItem {
                 display: flex;
-                align-items: center;
+                flex-direction: row;
                 justify-content: space-between;
-                column-gap: 1rem;
-                row-gap: 4px;
-                padding: 1rem 0.5rem;
+                align-items: stretch;
+                padding: 1.25rem;
+                background: #fff;
+                border-radius: 1.25rem;
+                border: 1px solid #f2f2f2;
+                margin-bottom: 1rem;
+                transition: all 0.3s ease;
+                gap: 1.5rem;
                 cursor: pointer;
-                transition: var(--transition);
-                border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+                position: relative;
+            }
 
-                &:hover {
-                    background-color: whitesmoke;
+            .foodItem:hover {
+                box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+                border-color: var(--fd-blue);
+                transform: translateY(-3px);
+            }
 
-                    .foodName {
-                        color: var(--fd-blue);
-                    }
+            .foodDetailsContainer {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                flex: 1;
+                text-align: start;
+                height: 100%;
+                padding-block: 0.75rem;
+            }
+
+            .foodText {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+                .foodName{
+                    font-size: 1rem !important;
                 }
             }
-
-            .foodImage {
-                display: flex;
-                min-width: 80px;
-                max-width: 80px;
-                height: 80px;
-                border-radius: 0.25rem;
-                justify-content: center;
-                align-items: center;
-                padding: 0.5rem;
-                border: 1px solid rgba(0, 0, 0, 0.25);
-
-                img {
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
-                    aspect-ratio: 1;
-                    border-radius: inherit;
-                }
-            }
-
-            .foodDetails {
-                display: flex;
-                align-items: center;
-                column-gap: 1rem;
-                row-gap: 4px;
-            }
-
 
             .foodName {
-                font-size: 0.8rem;
-                transition: var(--transition);
+                font-size: 1.2rem;
+                font-weight: 700;
+                color: #1a1a1a;
+                margin: 0;
+                line-height: 1.2;
+                transition: color 0.3s ease;
+            }
+
+            .foodItem:hover .foodName {
+                color: var(--fd-blue);
             }
 
             .foodContent {
-                opacity: 0.8;
-                font-size: 0.8rem;
-                text-wrap: balance;
-                line-height: 1.2;
+                font-size: 0.95rem;
+                color: #777;
+                line-height: 1.5;
+                margin: 0;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
 
-            .foodNewPrice,
-            .foodOldPrice {
+            .foodPricing {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                margin-top: auto;
+            }
+
+            .foodNewPrice {
+                font-size: 1.15rem;
+                font-weight: 800;
+                color: #1a1a1a;
                 white-space: nowrap;
-                font-weight: bold;
             }
 
             .foodOldPrice {
-                opacity: 0.8;
+                font-size: 0.95rem;
+                color: #bbb;
                 text-decoration: line-through;
+                font-weight: 500;
+                white-space: nowrap;
+            }
+
+            .foodImage {
+                pointer-events: none !important;
+                position: relative;
+                width: 150px !important;
+                height: 100% !important;
+                max-width: 150px !important;
+                flex-shrink: 0;
+                background-color: #f8f8f8;
+                padding: 0 !important;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border-radius: 1.5rem !important;
+                overflow: hidden;
+                border: none !important;
+
+            }
+
+            .foodImage img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                border-radius: inherit;
+                box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+                aspect-ratio: 1;
+                position: relative;
+                z-index: 1;
+                background-color: #fff;
+            }
+
+            .foodItem{
+                flex-direction: row-reverse !important;
+                column-gap: 1.5rem !important;
+                img{
+                    border-radius: 1.5rem !important;
+                    background-color: var(--fd-blue);
+                }
             }
 
             .addToCart {
+                   position: absolute;
+    bottom: 10px;
+    inset-inline-start: 10px;
                 display: flex;
                 justify-content: center;
-                align-items: end;
-                height: 100%;
-                color: var(--fd-blue);
-                font-size: 1.5rem;
+                align-items: center;
+                height: fit-content !important;
+                pointer-events: none;
+                z-index: 2;
+            }
+
+            .addToCartBtn {
+                width: 36px !important;
+                height: 36px !important;
+                background-color: #fff;
+                color: #ff6b00;
+                border-radius: 50%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+                font-size: 1.4rem;
+                transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                cursor: pointer;
+            }
+
+            .foodItem:hover .addToCartBtn {
+                transform: scale(1.1);
+                background-color: #ff6b00;
+                color: #fff;
+            }
+
+            @media (max-width: 480px) {
+                .foodText{
+                    pointer-events: none;
+                }
+               
+
+                .foodDrowdown {
+                    display: grid !important;
+                    grid-template-columns: repeat(2, 1fr) !important;
+                    gap: 10px !important;
+                    padding-inline: 5px !important;
+                    height: auto !important;
+                    opacity: 1 !important;
+                    /* overflow: visible !important; */
+                }
+
+                .foodDrowdown{
+                    padding-inline: 0px !important;
+                }
+
+                #openedShopFoods{
+                    padding-inline: 1rem !important;
+                }
+
+                .foodItem {
+                    flex-direction: column-reverse !important;
+                    padding: 0px !important;
+                    gap: 0.5rem !important;
+                    margin-bottom: 0 !important;
+                    border-radius: 1rem !important;
+                    height: 100% !important;
+                    align-items: stretch !important;
+                    display: flex !important;
+                }
+
+                .foodImage {
+                    width: 100% !important;
+                    height: auto !important;
+                    max-width: 100% !important;
+                    aspect-ratio: 1 !important;
+                }
+
+                .foodImage img {
+                    border-radius: 0.75rem !important;
+                    height: 100% !important;
+                    width: 100% !important;
+                    object-fit: cover !important;
+                }
+
+                .foodDetailsContainer {
+                    padding: 0.5rem !important;
+                    gap: 4px !important;
+                    height: auto !important;
+                    flex: 1 !important;
+                    pointer-events: none;
+                }
+                .foodText,.foodName{
+                    flex:1;
+                }
+
+                .foodText{
+                    pointer-events: none;
+                    .foodName {
+                        font-size: 0.8rem !important;
+                        display: -webkit-box !important;
+                        -webkit-line-clamp: 2 !important;
+                        -webkit-box-orient: vertical !important;
+                        overflow: hidden !important;
+                        line-height: 1.5 !important;
+                    }
+                }
+                    
+                .foodContent {
+                    font-size: 0.7rem !important;
+                    -webkit-line-clamp: 2 !important;
+                    display: -webkit-box !important;
+                    -webkit-box-orient: vertical !important;
+                    overflow: hidden !important;
+                    min-height: 2.4em !important;
+                    margin: 0 !important;
+                    line-height: 1.5 !important;
+                }
+
+                .foodPricing {
+                    margin-top: 4px !important;
+                    gap: 4px !important;
+                    justify-content: flex-start !important;
+                }
+
+                .foodNewPrice {
+                    font-size: 0.9rem !important;
+                }
+
+                .foodOldPrice {
+                    font-size: 0.75rem !important;
+                }
+
+                .addToCart {
+                    bottom: 5px !important;
+                    inset-inline-start: 5px !important;
+                }
 
                 .addToCartBtn {
-                    height: fit-content;
-                    cursor: pointer;
-                    transition: var(--transition);
-
-                    &:hover {
-                        color: var(--fd-red);
-                        scale: 1.05;
-                    }
+                    width: 32px !important;
+                    height: 32px !important;
+                    font-size: 1rem !important;
                 }
             }
 
@@ -428,6 +601,7 @@
                 flex-direction: column;
                 border-radius: 0.5rem;
                 overflow: hidden;
+                justify-content: center;
                 max-width: 600px;
                 width: 100%;
                 position: sticky;
@@ -454,22 +628,23 @@
             #emptyCart {
                 display: flex;
                 flex-direction: column;
-                gap: 1rem;
+                gap: 1.5rem;
                 justify-content: center;
-                border: 1px solid rgba(0, 0, 0, 0.125);
-                border-bottom-left-radius: inherit;
-                border-bottom-right-radius: inherit;
+                border: 1px solid #f0f0f0;
+                border-bottom-left-radius: 1.25rem;
+                border-bottom-right-radius: 1.25rem;
                 align-items: center;
                 text-align: center;
-                background-color: whitesmoke;
-                font-size: 1rem;
-                padding: 2rem;
-                font-weight: bold;
-                line-height: 1.2;
+                background-color: #fff;
+                font-size: 1.1rem;
+                padding: 3.5rem 2rem;
+                font-weight: 600;
+                color: #888;
 
                 i {
-                    font-size: 5rem;
-                    color: #444;
+                    font-size: 4.5rem;
+                    color: #eee;
+                    margin-bottom: 0.5rem;
                 }
             }
 
@@ -560,41 +735,50 @@
             }
 
             .orderedItem {
-                display: flex;
+                display: grid;
+                grid-template-columns: 100px 1fr auto 30px;
                 gap: 0.5rem;
-                border-top: 1px solid rgba(0, 0, 0, 0.125);
-                border-bottom: 1px solid rgba(0, 0, 0, 0.125);
-
-                padding: 0.5rem;
-                font-size: 0.75rem;
+                border-top: 1px solid rgba(0, 0, 0, 0.05);
+                padding: 12px 8px;
+                font-size: 0.85rem;
                 align-items: center;
-                justify-content: space-between;
-                background-color: whitesmoke;
+                background-color: #fff;
+                transition: background-color 0.2s;
+            }
+
+            .orderedItem:hover {
+                background-color: #fcfcfc;
             }
 
             .removeCartItem {
-                background-color: red;
-                color: white;
-                border-radius: 50%;
-                width: 1rem;
-                height: 1rem;
-                font-size: 1rem;
+                color: #ff4d4f;
+                width: 28px;
+                height: 28px;
+                font-size: 0.9rem;
                 cursor: pointer;
                 display: flex;
                 justify-content: center;
                 align-items: center;
+                transition: all 0.2s;
+                border-radius: 6px;
+            }
+
+            .removeCartItem:hover {
+                background-color: #fff1f0;
+                transform: scale(1.1);
             }
 
             .cartItemAmountHandlers {
-                background-color: white;
-                border: 1px solid rgba(0, 0, 0, 0.125);
-                padding: 0.25rem;
-                font-size: 0.9rem;
-                border-radius: 0.25rem;
+                background-color: #f5f5f5;
+                border: 1px solid #eee;
+                padding: 2px;
+                font-size: 0.85rem;
+                border-radius: 8px;
                 overflow: hidden;
-                font-weight: bold;
+                font-weight: 700;
                 display: flex;
                 align-items: center;
+                width: fit-content;
             }
 
             .increase,
@@ -602,58 +786,81 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                padding: 0.25rem;
+                width: 28px;
+                height: 28px;
                 border: none;
-                font-weight: bold;
-                height: 30px;
-                background-color: transparent;
-                font-size: 1rem;
-                border-radius: inherit;
-                transition: var(--transition);
+                background-color: #fff;
                 color: var(--fd-blue);
-
-                &:hover {
-                    background-color: var(--fd-blue);
-                    color: white;
-                }
+                cursor: pointer;
+                border-radius: 6px;
+                transition: all 0.2s;
+                font-size: 0.75rem;
             }
 
-            .increase {
-                border-right: 1px solid rgba(0, 0, 0, 0.125);
-
-            }
-
-            .decrease {
-                border-left: 1px solid rgba(0, 0, 0, 0.125);
-
+            .increase:hover, .decrease:hover {
+                background-color: var(--fd-blue);
+                color: #fff;
             }
 
             .itemAmount {
-                border-radius: inherit;
-                padding: 0.25rem;
+                min-width: 24px;
+                text-align: center;
+                padding: 0 4px;
             }
 
-            #cartShopLabel {
-                /* padding-block: 0.5rem; */
-                margin-inline: 0.5rem;
-                font-weight: bold;
-            }
-
-            .preDeliveryFeeAmount,
-            .deliveryAmount,
-            .afterDeliveryFeeAmount {
+            .confirmCartActions {
                 display: flex;
-                gap: 1rem;
-                justify-content: space-between;
-                align-items: center;
-                padding-inline: 0.5rem;
-                font-size: 0.9rem;
+                gap: 0.75rem;
+                padding: 15px 8px;
+                background: #fff;
+            }
 
-                p {
-                    display: flex;
-                    gap: 2px;
-                    align-items: center;
-                }
+            .confirmCartActions .submit {
+                flex: 1;
+                background-color: var(--fd-blue);
+                color: #fff;
+                border: none;
+                padding: 12px;
+                border-radius: 10px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.2s;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .confirmCartActions .submit:hover {
+                opacity: 0.9;
+                transform: translateY(-1px);
+            }
+
+            #emptyCartBtn {
+                width: 45px;
+                height: 45px;
+                border: 1px solid #eee;
+                background: #fff;
+                color: #ff4d4f;
+                border-radius: 10px;
+                font-size: 1.1rem;
+                cursor: pointer;
+                transition: all 0.2s;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 0;
+            }
+
+            #emptyCartBtn:hover {
+                background-color: #fff1f0;
+                border-color: #ffa39e;
+            }
+
+            .confirmCartActions a {
+                color: inherit;
+                text-decoration: none;
+                width: 100%;
+                display: block;
             }
 
             /* تنسيق شريط التصنيفات (Food Categories Bar) */
@@ -723,7 +930,7 @@
             // Function to handle click and set the active class
             function setActiveCategory(clickedElement, event) {
                 // 1. (اختياري) منع التوجيه الفوري للرابط حتى ننهي عمل JavaScript
-                // event.preventDefault(); 
+                // event.preventDefault();
 
                 // 2. جلب جميع عناصر التصنيفات
                 const allPills = document.querySelectorAll('.category-pill');
@@ -739,7 +946,7 @@
                 // 5. (إجراء اختياري) يمكنك هنا استخدام fetch أو AJAX
                 // لتحميل قائمة الطعام الجديدة بناءً على ID التصنيف الذي تم اختياره
                 // const categoryId = clickedElement.getAttribute('data-category-id');
-                // loadFoodItems(categoryId); 
+                // loadFoodItems(categoryId);
 
                 // 6. إذا كنت تريد استعادة وظيفة التوجيه للرابط بعد انتهاء العملية:
                 // window.location.href = clickedElement.href;
@@ -891,7 +1098,7 @@
                                         onclick="setActiveCategory(this, event)">
 
                                         <%-- هذه هي الصورة المصغرة للتصنيف --%>
-                                            <%--<img src='<%# Eval("ImagePath") %>' alt='<%# Eval("Name") %>' />--%>
+                                            <img src='<%# Eval("PhotoUrl") %>' alt='<%# Eval("Name") %>' />
                                             <span>
                                                 <%# System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName=="en"
                                                     ? DataBinder.Eval(Container.DataItem, "NameEn" ) :
@@ -922,9 +1129,9 @@
                                 <asp:Repeater ID="rptMenu" runat="server">
 
                                     <ItemTemplate>
-                                        <a href='#<%# Eval("id")%>' title='<%# 
-        System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName == "en" 
-        ? DataBinder.Eval(Container.DataItem, "NameEn") 
+                                        <a href='#<%# Eval("id")%>' title='<%#
+        System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName == "en"
+        ? DataBinder.Eval(Container.DataItem, "NameEn")
         : System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName == "ru"
           ? DataBinder.Eval(Container.DataItem, "NameRu")
           : DataBinder.Eval(Container.DataItem, "Name")
@@ -969,12 +1176,8 @@
                                             <asp:Repeater ID="rptFoodItems" runat="server">
                                                 <ItemTemplate>
                                                     <li class="foodItem" id='<%# Eval("id") %>'>
-                                                        <span class="foodImage">
-                                                            <img src='<%# Eval("PhotoUrl") %>' alt="food image" />
-                                                        </span>
-
-                                                        <div class="foodDetails">
-                                                            <span class="foodDesc">
+                                                        <div class="foodDetailsContainer">
+                                                            <div class="foodText">
                                                                 <h4 class="foodName">
                                                                     <%# System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName=="en"
                                                                         ? DataBinder.Eval(Container.DataItem, "NameEn" )
@@ -996,11 +1199,11 @@
                                                                         DataBinder.Eval(Container.DataItem, "Description"
                                                                         ) %>
                                                                 </p>
-                                                            <%# Convert.ToInt32(Eval("PrepearMin")) > 0 ? 
+                                                                <%# Convert.ToInt32(Eval("PrepearMin")) > 0 ? 
     string.Format("<small style='color: #e67e22; font-weight: bold;'><i class='fa-solid fa-utensils'></i> {0} دقيقة</small>", Eval("PrepearMin")) 
     : "" %>
-                                                            </span>
-    
+                                                            </div>
+
                                                             <div class="foodPricing">
                                                                 <%# (Eval("NewPrice").ToString())
                                                                     !=(Eval("OldPrice").ToString())
@@ -1015,12 +1218,15 @@
                                                             </div>
                                                         </div>
 
-                                                        <span class="addToCart">
-                                                            <span class="addToCartBtn"
-                                                                title=<%=Resources.Texts.addtocart %>>
-                                                                <i class="fa fa-plus-circle"></i>
-                                                            </span>
-                                                        </span>
+                                                        <div class="foodImage">
+                                                            <img src='<%# Eval("PhotoUrl") %>' alt="food image" onerror="this.onerror=null;this.src='images/placeholderImage.webp';" />
+                                                            <div class="addToCart">
+                                                                <span class="addToCartBtn"
+                                                                    title=<%=Resources.Texts.addtocart %>>
+                                                                    <i class="fa fa-plus"></i>
+                                                                </span>
+                                                            </div>
+                                                        </div>
                                                     </li>
                                                 </ItemTemplate>
                                             </asp:Repeater>
@@ -1117,6 +1323,41 @@
 
         <link href="css/css_web.css" rel="stylesheet" />
 
+        <style>
+            /* حاوية التصنيف - جعل العناصر فوق بعضها */
+.category-pill {
+    display: flex;
+    flex-direction: column; /* لجعل الصورة فوق والكلمة تحت */
+    align-items: center;
+    gap: 8px; /* مسافة بين الصورة والنص */
+    padding: 10px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    border-bottom: 3px solid transparent; /* خط شفاف افتراضياً */
+}
 
+/* إظهار وتنسيق الصورة */
+.category-pill img {
+    display: block !important; /* إلغاء الـ display: none السابق */
+    width: 60px;  /* يمكنك تكبير أو تصغير الحجم */
+    height: 60px;
+    border-radius: 50%; /* لجعل صورة الفئة دائرية */
+    object-fit: cover;
+    background-color: #f8f8f8;
+    border: 1px solid #eee;
+}
+
+/* حالة العنصر النشط */
+.category-pill.active {
+    color: #ffc119;
+    border-bottom: 3px solid #ffc119;
+}
+
+.category-pill.active img {
+    border-color: #ffc119;
+    transform: scale(1.1); /* تكبير بسيط للصورة النشطة */
+}
+        </style>
 
     </asp:Content>

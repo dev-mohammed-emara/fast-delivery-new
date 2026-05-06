@@ -113,7 +113,13 @@
                                     <asp:Button ID="btnSave" CssClass="btn btn-info m-r-20" runat="server" Text="حفظ" OnClick="btnSave_Click" ValidationGroup="menu" />
                                     <asp:Button ID="btnCancel" CssClass="btn btn-default" runat="server" Text="الغاء" OnClick="btnCancel_Click" />
                                 </div>
-
+                                <div class="form-group row">
+                                <label class="control-label col-sm-2">الصورة</label>
+                                <div class="col-md-8">
+                                    <asp:FileUpload ID="fuPhoto" runat="server" CssClass="form-control" />
+                                <asp:HiddenField ID="hfPhotoPath" runat="server" />
+                                </div>
+                            </div>
                                 <!-- البحث وعرض القوائم -->
                                 <div class="table-scrollable mt-3">
                                     <div class="form-group row">
@@ -168,6 +174,9 @@
             </div>
 
         </ContentTemplate>
+           <Triggers>
+        <asp:PostBackTrigger ControlID="btnSave" />
+    </Triggers>
     </asp:UpdatePanel>
 
 </asp:Content>

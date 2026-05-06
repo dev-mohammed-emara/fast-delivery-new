@@ -35,6 +35,13 @@
 							
 							</li>
 
+
+    <li class="nav-item">
+								<a href="../pages/Drivers.aspx" id="Drivers" runat="server" visible="false"  class="nav-link nav-toggle" > <i class="material-icons">dashboard</i>
+									<span class="title">مناديب التوصيل</span>
+								</a>
+							
+							</li>
     <li class="nav-item">
 								<a href="../pages/Orders.aspx" id="Orders" runat="server" visible="false"  class="nav-link nav-toggle" > <i class="material-icons">dashboard</i>
 									<span class="title">الطلبات المرسلة</span>
@@ -60,6 +67,12 @@
 							
 							</li>
     <li class="nav-item">
+								<a href="../pages/PlaceTypes.aspx" id="PlaceTypes" runat="server" visible="false"  class="nav-link nav-toggle" > <i class="material-icons">dashboard</i>
+									<span class="title">فئات الأماكن </span>
+								</a>
+							
+							</li>
+      <li class="nav-item">
 								<a href="../pages/places.aspx" id="places" runat="server" visible="false"  class="nav-link nav-toggle" > <i class="material-icons">dashboard</i>
 									<span class="title">الأماكن </span>
 								</a>
@@ -108,7 +121,7 @@
 							</li>
 
                             <li class="nav-item">
-								<a href="../pages/Setting.aspx" runat="server" id="A1"  class="nav-link nav-toggle"> <i class="material-icons">
+								<a href="../pages/Setting.aspx" runat="server" id="Setting" visible="false" class="nav-link nav-toggle"> <i class="material-icons">
                                 settings</i>
 									<span class="title">إعدادات عامة</span>
 								</a>

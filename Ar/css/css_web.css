@@ -699,7 +699,7 @@ section#userDashboard {
 /* ! ANY INPUT FIELD WRAPPER (GLOBAL IN ANY PAGE OF DASHBOARD)   */
 .userProfileField {
   padding: 25px;
-  padding-top: 120px;
+  padding-top: calc(120px + var(--safe-area-inset-top, 0px));
   margin-bottom: 25px;
   max-width: 1024px;
   width: 100%;
@@ -715,25 +715,23 @@ section#userDashboard {
   justify-content: space-between;
   font-size: 2rem;
   font-weight: bold;
-
-  i {
-    cursor: pointer;
-    font-size: 1.75rem;
-    transition: 0.5s all ease;
-    display: none;
-
-    &:hover {
-      color: var(--fd-blue);
-      rotate: 180deg;
-    }
-  }
 }
 
-.profile-head.active {
-  i {
-    rotate: 180deg;
+.profile-head i {
+    cursor: pointer;
+    font-size: 1.75rem;
+    transition: 0.5s color ease, 0.5s transform ease;
+    display: none;
+}
+
+.profile-head i:hover {
     color: var(--fd-blue);
-  }
+    transform: rotate(180deg);
+}
+
+.profile-head.active i {
+    transform: rotate(180deg);
+    color: var(--fd-blue);
 }
 
 /* ! FORM WRAPPER GRID IN (USER INFORMATION)  */
@@ -750,21 +748,19 @@ section#userDashboard {
   list-style-type: none;
   border-left: 1px solid rgba(0, 0, 0, 0.2);
   height: fit-content;
+}
 
-  li {
+.profileSettings li {
     padding: 10px;
     transition: 0.3s color ease;
+}
 
-    &:hover {
-      a {
-        color: var(--fd-blue);
-      }
-    }
+.profileSettings li:hover a {
+    color: var(--fd-blue);
+}
 
-    a {
-      transition: inherit;
-    }
-  }
+.profileSettings li a {
+    transition: inherit;
 }
 
 .profileSettings li.active {
@@ -1487,14 +1483,21 @@ input[type="radio"] {
       1);
   transform-origin: bottom;
   interpolate-size: allow-keywords;
-
+overflow: initial;
   height: auto;
 }
 
 .foodDrowdown.active {
-  height: 0;
+  height: 0 !important;
+  padding: 0 !important;
+  overflow: hidden;
 }
 
+@media (max-width:480px) {
+  .foodDrowdown.active{
+    display: grid !important;
+  }
+}
 .foodList {
   display: flex;
   flex-direction: column;
@@ -2540,10 +2543,7 @@ body:has(#openedShopFoods) #cartShower {
     height: fit-content !important;
   }
 
-  .foodItem:nth-child(even) {
-    background-color: rgba(0, 0, 0, 0.1) !important;
-    border-radius: 0.25rem;
-  }
+  
 
 
   #cartShower {

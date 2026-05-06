@@ -92,7 +92,7 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
     {
         using (SqlConnection conn = new SqlConnection(connStr))
         {
-            string sql = "SELECT distinct dbo.Menus.id, dbo.Menus.Name, dbo.Menus.NameEn, dbo.Menus.NameRu FROM  dbo.Menus INNER JOIN dbo.MenuItems ON dbo.Menus.id = dbo.MenuItems.MenuID INNER JOIN dbo.Places ON dbo.MenuItems.PlaceID = dbo.Places.id WHERE(dbo.MenuItems.PlaceID = " + Convert.ToInt32(Request.QueryString["id"].ToString())+") ";
+            string sql = "SELECT distinct dbo.Menus.id, dbo.Menus.Name, dbo.Menus.NameEn,dbo.Menus.PhotoUrl,dbo.Menus.NameRu FROM  dbo.Menus INNER JOIN dbo.MenuItems ON dbo.Menus.id = dbo.MenuItems.MenuID INNER JOIN dbo.Places ON dbo.MenuItems.PlaceID = dbo.Places.id WHERE(dbo.MenuItems.PlaceID = " + Convert.ToInt32(Request.QueryString["id"].ToString())+") ";
             conn.Open();
             SqlDataAdapter da = new SqlDataAdapter(sql, connStr);
             DataTable dt = new DataTable();

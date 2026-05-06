@@ -317,6 +317,7 @@ $('body').on('shown.bs.modal', '#MyPopup2', function () {
                                  <asp:BoundField HeaderText="الحد الأدنى للطلب" DataField="MinOrder" />
                                  <asp:BoundField HeaderText="التصنيف" DataField="Category" />
                                 <asp:BoundField HeaderText="التقييم" DataField="Rate" />
+                                <asp:BoundField HeaderText="الترتيب" DataField="POrder" SortExpression="POrder" />
 
                                        <asp:TemplateField HeaderText="نشط">
             <EditItemTemplate>
@@ -342,7 +343,10 @@ $('body').on('shown.bs.modal', '#MyPopup2', function () {
                         CommandArgument='<%#Eval("ID") %>' class="btn btn-xs btn-info"><i class="ace-icon fa fa-pencil bigger-120"></i></asp:LinkButton>
                                         &nbsp;<asp:LinkButton ID="lbDelete" runat="server" CommandName="DeletePlaces"  class="btn btn-xs btn-danger"
                         CommandArgument='<%#Eval("ID") %>' OnClientClick="return confirm('هل أنت متأكد من الحذف?');"> <i class="ace-icon fa fa-trash-o bigger-120"></i></asp:LinkButton>
-
+                                        <asp:LinkButton ID="lbMapTypes" runat="server" CommandName="MapTypes" 
+    CommandArgument='<%#Eval("ID") %>' class="btn btn-xs btn-warning">
+    <i class="fa fa-tags"></i>
+</asp:LinkButton>
                                     </ItemTemplate>
                                 </asp:TemplateField>
                             </Columns>
@@ -544,6 +548,14 @@ $('body').on('shown.bs.modal', '#MyPopup2', function () {
                                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator6" runat="server" ErrorMessage="وقت التوصيل مطلوب" ControlToValidate="txtDeliveredTime" ValidationGroup="Courses" Display="Dynamic" class="help-block fa fa-warning tooltips" SetFocusOnError="true"></asp:RequiredFieldValidator>
 
  </div>	
+         <div class="col-md-1">
+    <label class="pull-right">الترتيب</label>	
+    <asp:TextBox ID="txtPOrder" Text="0" runat="server" class="form-control"></asp:TextBox>	
+    <asp:RegularExpressionValidator ID="revPOrder" runat="server" 
+        ControlToValidate="txtPOrder" ErrorMessage="أرقام فقط" 
+        ValidationExpression="^\d+$" ValidationGroup="Courses" 
+        Display="Dynamic" ForeColor="Red"></asp:RegularExpressionValidator>
+</div>
           		<div class="col-md-3">
 <label class="pull-right">  التقييم   </label>	
 				                    <asp:DropDownList ID="ddlrate" class="form-control input-height"  AppendDataBoundItems="true" runat="server">

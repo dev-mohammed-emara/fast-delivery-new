@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let filteredShops = [...shops];
 
     // Fix: Ensure perPage is always recalculating correctly
-    const getPerPage = () => (window.innerWidth <= 600 ? 30 : 30);
+    const getPerPage = () => (window.innerWidth <= 600 ? 1000 : 1000);
     let perPage = getPerPage();
     console.log("Current perPage:", perPage);
     let currentPage = 1;

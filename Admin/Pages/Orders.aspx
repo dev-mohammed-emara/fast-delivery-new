@@ -214,7 +214,7 @@ padding: 0;
                     <div class="table-responsive">
                         <asp:GridView ID="gvOrders" runat="server" AutoGenerateColumns="False"
                             CssClass="table table-striped table-bordered table-hover table-checkable order-column valign-middle"
-                            AllowPaging="True" PageSize="10" OnPageIndexChanging="gvOrders_PageIndexChanging" OnRowCommand="gvOrders_RowCommand">
+                            AllowPaging="True" PageSize="10" OnPageIndexChanging="gvOrders_PageIndexChanging" OnRowCommand="gvOrders_RowCommand" OnRowDataBound="gvOrders_RowDataBound">
                             <Columns>
                                 <asp:BoundField DataField="id" HeaderText="رقم الطلب" />
                                 <asp:BoundField DataField="UserName" HeaderText="اسم المستخدم" />
@@ -223,6 +223,16 @@ padding: 0;
                                 <asp:BoundField DataField="total" HeaderText="المجموع" DataFormatString="{0:N2}" />
                                 <asp:BoundField DataField="DeliveryCost" HeaderText="تكلفة التوصيل" DataFormatString="{0:N2}" />
                                 <asp:BoundField DataField="net" HeaderText="الصافي" DataFormatString="{0:N2}" />
+                                <asp:TemplateField HeaderText="المندوب">
+    <ItemTemplate>
+        <asp:HiddenField ID="hfOrderID" Value='<%# Eval("id") %>' runat="server" />
+        <asp:DropDownList ID="ddlDrivers" runat="server" CssClass="form-control" 
+            AutoPostBack="true" OnSelectedIndexChanged="ddlDrivers_SelectedIndexChanged" 
+            AppendDataBoundItems="true" style="min-width:120px;">
+            <asp:ListItem Text="اختر المندوب" Value="0"></asp:ListItem>
+        </asp:DropDownList>
+    </ItemTemplate>
+</asp:TemplateField>
                                 <asp:TemplateField HeaderText="تم التسليم">
     <ItemTemplate>
         <%# Convert.ToBoolean(Eval("Delivered")) 

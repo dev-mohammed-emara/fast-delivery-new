@@ -140,6 +140,7 @@ public partial class Admin_Pages_MenuItems : System.Web.UI.Page
                 cmd.Parameters.AddWithValue("@Price", price);
                 cmd.Parameters.AddWithValue("@Discount", discount);
                 cmd.Parameters.AddWithValue("@Photo", string.IsNullOrEmpty(photoPath) ? (object)DBNull.Value : photoPath);
+
                 cmd.Parameters.AddWithValue("@IsAvailable", isAvailable);
                 cmd.Parameters.AddWithValue("@PrepearMin", prepearMin);
                 cmd.Parameters.AddWithValue("@ID", id);
@@ -169,6 +170,7 @@ public partial class Admin_Pages_MenuItems : System.Web.UI.Page
                 cmd.Parameters.AddWithValue("@Price", price);
                 cmd.Parameters.AddWithValue("@Discount", discount);
                 cmd.Parameters.AddWithValue("@Photo", string.IsNullOrEmpty(photoPath) ? (object)DBNull.Value : photoPath);
+
                 cmd.Parameters.AddWithValue("@IsAvailable", isAvailable);
                 cmd.Parameters.AddWithValue("@CreatedAt", DateTime.Now);
                 cmd.Parameters.AddWithValue("@PrepearMin", prepearMin);

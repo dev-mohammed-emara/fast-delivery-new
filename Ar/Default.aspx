@@ -1,4 +1,4 @@
-<%@ Page Title="" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="Ar_Default" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="Ar_Default" %>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="head" Runat="Server">
  <asp:Literal ID="litPageTitle" runat="server" Text="<%$ Resources:Texts, Default_PageTitle %>" />
@@ -153,7 +153,7 @@ document.getElementById('location-btn').addEventListener('click', function() {
         </div>
     </section>
 
-    <section class="categories-section" role="region" aria-labelledby="section_2_title">
+  <%--  <section class="categories-section" role="region" aria-labelledby="section_2_title">
         <div class="content-container">
             <h2 id="section_2_title">
                 <asp:Literal ID="litSection2Title" runat="server" Text="<%$ Resources:Texts, Section2_Title %>" />
@@ -205,7 +205,7 @@ document.getElementById('location-btn').addEventListener('click', function() {
                 <asp:Literal ID="litCities" runat="server" Text="<%$ Resources:Texts, Cities_List %>" />
             </div>
         </div>
-    </section>
+    </section>--%>
 
   <div class="modal fade" id="mapModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-scrollable">
@@ -360,7 +360,7 @@ function reverseGeocode(latlng) {
       </div>
       <div class="modal-body p-2">
         <iframe id="locationIframe" src="AddAddress.aspx" 
-                style="width:100%; height:80vh; border:none;"></iframe>
+                style="width:100%; height:85dvh; min-height: 500px; border:none; -webkit-overflow-scrolling: touch;"></iframe>
       </div>
     </div>
   </div>

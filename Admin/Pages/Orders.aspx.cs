@@ -5,8 +5,12 @@ using System.Configuration;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using DMS;
+
 public partial class Admin_Pages_Orders : System.Web.UI.Page
 {
+    // تعريف الكونكشن سترينج مرة واحدة لتسهيل الاستخدام
+    string connStr = ConfigurationManager.ConnectionStrings["Conn"].ConnectionString;
+
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)
@@ -19,64 +23,135 @@ public partial class Admin_Pages_Orders : System.Web.UI.Page
             BindOrders();
         }
     }
+
+    #region "وظائف المندوب الجديدة"
+
+    // دالة لجلب قائمة المناديب
+    private DataTable GetActiveDrivers()
+    {
+        using (SqlConnection conn = new SqlConnection(connStr))
+        {
+            // تأكد أن جدول DeliveryMen موجود عندك وبهذه الأعمدة
+            string sql = "SELECT DriverID, DriverName FROM DeliveryMen WHERE Status = 1";
+            SqlDataAdapter da = new SqlDataAdapter(sql, conn);
+            DataTable dt = new DataTable();
+            da.Fill(dt);
+            return dt;
+        }
+    }
+
+    // حدث ربط البيانات لملء قائمة المناديب داخل الجريد فيو
+    protected void gvOrders_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            DropDownList ddl = (DropDownList)e.Row.FindControl("ddlDrivers");
+            if (ddl != null)
+            {
+                ddl.DataSource = GetActiveDrivers();
+                ddl.DataTextField = "DriverName";
+                ddl.DataValueField = "DriverID";
+                ddl.DataBind();
+
+                // تحديد المندوب الحالي للطلب إذا كان موجوداً
+                DataRowView drv = (DataRowView)e.Row.DataItem;
+                if (drv["DriverID"] != DBNull.Value)
+                {
+                    string driverID = drv["DriverID"].ToString();
+                    if (ddl.Items.FindByValue(driverID) != null)
+                    {
+                        ddl.SelectedValue = driverID;
+                    }
+                }
+            }
+        }
+    }
+
+    // حدث تغيير المندوب من القائمة المنسدلة
+    protected void ddlDrivers_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        DropDownList ddl = (DropDownList)sender;
+        GridViewRow row = (GridViewRow)ddl.NamingContainer;
+        string orderId = ((HiddenField)row.FindControl("hfOrderID")).Value;
+        string driverId = ddl.SelectedValue;
+
+        using (SqlConnection con = new SqlConnection(connStr))
+        {
+            string sql = "UPDATE Orders SET DriverID=@DriverID WHERE ID=@ID";
+            SqlCommand cmd = new SqlCommand(sql, con);
+
+            if (driverId == "0")
+                cmd.Parameters.AddWithValue("@DriverID", DBNull.Value);
+            else
+                cmd.Parameters.AddWithValue("@DriverID", driverId);
+
+            cmd.Parameters.AddWithValue("@ID", Convert.ToInt32(orderId));
+            con.Open();
+            cmd.ExecuteNonQuery();
+        }
+    }
+
+    #endregion
+
+    #region "أكوادك الأصلية كما هي"
+
     protected void CheckBox1_CheckedChanged(object sender, EventArgs e)
     {
         CheckBox chkbox = (CheckBox)sender;
         GridViewRow Grow = (GridViewRow)chkbox.NamingContainer;
         string z = ((HiddenField)Grow.FindControl("hf")).Value;
-        using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["Conn"].ConnectionString))
+        using (SqlConnection con = new SqlConnection(connStr))
         {
             string sql = "UPDATE Orders SET Delivered=@Delivered  where ID=@ID";
             SqlCommand cmd = new SqlCommand(sql, con);
-
             cmd.Parameters.AddWithValue("@Delivered", chkbox.Checked);
             cmd.Parameters.AddWithValue("@ID", Convert.ToInt32(z));
             con.Open();
             cmd.ExecuteNonQuery();
         }
     }
+
     protected void Accepted_CheckedChanged(object sender, EventArgs e)
     {
         CheckBox chkbox = (CheckBox)sender;
         GridViewRow Grow = (GridViewRow)chkbox.NamingContainer;
         string z = ((HiddenField)Grow.FindControl("hfAccepted")).Value;
-        using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["Conn"].ConnectionString))
+        using (SqlConnection con = new SqlConnection(connStr))
         {
             string sql = "UPDATE Orders SET Accepted=@Accepted  where ID=@ID";
             SqlCommand cmd = new SqlCommand(sql, con);
-
             cmd.Parameters.AddWithValue("@Accepted", chkbox.Checked);
             cmd.Parameters.AddWithValue("@ID", Convert.ToInt32(z));
             con.Open();
             cmd.ExecuteNonQuery();
         }
     }
+
     protected void Prepared_CheckedChanged(object sender, EventArgs e)
     {
         CheckBox chkbox = (CheckBox)sender;
         GridViewRow Grow = (GridViewRow)chkbox.NamingContainer;
         string z = ((HiddenField)Grow.FindControl("hfPrepared")).Value;
-        using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["Conn"].ConnectionString))
+        using (SqlConnection con = new SqlConnection(connStr))
         {
             string sql = "UPDATE Orders SET Prepared=@Prepared  where ID=@ID";
             SqlCommand cmd = new SqlCommand(sql, con);
-
             cmd.Parameters.AddWithValue("@Prepared", chkbox.Checked);
             cmd.Parameters.AddWithValue("@ID", Convert.ToInt32(z));
             con.Open();
             cmd.ExecuteNonQuery();
         }
     }
+
     protected void InWay_CheckedChanged(object sender, EventArgs e)
     {
         CheckBox chkbox = (CheckBox)sender;
         GridViewRow Grow = (GridViewRow)chkbox.NamingContainer;
         string z = ((HiddenField)Grow.FindControl("hfInWay")).Value;
-        using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["Conn"].ConnectionString))
+        using (SqlConnection con = new SqlConnection(connStr))
         {
             string sql = "UPDATE Orders SET InWay=@InWay  where ID=@ID";
             SqlCommand cmd = new SqlCommand(sql, con);
-
             cmd.Parameters.AddWithValue("@InWay", chkbox.Checked);
             cmd.Parameters.AddWithValue("@ID", Convert.ToInt32(z));
             con.Open();
@@ -86,7 +161,6 @@ public partial class Admin_Pages_Orders : System.Web.UI.Page
 
     private void LoadGovs()
     {
-        string connStr = ConfigurationManager.ConnectionStrings["Conn"].ConnectionString;
         using (SqlConnection conn = new SqlConnection(connStr))
         {
             conn.Open();
@@ -108,7 +182,6 @@ public partial class Admin_Pages_Orders : System.Web.UI.Page
         ddlArea.Items.Add(new System.Web.UI.WebControls.ListItem("الكل", "0"));
         if (govId > 0)
         {
-            string connStr = ConfigurationManager.ConnectionStrings["Conn"].ConnectionString;
             using (SqlConnection conn = new SqlConnection(connStr))
             {
                 conn.Open();
@@ -137,17 +210,17 @@ public partial class Admin_Pages_Orders : System.Web.UI.Page
 
     private void BindOrders()
     {
-        string connStr = ConfigurationManager.ConnectionStrings["Conn"].ConnectionString;
         using (SqlConnection conn = new SqlConnection(connStr))
         {
             conn.Open();
+            // تم إضافة o.DriverID للاستعلام ليعمل الربط في الجريد
             string query = @"
                 SELECT o.id, u.Name + ' ' + u.Lname AS UserName,
                        g.Name AS Gov, a.Name AS Area,
                        SUM(od.Amount * od.Price) AS total,
                        o.DeliveryCost,
                        SUM(od.Amount * od.Price) + o.DeliveryCost AS net,
-                       o.Delivered,o.Accepted,o.Prepared,o.InWay,
+                       o.Delivered, o.Accepted, o.Prepared, o.InWay, o.DriverID,
                        CAST(o.Odate AS DATE) AS Odate
                 FROM Orders o
                 INNER JOIN Order_Details od ON o.id = od.Order_id
@@ -160,7 +233,6 @@ public partial class Admin_Pages_Orders : System.Web.UI.Page
             SqlCommand cmd = new SqlCommand();
             cmd.Connection = conn;
 
-            // التاريخ
             DateTime fromDate, toDate;
             if (!DateTime.TryParse(txtFromDate.Text, out fromDate)) fromDate = DateTime.Today;
             if (!DateTime.TryParse(txtToDate.Text, out toDate)) toDate = DateTime.Today;
@@ -169,34 +241,23 @@ public partial class Admin_Pages_Orders : System.Web.UI.Page
             cmd.Parameters.AddWithValue("@FromDate", fromDate);
             cmd.Parameters.AddWithValue("@ToDate", toDate);
 
-            // الفلتر على التوصيل
             if (ddlDelivered.SelectedValue != "-1")
             {
                 query += " AND o.Delivered = @Delivered";
                 cmd.Parameters.AddWithValue("@Delivered", ddlDelivered.SelectedValue == "1");
             }
 
-            // الفلتر على المحافظة والمنطقة
             int govId = int.Parse(ddlGov.SelectedValue);
-            if (govId > 0)
-            {
-                query += " AND g.id = @GovId";
-                cmd.Parameters.AddWithValue("@GovId", govId);
-            }
+            if (govId > 0) { query += " AND g.id = @GovId"; cmd.Parameters.AddWithValue("@GovId", govId); }
 
             int areaId = int.Parse(ddlArea.SelectedValue);
-            if (areaId > 0)
-            {
-                query += " AND a.id = @AreaId";
-                cmd.Parameters.AddWithValue("@AreaId", areaId);
-            }
+            if (areaId > 0) { query += " AND a.id = @AreaId"; cmd.Parameters.AddWithValue("@AreaId", areaId); }
 
             query += @"
-                GROUP BY o.id, u.Name, u.Lname, g.Name, a.Name, o.DeliveryCost, o.Delivered,o.Accepted,o.Prepared,o.InWay, o.Odate
+                GROUP BY o.id, u.Name, u.Lname, g.Name, a.Name, o.DeliveryCost, o.Delivered, o.Accepted, o.Prepared, o.InWay, o.DriverID, o.Odate
                 ORDER BY o.Odate DESC";
 
             cmd.CommandText = query;
-
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
             da.Fill(dt);
@@ -206,45 +267,41 @@ public partial class Admin_Pages_Orders : System.Web.UI.Page
             lblCount.Text = dt.Rows.Count.ToString();
             if (dt.Rows.Count > 0)
             {
-                // نفترض أن الاستعلام مرتب تنازلياً أو نبحث عن أكبر ID
                 object maxId = dt.Compute("Max(id)", "");
                 hfLastOrderId.Value = maxId.ToString();
             }
         }
     }
+
     protected void tmrNewOrders_Tick(object sender, EventArgs e)
     {
-        string connStr = ConfigurationManager.ConnectionStrings["Conn"].ConnectionString;
         using (SqlConnection conn = new SqlConnection(connStr))
         {
-            // استعلام يجلب أكبر ID في جدول الطلبات ككل
             string sql = "SELECT ISNULL(MAX(id), 0) FROM Orders";
             SqlCommand cmd = new SqlCommand(sql, conn);
             conn.Open();
             int latestIdInDb = Convert.ToInt32(cmd.ExecuteScalar());
             int lastDisplayedId = Convert.ToInt32(hfLastOrderId.Value);
 
-            // إذا كان الرقم في قاعدة البيانات أكبر مما هو معروض
             if (latestIdInDb > lastDisplayedId)
             {
-                // 1. إعادة ربط الجريد بالبيانات الجديدة
                 BindOrders();
-
-                // 2. تشغيل رسالة التنبيه للمستخدم
                 ScriptManager.RegisterStartupScript(this, GetType(), "NewOrderAlert", "alertNewOrder();", true);
             }
         }
     }
+
     protected void gvOrders_PageIndexChanging(object sender, System.Web.UI.WebControls.GridViewPageEventArgs e)
     {
         gvOrders.PageIndex = e.NewPageIndex;
         BindOrders();
     }
+
     protected void btnClose_Click(object sender, EventArgs e)
     {
         ScriptManager.RegisterStartupScript(Page, Page.GetType(), "#MyPopup", "$('body').removeClass('modal-open');$('.modal-backdrop').remove();$('#MyPopup2').hide();", true);
-
     }
+
     protected void gvOrders_RowCommand(object sender, System.Web.UI.WebControls.GridViewCommandEventArgs e)
     {
         if (e.CommandName == "ShowDetails")
@@ -255,4 +312,5 @@ public partial class Admin_Pages_Orders : System.Web.UI.Page
             return;
         }
     }
+    #endregion
 }

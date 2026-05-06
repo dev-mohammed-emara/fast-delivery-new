@@ -39,6 +39,9 @@ public partial class Ar_AddAddress : System.Web.UI.Page
         }
         if (!IsPostBack)
         {
+           
+                
+            
             LoadGovernments();
             BindGrid();
 
@@ -176,8 +179,10 @@ public partial class Ar_AddAddress : System.Web.UI.Page
             // توجه لصفحة التعديل أو افتح مودال
             if (e.CommandName == "EditAddress")
             {
+                BindGrid();
                 ViewState["id"] = int.Parse(e.CommandArgument.ToString());
                 FillEditForm(id);
+                
                 // بعد ما نملأ البيانات، نشغل سكريبت يفتح المودال
 
             }

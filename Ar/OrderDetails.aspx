@@ -38,6 +38,30 @@
                 <div class="order-stepper">
                     <asp:Literal ID="litStepperHtml" runat="server" />
                 </div>
+                <asp:PlaceHolder ID="phDriverInfo" runat="server" Visible="false">
+    <div class="order-card" style="border-right: 4px solid #28a745;">
+        <h6 class="fw-bold mb-3"><i class="fa fa-motorcycle me-2"></i>بيانات مندوب التوصيل</h6>
+        <div class="d-flex align-items-center">
+            <div class="driver-icon me-3" style="width: 50px; height: 50px; background: #e8f5e9; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <i class="fa fa-user-tie text-success" style="font-size: 24px;"></i>
+            </div>
+            <div>
+                <p class="mb-0 fw-bold"><asp:Literal ID="litDriverName" runat="server" /></p>
+                <p class="mb-0 text-muted small">
+                    <i class="fa fa-phone-alt me-1"></i>
+                    <a href='tel:<%= litDriverPhone.Text %>' style="text-decoration:none; color:inherit;">
+                        <asp:Literal ID="litDriverPhone" runat="server" />
+                    </a>
+                </p>
+            </div>
+            <div class="ms-auto">
+                <a href='tel:<%= litDriverPhone.Text %>' class="btn btn-success btn-sm rounded-pill px-3">
+                    <i class="fa fa-phone"></i> إتصال
+                </a>
+            </div>
+        </div>
+    </div>
+</asp:PlaceHolder>
             </div>
 
             <div class="order-card">

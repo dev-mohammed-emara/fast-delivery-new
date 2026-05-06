@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DMS;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -13,6 +14,27 @@ public partial class Ar_MasterPages_MasterPage : System.Web.UI.MasterPage
     public string CurrentDir = "rtl";
     protected void Page_Load(object sender, EventArgs e)
     {
+        if (!IsPostBack)
+        {
+            Centers center = new Centers();
+            center.LoadAll();
+            dlSocial.DataSource = center.DefaultView;
+            dlSocial.DataBind();
+            if (!string.IsNullOrEmpty(center.Mobile))
+            {
+                // تنظيف الرقم من أي مسافات أو علامات + لضمان عمل الرابط صح
+                string cleanNumber = center.Mobile.Replace(" ", "").Replace("+", "");
+
+                // ربط الرقم بالرابط الخاص بالواتساب
+                lnkWhatsApp.NavigateUrl = "https://wa.me/" + cleanNumber;
+                lnkWhatsApp.Visible = true;
+            }
+            else
+            {
+                // لو مفيش رقم في القاعدة نخفي الأيقونة
+                lnkWhatsApp.Visible = false;
+            }
+        }
         HttpCookie langCookie = Request.Cookies["lang"];
         string lang = (langCookie != null && !string.IsNullOrEmpty(langCookie.Value)) ? langCookie.Value : "ar";
 

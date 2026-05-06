@@ -458,7 +458,7 @@
       .category-pill {
         display: flex;
         align-items: center;
-        padding: 8px 15px;
+        padding: 8px 10px;
         border-radius: 20px;
         /* شكل الحبة (Pill Shape) */
         background-color: #fff;
@@ -484,7 +484,7 @@
       .category-pill.active {
         background-color: #ffc119;
         /* اللون المميز */
-        color: #fff;
+        
         border-color: #ffc119;
       }
 
@@ -500,7 +500,9 @@
         /* .content-inside-restaurant-menu { display: none; } */
       }
     </style>
+     
 
+          
     <section id="selectedLocationShops">
       <div class="categories-bar-wrapper">
         <div class="container categories-bar-scroller">
@@ -576,14 +578,40 @@
             </div>
 
           </article>
+            <div class="food-categories-mobile-bar" style="display:block; background-color:#fff;">
+    <div class="categories-list-scroll">
+      
+  <a href="javascript:void(0);" class="category-pill active" onclick="filterByJS('0', this)">
+        <div class="all-icon-circle">
+             <img src="images/all-categories.png" alt="الكل" /> 
+            
+             </div>
+        <span>الكل(<%= ViewState["AllCount"] %>)</span>
+    </a>
 
+    <asp:Repeater ID="rptSubCategories" runat="server">
+        <ItemTemplate>
+            <a href="javascript:void(0);" class="category-pill" 
+               onclick='<%# "filterByJS(\"" + Eval("id") + "\", this)" %>'>
+                <img src='<%# Eval("TypeImage") %>' />
+                      <%# System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName=="en" ?
+                    DataBinder.Eval(Container.DataItem, "TypeNameEn" ) :
+                    System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName=="ru" ?
+                    DataBinder.Eval(Container.DataItem, "TypeNameRu" ) : DataBinder.Eval(Container.DataItem, "TypeNameAr" ) %>
+                     (<%# Eval("TotalCount") %>)
+            </a>
+        </ItemTemplate>
+    </asp:Repeater>
+    </div>
+</div>
           <div class="allAvailableShops">
 
             <asp:Repeater ID="rptplaces" runat="server" OnItemDataBound="rpt_ItemDataBound">
               <ItemTemplate>
                 <a href='<%# "Placeshop.aspx?id=" + Eval("id") + "&addid=" + Request.QueryString["addid"] %>'
                   class='<%# "availableShop " + (Eval("IsOpened").ToString() == "0" ? "shop-closed" : "") %>'
-                  onclick='<%# Eval("IsOpened").ToString() == "0" ? "return showClosedAlert();" : "" %>'>
+                 data-types='<%# GetPlaceTypes(Eval("id")) %>'
+                     onclick='<%# Eval("IsOpened").ToString() == "0" ? "return showClosedAlert();" : "" %>'>
 
                   <span class="shopRatingStars" hidden>
                     <%# Eval("Rate")%>
@@ -593,8 +621,11 @@
                   <div class="availableShopDesc">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
                       <h3 class="availableShopName">
-                        <%# System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName=="en" ?
-                          Eval("NameEn") : Eval("Name") %>
+                          <%# System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName=="en" ?
+                    DataBinder.Eval(Container.DataItem, "NameEn" ) :
+                    System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName=="ru" ?
+                    DataBinder.Eval(Container.DataItem, "NameRu" ) : DataBinder.Eval(Container.DataItem, "Name" ) %>
+                    
                       </h3>
                      <span class='<%# Eval("IsOpened").ToString() == "1" ? "status-badge open" : "status-badge closed" %>'>
     <%# Eval("IsOpened").ToString() == "1" ? 
@@ -608,6 +639,7 @@
                     DataBinder.Eval(Container.DataItem, "DescriptionEn" ) :
                     System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName=="ru" ?
                     DataBinder.Eval(Container.DataItem, "DescriptionRu" ) : DataBinder.Eval(Container.DataItem, "Description" ) %>
+                    
                     </p>
                     <span class="shopRating" id="shopRating" runat="server"></span>
 
@@ -662,7 +694,7 @@
 
     </section>
 
-
+        
 
 
     <!-- Add Select2 -->
@@ -693,6 +725,34 @@
         return $('<div><strong>' + parts[0] + '</strong><br /><small>' + (parts[1] || '') + '</small></div>');
         }
         </script>--%>
+      <script>
+function filterByJS(typeId, btn) {
+    // 1. تلوين الزرار المختار
+    $('.category-pill').removeClass('active');
+    $(btn).addClass('active');
+
+    // 2. الفلترة
+    if (typeId === '0') {
+        // لو اختار الكل اظهر كل المحلات
+        $('.availableShop').fadeIn();
+    } else {
+        // اخفي الكل وابدأ اظهر المطابق بس
+        $('.availableShop').each(function() {
+            var types = $(this).attr('data-types'); // بيجيب حاجة زي "1,4"
+            if (types) {
+                var typesArray = types.split(',');
+                if (typesArray.indexOf(typeId) !== -1) {
+                    $(this).fadeIn();
+                } else {
+                    $(this).fadeOut();
+                }
+            } else {
+                $(this).fadeOut();
+            }
+        });
+    }
+}
+</script>
         <style>
           .select2-container--default .select2-selection--single {
             white-space: normal;
@@ -748,6 +808,55 @@
             filter: grayscale(0.5);
             cursor: pointer;
           }
+                         /* الحاوية الأساسية */
+.categories-list-scroll {
+    display: flex;
+    overflow-x: auto;
+    gap: 15px;
+    padding: 10px;
+    scrollbar-width: none;
+}
+
+/* العنصر نفسه - شلنا منه أي خلفيات */
+.category-pill {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none !important;
+    background: none !important; /* إلغاء أي خلفية قديمة */
+    border: none !important;     /* إلغاء أي إطارات قديمة */
+    min-width: 70px;
+}
+
+/* الصورة هي اللي هتبقى الدائرة */
+.category-pill img {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%; /* دائرة كاملة */
+    object-fit: cover;
+    border: 2px solid #eee; /* إطار خفيف جداً */
+    padding: 2px;
+    transition: all 0.3s ease;
+}
+
+/* النص */
+.category-pill span {
+    font-size: 12px;
+    color: #333;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+/* حالة الـ Active - التعديل هيبقى على الصورة بس */
+.category-pill.active img {
+    border-color: #ffc119 !important; /* الإطار يصفر */
+    border-width: 3px !important;
+    transform: scale(1.1); /* تكبير بسيط للصورة */
+}
+
+.category-pill.active span {
+    color: #ffc119 !important; /* النص يصفر */
+}
         </style>
         <script>
           function showClosedAlert() {

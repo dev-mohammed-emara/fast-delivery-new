@@ -49,8 +49,7 @@ public partial class Ar_Default : System.Web.UI.Page
                 ddlAddress.DataSource = dt;
                 ddlAddress.DataTextField = "Name";
                 ddlAddress.DataValueField = "ID";
-                ddlAddress.DataBind();
-                
+                ddlAddress.DataBind();                
             }
         }
         BindRepeaterC();
@@ -59,7 +58,9 @@ public partial class Ar_Default : System.Web.UI.Page
     private void BindRepeaterC()
     {
         Categories cat = new Categories();
-        cat.LoadAll();
+        cat.Where.Active.Operator = WhereParameter.Operand.Equal;
+        cat.Where.Active.Value = true;
+        cat.Query.Load();
         rptCategory.DataSource = cat.DefaultView.Table;
         rptCategory.DataBind();
     }

@@ -3,6 +3,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
 using System.Web.UI.WebControls;
+using System.IO;
 
 public partial class Admin_Pages_Menus : System.Web.UI.Page
 {
@@ -63,6 +64,22 @@ FROM  dbo.Menus AS m INNER JOIN
     // زر الحفظ/التعديل
     protected void btnSave_Click(object sender, EventArgs e)
     {
+        if (!Page.IsValid) return;
+
+        string photoPath = hfPhotoPath.Value;
+
+        // رفع الصورة إذا تم اختيارها
+        if (fuPhoto.HasFile)
+        {
+            string ext = Path.GetExtension(fuPhoto.FileName).ToLower();
+            if (ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".gif")
+            {
+                string fileName = Guid.NewGuid().ToString() + ext;
+                string savePath = Server.MapPath("~/ar/images/menu/") + fileName;
+                fuPhoto.SaveAs(savePath);
+                photoPath = "images/menu/" + fileName;
+            }
+        }
         string name = txtName.Text.Trim();
         string nameEn = txtNameEn.Text.Trim();
         string nameRu = txtNameRu.Text.Trim();
@@ -80,13 +97,14 @@ FROM  dbo.Menus AS m INNER JOIN
             using (SqlConnection conn = new SqlConnection(connStr))
             {
                 SqlCommand cmd = new SqlCommand(
-                    "UPDATE Menus SET Name=@Name, NameEn=@NameEn,NameRu=@NameRu, Description=@Desc, DescriptionEn=@DescEn,DescriptionRu=@DescRu, Categories_id=@CategoryID WHERE ID=@ID", conn);
+                    "UPDATE Menus SET Name=@Name, NameEn=@NameEn,NameRu=@NameRu, Description=@Desc, DescriptionEn=@DescEn,DescriptionRu=@DescRu, Categories_id=@CategoryID,PhotoUrl=@Photo WHERE ID=@ID", conn);
                 cmd.Parameters.AddWithValue("@Name", name);
                 cmd.Parameters.AddWithValue("@NameEn", nameEn);
                 cmd.Parameters.AddWithValue("@NameRu", nameRu);
                 cmd.Parameters.AddWithValue("@Desc", string.IsNullOrEmpty(desc) ? (object)DBNull.Value : desc);
                 cmd.Parameters.AddWithValue("@DescEn", string.IsNullOrEmpty(descEn) ? (object)DBNull.Value : descEn);
                 cmd.Parameters.AddWithValue("@DescRu", string.IsNullOrEmpty(descRu) ? (object)DBNull.Value : descRu);
+                cmd.Parameters.AddWithValue("@Photo", string.IsNullOrEmpty(photoPath) ? (object)DBNull.Value : photoPath);
                 cmd.Parameters.AddWithValue("@CategoryID", categoryId);
                 cmd.Parameters.AddWithValue("@ID", id);
                 conn.Open();
@@ -100,16 +118,17 @@ FROM  dbo.Menus AS m INNER JOIN
             using (SqlConnection conn = new SqlConnection(connStr))
             {
                 SqlCommand cmd = new SqlCommand(
-                    "INSERT INTO Menus (Name, NameEn,NameRu, Description,DescriptionEn ,DescriptionRu , Categories_id, CreatedAt) VALUES (@Name, @NameEn,@NameRu, @Desc,@DescEn,@DescRu, @CategoryID, @CreatedAt)", conn);
+                    "INSERT INTO Menus (Name, NameEn,NameRu, Description,DescriptionEn ,DescriptionRu , Categories_id, CreatedAt,PhotoUrl) VALUES (@Name, @NameEn,@NameRu, @Desc,@DescEn,@DescRu, @CategoryID, @CreatedAt,@Photo)", conn);
                 cmd.Parameters.AddWithValue("@Name", name);
                 cmd.Parameters.AddWithValue("@NameEn", nameEn);
                 cmd.Parameters.AddWithValue("@NameRu", nameRu);
-
                 cmd.Parameters.AddWithValue("@Desc", string.IsNullOrEmpty(desc) ? (object)DBNull.Value : desc);
                 cmd.Parameters.AddWithValue("@DescEn", string.IsNullOrEmpty(descEn) ? (object)DBNull.Value : descEn);
                 cmd.Parameters.AddWithValue("@DescRu", string.IsNullOrEmpty(descRu) ? (object)DBNull.Value : descRu);
                 cmd.Parameters.AddWithValue("@CategoryID", categoryId);
                 cmd.Parameters.AddWithValue("@CreatedAt", DateTime.Now);
+                cmd.Parameters.AddWithValue("@Photo", string.IsNullOrEmpty(photoPath) ? (object)DBNull.Value : photoPath);
+
                 conn.Open();
                 cmd.ExecuteNonQuery();
             }
