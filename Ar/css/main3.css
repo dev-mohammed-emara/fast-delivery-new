@@ -50,6 +50,12 @@ footer {
   margin-top: auto;
 }
 
+@media (max-width:480px) {
+  footer {
+    display: none !important;
+  }
+}
+
 a {
   text-decoration: none;
   color: var(--fd-dark);
@@ -1020,7 +1026,7 @@ a {
 }
 
 .current-location-btn:hover {
-  background: #0056b3;
+  background: #ff6b00;
 }
 
 
@@ -1741,7 +1747,7 @@ input[type="radio"] {
 #openedShopFoods {
   padding-top: 125px;
   padding-inline: 25px;
-  padding-bottom: 50px;
+  /* padding-bottom: 50px; */
   position: relative;
   /* isolation: isolate; */
   margin: auto;

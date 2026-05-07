@@ -1015,15 +1015,15 @@ function reverseGeocode(latlng, retries = 2) {
             font-size: 1.125rem;
             padding: 0.25rem 1.5rem;
             border-radius: 0.5rem;
-            border: 2px solid #0056b3;
+            border: 2px solid #ff6b00;
             transition: var(--transition);
-            background-color: #0056b3;
+            background-color: #ff6b00;
             color: white;
             &:hover;
 
         {
             background-color: transparent;
-            color: #0056b3;
+            color: #ff6b00;
         }
 
         }

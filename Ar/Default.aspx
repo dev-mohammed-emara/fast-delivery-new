@@ -18,29 +18,29 @@
                 <asp:Literal ID="litHeroTitle" runat="server" Text="<%$ Resources:Texts, Hero_Title %>" />
             </h1>
             <p data-key="hero_desc">
-               
+
                 <asp:Literal ID="litHeroDesc" runat="server" Text="<%$ Resources:Texts, Hero_Desc %>" />
-            
+
             </p>
 
             <div class="search-wrapper">
                 <div class="search-box">
                     <asp:DropDownList ID="ddlAddress"  name="ddlAddress" runat="server" style="width: 100%;"></asp:DropDownList>
- 
+
                     <asp:HiddenField ID="hiddenCoords" runat="server" />
-    
-  <button id="location-btn" type="button" class="btn btn-primary" 
+
+  <button id="location-btn" type="button" class="btn btn-primary"
         >
     <i class="fa fa-map-marker-alt"></i>
 </button>
-                    
+
     <button id="final-search-btn" type="button" aria-label="البحث  في الموقع المحدد">
         <i class="fa fa-search"></i>
     </button>
 </div>
                 <script>
                     document.getElementById("final-search-btn").addEventListener("click", function () {
-                        
+
                         // 1. هات أول ID من الريبيتر
                             const firstLink = document.querySelector(".card-content");
                         if (!firstLink) return; // علشان بس ما نسمعش صريخ
@@ -113,42 +113,42 @@ document.getElementById('location-btn').addEventListener('click', function() {
         </div>
         <div class="hero-section-fade-out"></div>
     </section>
-    
+
     <section class="categories-section gray-bg" role="region" aria-labelledby="section_1_title">
         <div class="content-container">
             <h2 id="section_1_title" data-key="section_1_title"> <asp:Literal ID="litSection1Title" runat="server" Text="<%$ Resources:Texts, Section1_Title %>" />
 </h2>
             <div class="categories-grid">
-       
+
 
                 <asp:Repeater ID="rptCategory" runat="server">
                     <ItemTemplate>
                         <div class="category-card" role="link" tabindex="0">
                     <div class="category-card-bg" style="background-image: url('<%# Eval("PhotoPath") %>');"></div>
-                      
+
                            <a id="placeLink" href='<%# "Places.aspx?id=" + Eval("id") + "&addid=" + ddlAddress.SelectedValue %>' runat="server" class="card-content" data-id='<%# Eval("id") %>'>
 
-                        <h3 style="font-size: 30px;"><%# 
-        System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName == "en" 
-        ? DataBinder.Eval(Container.DataItem, "NameEn") 
+                        <h3 style="font-size: 30px;"><%#
+        System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName == "en"
+        ? DataBinder.Eval(Container.DataItem, "NameEn")
         : System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName == "ru"
           ? DataBinder.Eval(Container.DataItem, "NameRu")
           : DataBinder.Eval(Container.DataItem, "Name")
     %></h3>
-                        <p data-key="grocery_summary"><%# 
-        System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName == "en" 
-        ? DataBinder.Eval(Container.DataItem, "DescrEn") 
+                        <p data-key="grocery_summary"><%#
+        System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName == "en"
+        ? DataBinder.Eval(Container.DataItem, "DescrEn")
         : System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName == "ru"
           ? DataBinder.Eval(Container.DataItem, "DescrRu")
           : DataBinder.Eval(Container.DataItem, "DescrAr")
     %></p>
-                    
+
                                </a>
                 </div>
 
                     </ItemTemplate>
                 </asp:Repeater>
-                
+
             </div>
         </div>
     </section>
@@ -225,7 +225,7 @@ document.getElementById('location-btn').addEventListener('click', function() {
     </div>
   </div>
 </div>
-            
+
     <script >
         document.getElementById('<%= ddlAddress.ClientID %>').addEventListener("change", function () {
             const addid = this.value;
@@ -359,7 +359,7 @@ function reverseGeocode(latlng) {
         <button type="button" class="close-btn" data-bs-dismiss="modal"><i class="fa fa-times"></i></button>
       </div>
       <div class="modal-body p-2">
-        <iframe id="locationIframe" src="AddAddress.aspx" 
+        <iframe id="locationIframe" src="AddAddress.aspx"
                 style="width:100%; height:85dvh; min-height: 500px; border:none; -webkit-overflow-scrolling: touch;"></iframe>
       </div>
     </div>

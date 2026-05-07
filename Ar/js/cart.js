@@ -34,6 +34,10 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         },
 
+        sync() {
+            this.save();
+        },
+
         saveSummary() {
             const rawSubtotal = this.getSubtotal();
             let totalDiscountAmount = 0;
@@ -93,9 +97,43 @@ document.addEventListener("DOMContentLoaded", () => {
 
         getSubtotal() {
             return this.items.reduce((sum, item) => {
-                const price = Number(item.price) || 0;
-                return sum + price * item.amount;
+                const itemPrice = Number(item.price) || 0;
+                let totalForItem = itemPrice * item.amount;
+                
+                if (item.customization) {
+                    // Upsells with independent qty
+                    (item.customization.upsells || []).forEach(u => {
+                        totalForItem += (Number(u.price) || 0) * (u.qty || 0);
+                    });
+                }
+                
+                return sum + totalForItem;
             }, 0);
+        },
+
+        updateAddonQty(itemId, addonId, delta, type, shopId) {
+            const item = this.items.find(i => i.id === itemId && i.shopId === shopId);
+            if (!item || !item.customization || !item.customization[type]) return;
+
+            const addon = item.customization[type].find(a => a.id === addonId);
+            if (addon) {
+                addon.qty = (addon.qty || 1) + delta;
+                if (addon.qty < 1) {
+                    this.removeAddon(itemId, addonId, type, shopId);
+                    return;
+                }
+                this.save();
+                if (typeof sync === 'function') this.sync();
+            }
+        },
+
+        removeAddon(itemId, addonId, type, shopId) {
+            const item = this.items.find(i => i.id === itemId && i.shopId === shopId);
+            if (!item || !item.customization || !item.customization[type]) return;
+
+            item.customization[type] = item.customization[type].filter(a => a.id !== addonId);
+            this.save();
+            if (typeof sync === 'function') this.sync();
         },
 
 
@@ -109,110 +147,93 @@ document.addEventListener("DOMContentLoaded", () => {
                     icon: "error",
                     confirmButtonText:texts.Ok,
                 });
-                return; // وقف كل حاجة
+                return;
             }
 
-
-
-            // Check if the shop already exists in the cart
             const shopExists = this.items.some(i => i.shopId === GLOBAL_shop_ID);
 
-            // ⚠️ Different shop, first product of a new shop
             if (!shopExists && this.items.length > 0) {
                 const newItem = {
-                  ...item,
-                        amount: count,
+                    ...item,
+                    amount: count,
                     placeId: GLOBAL_PLACE_ID,
-                areaId: GLOBAL_AREA_ID,
-                deliveryFee: GLOBAL_DELIVERY_FEE,
-                shopId: GLOBAL_shop_ID,
-                shopName: GLOBAL_shopName,
-                shopAreaId: GLOBAL_shopArea_ID,
-                addId: GLOBAL_addid_ID
-            };
+                    areaId: GLOBAL_AREA_ID,
+                    deliveryFee: GLOBAL_DELIVERY_FEE,
+                    shopId: GLOBAL_shop_ID,
+                    shopName: GLOBAL_shopName,
+                    shopAreaId: GLOBAL_shopArea_ID,
+                    addId: GLOBAL_addid_ID
+                };
 
-            Swal.fire({
-                title: texts.AddItemDifferentShopTitle,
-                text: texts.AddItemDifferentShopText,
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: texts.YesAdd,
-                cancelButtonText: texts.Cancel,
-                reverseButtons: true,
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    cart.items.push(newItem); // ✅ use cart instead of this
-                    cart.save(); // ✅ use cart.save()
-                    showCartToast(texts.AddedFromDifferentShop);
-                }
-            });
+                Swal.fire({
+                    title: texts.AddItemDifferentShopTitle,
+                    text: texts.AddItemDifferentShopText,
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: texts.YesAdd,
+                    cancelButtonText: texts.Cancel,
+                    reverseButtons: true,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        cart.items.push(newItem);
+                        cart.save();
+                        showCartToast(texts.AddedFromDifferentShop);
+                    }
+                });
+                return;
+            }
 
-            // Optional: update UI immediately
-            updateCartUI();
-            updateCartCounter();
-            updateTotalPayAmount();
-
-            console.log("Adding item to shop:", currentShopId, currentShopName);
-
-
-            return;
-        }
-
-
-
-        // ✅ Normal flow: find existing item by both id and shopId
             const existing = this.items.find(i => i.id === item.id && i.shopId === GLOBAL_shop_ID);
-    if (existing) {
-        existing.amount += count;
-    } else {
-        this.items.push({
-          ...item,
-                amount: count,
-        placeId: GLOBAL_PLACE_ID,
-        areaId: GLOBAL_AREA_ID,
-        deliveryFee: GLOBAL_DELIVERY_FEE,
-        discountedDelivery:
-        item.deliveryFee -
-        (item.deliveryFee * (GLOBAL_AREA_DISCOUNT / 100) || 0),
-        shopId: GLOBAL_shop_ID,
-        shopName: GLOBAL_shopName,
-        shopAreaId: GLOBAL_shopArea_ID,
-        addId: GLOBAL_addid_ID,
-        });
-}
+            if (existing) {
+                existing.amount += count;
+            } else {
+                this.items.push({
+                    ...item,
+                    amount: count,
+                    placeId: GLOBAL_PLACE_ID,
+                    areaId: GLOBAL_AREA_ID,
+                    deliveryFee: GLOBAL_DELIVERY_FEE,
+                    shopId: GLOBAL_shop_ID,
+                    shopName: GLOBAL_shopName,
+                    shopAreaId: GLOBAL_shopArea_ID,
+                    addId: GLOBAL_addid_ID,
+                });
+            }
 
-        this.save();
-},
+            this.save();
+        },
 
+        removeItem(id, shopId) {
+            this.items = this.items.filter(i => !(i.id === id && i.shopId === shopId));
+            this.save();
+        },
 
-
-removeItem(id, shopId) {
-    // Remove the specific product from a specific shop
-    this.items = this.items.filter(i => !(i.id === id && i.shopId === shopId));
-    this.save();
-},
-
-increaseItem(id, shopId) {
-    const existing = this.items.find(i => i.id === id && i.shopId === shopId);
-    if (existing) {
-        existing.amount += 1;
-        this.save();
-    }
-},
+        increaseItem(id, shopId) {
+            const existing = this.items.find(i => i.id === id && i.shopId === shopId);
+            if (existing) {
+                existing.amount += 1;
+                this.save();
+            }
+        },
 
         decreaseItem(id, shopId) {
             const existing = this.items.find(i => i.id === id && i.shopId === shopId);
-            if (!existing) return;
-
-            existing.amount -= 1;
-            if (existing.amount <= 0) {
-                this.removeItem(id, shopId);
-            } else {
-                this.save();
+            if (existing) {
+                existing.amount -= 1;
+                if (existing.amount < 1) {
+                    this.removeItem(id, shopId);
+                } else {
+                    this.save();
+                }
             }
-        }
+        },
 
+        clear() {
+            this.items = [];
+            this.save();
+        }
     };
+
     window.cart = cart;
 
 const cartData = JSON.parse(localStorage.getItem("cartItems")) || [];
@@ -408,30 +429,104 @@ function showCartToast(message = texts.AddedToCartDefault, options = {}) {
             // Render each product in shop
             group.items.forEach(item => {
                 const priceNum = Number(item.price) || 0;
-                const totalPrice = priceNum * item.amount;
+                let addonsTotal = 0;
+                if (item.customization) {
+                    (item.customization.quickChoices || []).forEach(qc => addonsTotal += (Number(qc.price) || 0) * (qc.qty || 1));
+                    (item.customization.extras || []).forEach(ex => addonsTotal += (Number(ex.price) || 0));
+                    (item.customization.upsells || []).forEach(up => addonsTotal += (Number(up.price) || 0) * (up.qty || 0));
+                }
+                const totalPrice = (priceNum * item.amount) + addonsTotal;
+
+                const itemGroup = document.createElement("div");
+                itemGroup.classList.add("cart-item-group");
+                itemGroup.setAttribute("data-item-id", item.id);
 
                 const article = document.createElement("article");
                 article.classList.add("orderedItem");
+                if (item.isCustomized) article.classList.add("customized-cart-item");
+
                 article.innerHTML = `
-        <div class="cartItemAmountHandlers">
-          <button class="decrease" type="button"><i class="fa-solid fa-minus"></i></button>
-          <span class="itemAmount">${item.amount}</span>
-          <button class="increase" type="button"><i class="fa-solid fa-plus"></i></button>
-        </div>
-        <div class="orderedItemMain">
-          <span class="orderedItemName">${item.name}</span>
-          ${item.hasAddons ? `<span class="addons-badge">إضافات</span>` : ''}
-          ${item.notes ? `<div class="item-notes"><i class="fa-solid fa-pen-to-square"></i> ${item.notes}</div>` : ''}
-        </div>
-        <span class="totalItemPrice">${totalPrice.toLocaleString()} ${texts.Currency}</span>
-        <span class="removeCartItem"><i class="fa-solid fa-trash-can"></i></span>
-      `;
-                wrapper.appendChild(article);
+                    <div class="cartItemAmountHandlers">
+                      <button class="decrease" type="button"><i class="fa-solid fa-minus"></i></button>
+                      <span class="itemAmount">${item.amount}</span>
+                      <button class="increase" type="button"><i class="fa-solid fa-plus"></i></button>
+                    </div>
+                    <div class="orderedItemMain">
+                      <span class="orderedItemName">${item.name} ${item.customization?.size ? `<small class="cart-item-size">(${item.customization.size.name})</small>` : ''}</span>
+                      <div class="cart-item-badges">
+                        ${item.isCustomized ? `<span class="addons-badge" onclick="event.stopPropagation(); openHardcodedModal(${JSON.stringify(item).replace(/"/g, '&quot;')})">&#1573;&#1590;&#1575;&#1601;&#1575;&#1578;</span>` : ''}
+                        ${(item.customization?.notes || item.notes) ? `<span class="notes-badge" onclick="event.stopPropagation(); if(typeof openNotesModal==='function') openNotesModal('${item.id}', '${item.shopId}'); else openHardcodedModal(${JSON.stringify(item).replace(/"/g, '&quot;')}, null, null, null, null, true)">&#1605;&#1604;&#1575;&#1581;&#1592;&#1575;&#1578;</span>` : ''}
+                      </div>
+                    </div>
+                    <span class="totalItemPrice">${totalPrice.toLocaleString()} ${texts.Currency}</span>
+                    <span class="removeCartItem"><i class="fa-solid fa-trash-can"></i></span>
+                `;
+                itemGroup.appendChild(article);
+
+                // Add Customizations (Extras)
+                if (item.customization) {
+                    const custWrapper = document.createElement("div");
+                    custWrapper.classList.add("cart-item-customizations");
+
+
+                    // Extras
+                    if (item.customization.extras && item.customization.extras.length > 0) {
+                        item.customization.extras.forEach(ex => {
+                            const div = document.createElement("div");
+                            div.classList.add("customization-row");
+                            div.innerHTML = `<span>+ ${ex.name}</span> <span class="cust-price">${(Number(ex.price) || 0).toLocaleString()} ${texts.Currency}</span>`;
+                            custWrapper.appendChild(div);
+                        });
+                    }
+
+                    if (custWrapper.children.length > 0) {
+                        itemGroup.appendChild(custWrapper);
+                    }
+                }
+
+                // Nested Upsells (Rendered below main item with handlers)
+                if (item.customization && item.customization.upsells && item.customization.upsells.length > 0) {
+                    const upsellsWrapper = document.createElement("div");
+                    upsellsWrapper.classList.add("cart-nested-upsells");
+
+                    item.customization.upsells.forEach(upsell => {
+                        const upsellArticle = document.createElement("article");
+                        upsellArticle.classList.add("orderedItem", "upsell-cart-item");
+                        const upsellTotal = (Number(upsell.price) || 0) * (upsell.qty || 0);
+                        
+                        upsellArticle.innerHTML = `
+                            <div class="upsell-connector"></div>
+                            <div class="orderedItemMain">
+                                <span class="orderedItemName">${upsell.name}</span>
+                                <div class="cust-handlers" style="margin-inline-start: 10px;">
+                                    <button onclick="event.stopPropagation(); cart.updateAddonQty('${item.id}', '${upsell.id}', -1, 'upsells', '${item.shopId}')"><i class="fa-solid fa-minus"></i></button>
+                                    <span class="cust-qty-val">${upsell.qty}</span>
+                                    <button onclick="event.stopPropagation(); cart.updateAddonQty('${item.id}', '${upsell.id}', 1, 'upsells', '${item.shopId}')"><i class="fa-solid fa-plus"></i></button>
+                                </div>
+                            </div>
+                            <span class="totalItemPrice">${upsellTotal.toLocaleString()} ${texts.Currency}</span>
+                            <span class="removeUpsellItem" onclick="event.stopPropagation(); cart.removeAddon('${item.id}', '${upsell.id}', 'upsells', '${item.shopId}')"><i class="fa-solid fa-trash-can"></i></span>
+                        `;
+                        upsellsWrapper.appendChild(upsellArticle);
+                    });
+                    itemGroup.appendChild(upsellsWrapper);
+                }
+
+                wrapper.appendChild(itemGroup);
 
                 // Buttons
                 article.querySelector(".increase").onclick = () => cart.increaseItem(item.id, item.shopId);
                 article.querySelector(".decrease").onclick = () => cart.decreaseItem(item.id, item.shopId);
                 article.querySelector(".removeCartItem").onclick = () => cart.removeItem(item.id, item.shopId);
+
+                // Edit Logic for customized items
+                if (item.isCustomized && typeof openHardcodedModal === 'function') {
+                    const editTrigger = article.querySelector(".orderedItemMain");
+                    if (editTrigger) {
+                        editTrigger.style.cursor = "pointer";
+                        editTrigger.onclick = () => openHardcodedModal(item);
+                    }
+                }
             });
         });
 
@@ -696,48 +791,118 @@ function renderCheckoutArticles(items, summary) {
     `;
         article.appendChild(titleDiv);
 
-        // Order info container
-        const orderInfo = document.createElement("div");
-        orderInfo.classList.add("orderInfo");
+            // Order info container
+            const orderInfo = document.createElement("div");
+            orderInfo.classList.add("orderInfo");
 
-        // Labels row
-        const labels = document.createElement("div");
-        labels.classList.add("orderLabels");
-        labels.innerHTML = `
-      <span class="orderName">${texts.Item}</span>
+            // Labels row
+            const labels = document.createElement("div");
+            labels.classList.add("orderLabels");
+            labels.innerHTML = `
+                <span class="orderName">${texts.Item}</span>
+                <span>${texts.Quantity}</span>
+                <span>${texts.Price}</span>
+                <span>${texts.Total}</span>
+                <span>${texts.Remove}</span>
+            `;
+            orderInfo.appendChild(labels);
 
-      <span>${texts.Quantity}</span>
-      <span>${texts.Price}</span>
-      <span>${texts.Total}</span>
-      <span>${texts.Remove}</span>
-    `;
-        orderInfo.appendChild(labels);
+            // Each item row
+            shopGroup.items.forEach(item => {
+                const priceNum = Number(item.price) || 0;
+                let addonsTotal = 0;
+                if (item.customization) {
+                    (item.customization.quickChoices || []).forEach(qc => addonsTotal += (Number(qc.price) || 0) * (qc.qty || 1));
+                    (item.customization.extras || []).forEach(ex => addonsTotal += (Number(ex.price) || 0));
+                    (item.customization.upsells || []).forEach(up => addonsTotal += (Number(up.price) || 0) * (up.qty || 0));
+                }
+                const itemTotal = (priceNum * item.amount) + addonsTotal;
 
-        // Each item row
-        shopGroup.items.forEach(item => {
-            const totalPrice = (item.price * item.amount).toFixed(2);
-            const row = document.createElement("div");
-            row.classList.add("orderStats");
+                const row = document.createElement("div");
+                row.classList.add("orderStats", "checkout-main-item-row");
 
-            row.innerHTML = `
-        <span class="orderName">${item.name} <span class="specialOrder"></span></span>
+                row.innerHTML = `
+                    <span class="orderName">
+                        ${item.name} 
+                        ${item.customization?.size ? `<small class="checkout-item-size">(${item.customization.size.name})</small>` : ''}
+                        <div class="checkout-item-badges">
+                            ${item.isCustomized ? `<span class="addons-badge" onclick="if(typeof openHardcodedModal==='function') openHardcodedModal(${JSON.stringify(item).replace(/"/g, '&quot;')})">&#1573;&#1590;&#1575;&#1601;&#1575;&#1578;</span>` : ''}
+                            ${(item.customization?.notes || item.notes) ? `<span class="notes-badge" onclick="if(typeof openNotesModal==='function') openNotesModal('${item.id}', '${item.shopId}'); else openHardcodedModal(${JSON.stringify(item).replace(/"/g, '&quot;')}, null, null, null, null, true)">&#1605;&#1604;&#1575;&#1581;&#1592;&#1575;&#1578;</span>` : ''}
+                        </div>
+                    </span>
 
-        <div class="cartItemAmountHandlers">
-          <button class="decrease">-</button>
-          <span class="itemAmount">${item.amount}</span>
-          <button class="increase">+</button>
-        </div>
-        <span class="itemPrice">${item.price.toFixed(2)} ${texts.Currency}</span>
-        <span class="itemTotal">${totalPrice} ${texts.Currency}</span>
-        <span class="removeItem"><i class="fa-solid fa-trash"></i></span>
-      `;
-            orderInfo.appendChild(row);
+                    <div class="cartItemAmountHandlers">
+                      <button class="decrease">-</button>
+                      <span class="itemAmount">${item.amount}</span>
+                      <button class="increase">+</button>
+                    </div>
+                    <span class="itemPrice">${item.price.toFixed(2)} ${texts.Currency}</span>
+                    <span class="itemTotal">${itemTotal.toFixed(2)} ${texts.Currency}</span>
+                    <span class="removeItem"><i class="fa-solid fa-trash"></i></span>
+                `;
+                orderInfo.appendChild(row);
 
-            // Handlers
-            row.querySelector(".increase").onclick = () => cart.increaseItem(item.id, item.shopId);
-            row.querySelector(".decrease").onclick = () => cart.decreaseItem(item.id, item.shopId);
-            row.querySelector(".removeItem").onclick = () => cart.removeItem(item.id, item.shopId);
-        });
+                // Add Customizations to Checkout
+                if (item.customization) {
+                    // Quick Choices with qty
+                    (item.customization.quickChoices || []).forEach(qc => {
+                        const exRow = document.createElement("div");
+                        exRow.classList.add("orderStats", "checkout-customization-row");
+                        exRow.innerHTML = `
+                            <span class="orderName"><small>+ ${qc.name}</small></span>
+                            <div class="cust-handlers" style="margin-inline-start: 10px;">
+                                <button onclick="cart.updateAddonQty('${item.id}', '${qc.id}', -1, 'quickChoices', '${item.shopId}')"><i class="fa-solid fa-minus"></i></button>
+                                <span class="cust-qty-val">${qc.qty || 1}</span>
+                                <button onclick="cart.updateAddonQty('${item.id}', '${qc.id}', 1, 'quickChoices', '${item.shopId}')"><i class="fa-solid fa-plus"></i></button>
+                            </div>
+                            <span class="itemPrice">${qc.price} ${texts.Currency}</span>
+                            <span class="itemTotal">${(qc.price * (qc.qty || 1)).toFixed(2)} ${texts.Currency}</span>
+                            <span class="removeItem" onclick="cart.removeAddon('${item.id}', '${qc.id}', 'quickChoices', '${item.shopId}')"><i class="fa-solid fa-trash-can"></i></span>
+                        `;
+                        orderInfo.appendChild(exRow);
+                    });
+
+                    // Extras (legacy)
+                    (item.customization.extras || []).forEach(ex => {
+                        const exRow = document.createElement("div");
+                        exRow.classList.add("orderStats", "checkout-customization-row");
+                        exRow.innerHTML = `
+                            <span class="orderName"><small>+ ${ex.name}</small></span>
+                            <span></span>
+                            <span class="itemPrice">${ex.price} ${texts.Currency}</span>
+                            <span class="itemTotal">${(ex.price).toFixed(2)} ${texts.Currency}</span>
+                            <span></span>
+                        `;
+                        orderInfo.appendChild(exRow);
+                    });
+
+                    // Nested Upsells (Independent qty)
+                    if (item.customization.upsells && item.customization.upsells.length > 0) {
+                        item.customization.upsells.forEach(up => {
+                            const upRow = document.createElement("div");
+                            upRow.classList.add("orderStats", "checkout-upsell-row");
+                            const upTotal = (up.price * up.qty).toFixed(2);
+                            upRow.innerHTML = `
+                                <span class="orderName"><small><i class="fa-solid fa-plus"></i> ${up.name}</small></span>
+                                <div class="cust-handlers" style="margin-inline-start: 10px;">
+                                    <button onclick="cart.updateAddonQty('${item.id}', '${up.id}', -1, 'upsells', '${item.shopId}')"><i class="fa-solid fa-minus"></i></button>
+                                    <span class="cust-qty-val">${up.qty}</span>
+                                    <button onclick="cart.updateAddonQty('${item.id}', '${up.id}', 1, 'upsells', '${item.shopId}')"><i class="fa-solid fa-plus"></i></button>
+                                </div>
+                                <span class="itemPrice">${up.price} ${texts.Currency}</span>
+                                <span class="itemTotal">${upTotal} ${texts.Currency}</span>
+                                <span class="removeItem" onclick="cart.removeAddon('${item.id}', '${up.id}', 'upsells', '${item.shopId}')"><i class="fa-solid fa-trash-can"></i></span>
+                            `;
+                            orderInfo.appendChild(upRow);
+                        });
+                    }
+                }
+
+                // Handlers
+                row.querySelector(".increase").onclick = () => cart.increaseItem(item.id, item.shopId);
+                row.querySelector(".decrease").onclick = () => cart.decreaseItem(item.id, item.shopId);
+                row.querySelector(".removeItem").onclick = () => cart.removeItem(item.id, item.shopId);
+            });
 
         article.appendChild(orderInfo);
         checkoutCart.appendChild(article);

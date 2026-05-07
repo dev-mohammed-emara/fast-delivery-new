@@ -546,6 +546,13 @@ a {
   margin-top: auto;
 }
 
+@media (max-width:480px) {
+  footer {
+    display: none !important;
+  }
+}
+
+
 .footer-grid {
   display: flex;
   justify-content: center;
@@ -2375,13 +2382,15 @@ html[dir="ltr"] .showPassword {
         box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
     }
 }
-  }
+
   .lang-btn {
        background: white;
         color: black;
         box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
         border: none;
   }
+
+
 
   .dropdown {
     position: fixed !important;
@@ -2409,4 +2418,5 @@ html[dir="ltr"] .showPassword {
   .back-to-top {
     bottom: 150px !important;
   }
+
 }

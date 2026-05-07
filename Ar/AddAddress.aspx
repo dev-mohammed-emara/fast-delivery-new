@@ -28,7 +28,7 @@
         .profileContainer { display:grid; grid-template-columns:20% 80%; margin-top:20px; padding:25px 0; border-top:1px solid rgba(0,0,0,0.2); }
         .profileSettings { list-style:none; border-left:1px solid rgba(0,0,0,0.2); padding-left:0; }
         .profileSettings li { padding:10px; }
-        .profileSettings li.active { border-right:2px solid #0056b3; color:#0056b3; }
+        .profileSettings li.active { border-right:2px solid #ff6b00; color:#ff6b00; }
         #map { height:500px; }
         .modal-dialog { max-width:700px; width:95%; }
         .modal-body { padding:0 !important; }
@@ -955,15 +955,15 @@
             font-size: 1.125rem;
             padding: 0.25rem 1.5rem;
             border-radius: 0.5rem;
-            border: 2px solid #0056b3;
+            border: 2px solid #ff6b00;
             transition: var(--transition);
-            background-color: #0056b3;
+            background-color: #ff6b00;
             color: white;
             &:hover;
 
         {
             background-color: transparent;
-            color: #0056b3;
+            color: #ff6b00;
         }
 
         }

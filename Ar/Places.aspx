@@ -206,6 +206,7 @@
         gap: 1.5rem;
         border-bottom: 1px solid rgba(0, 0, 0, 0.1);
         padding: 1rem;
+        
         transition: var(--transition);
 
         img {

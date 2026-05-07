@@ -1,4 +1,4 @@
-﻿using DMS;
+using DMS;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -20,7 +20,8 @@ public partial class Ar_MasterPages_MasterPage : System.Web.UI.MasterPage
             center.LoadAll();
             dlSocial.DataSource = center.DefaultView;
             dlSocial.DataBind();
-            if (!string.IsNullOrEmpty(center.Mobile))
+            string pageName = System.IO.Path.GetFileName(Request.Url.AbsolutePath).ToLower();
+            if ((pageName == "default.aspx" || string.IsNullOrEmpty(pageName)) && !string.IsNullOrEmpty(center.Mobile))
             {
                 // تنظيف الرقم من أي مسافات أو علامات + لضمان عمل الرابط صح
                 string cleanNumber = center.Mobile.Replace(" ", "").Replace("+", "");
@@ -31,7 +32,7 @@ public partial class Ar_MasterPages_MasterPage : System.Web.UI.MasterPage
             }
             else
             {
-                // لو مفيش رقم في القاعدة نخفي الأيقونة
+                // لو مفيش رقم في القاعدة أو مش في الصفحة الرئيسية نخفي الأيقونة
                 lnkWhatsApp.Visible = false;
             }
         }

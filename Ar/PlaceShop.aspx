@@ -37,6 +37,7 @@
 
                 h2 {
                     display: flex;
+                    padding-block: 1rem;
                     justify-content: space-between;
                     gap: 1rem;
                     align-items: start;
@@ -841,8 +842,9 @@
                 color: #333;
                 font-size: 0.8rem;
                 line-height: 1.4;
+                text-align: initial !important;
                 display: -webkit-box;
-                -webkit-line-clamp: 1;
+                -webkit-line-clamp: 3;
                 min-height: fit-content;
                 text-overflow: ellipsis;
                 -webkit-box-orient: vertical;
@@ -1427,71 +1429,14 @@
                             <div class="custom-selection-section">
                                 <h2 class="foodListTitle">&#1575;&#1582;&#1578;&#1575;&#1585; &#1593;&#1604;&#1609; &#1584;&#1608;&#1602;&#1603;</h2>
                                 <div class="custom-grid">
-                                    <div class="foodItem custom-item" id="custom-1" data-price="130" data-product-name="&#1585;&#1576;&#1593; &#1603;&#1610;&#1604;&#1608; &#1588;&#1575;&#1608;&#1585;&#1605;&#1575; &#1601;&#1585;&#1575;&#1582;" onclick="handleProductClick(this, event)">
+                                    <div class="foodItem custom-item" id="custom-shawarma-hardcoded" data-price="130" data-product-name="&#1585;&#1576;&#1593; &#1603;&#1610;&#1604;&#1608; &#1588;&#1575;&#1608;&#1585;&#1605;&#1575; &#1601;&#1585;&#1575;&#1582;" onclick="openHardcodedModal()">
                                         <div class="foodDetailsContainer">
                                             <div class="foodText">
-                                                <h4 class="foodName">&#1585;&#1576;&#1593; &#1603;&#1610;&#1604;&#1608;</h4>
+                                                <h4 class="foodName">&#1585;&#1576;&#1593; &#1603;&#1610;&#1604;&#1608; &#1588;&#1575;&#1608;&#1585;&#1605;&#1575; &#1601;&#1585;&#1575;&#1582;</h4>
                                                 <p class="foodContent">&#1588;&#1575;&#1608;&#1585;&#1605;&#1575; &#1583;&#1580;&#1575;&#1580; &#1605;&#1593; &#1575;&#1604;&#1578;&#1608;&#1605;&#1610;&#1577;</p>
                                             </div>
                                             <div class="foodPricing">
                                                 <span class="foodNewPrice">130 &#1580;.&#1605;</span>
-                                            </div>
-                                        </div>
-                                        <div class="foodImage">
-                                            <div class="product-qty-badge">0</div>
-                                            <img src="images/placeholderImage.webp" alt="product">
-                                            <div class="addToCart">
-                                                <span class="addToCartBtn"><i class="fa-solid fa-angle-left"></i></span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="foodItem custom-item" id="custom-2" data-price="260" data-product-name="&#1606;&#1589;&#1601; &#1603;&#1610;&#1604;&#1608; &#1588;&#1575;&#1608;&#1585;&#1605;&#1575; &#1601;&#1585;&#1575;&#1582;" onclick="handleProductClick(this, event)">
-                                        <div class="foodDetailsContainer">
-                                            <div class="foodText">
-                                                <h4 class="foodName">&#1606;&#1589;&#1601; &#1603;&#1610;&#1604;&#1608;</h4>
-                                                <p class="foodContent">&#1588;&#1575;&#1608;&#1585;&#1605;&#1575; &#1583;&#1580;&#1575;&#1580; &#1604;&#1584;&#1610;&#1584;&#1577;</p>
-                                            </div>
-                                            <div class="foodPricing">
-                                                <span class="foodNewPrice">260 &#1580;.&#1605;</span>
-                                            </div>
-                                        </div>
-                                        <div class="foodImage">
-                                            <div class="product-qty-badge">0</div>
-                                            <img src="images/placeholderImage.webp" alt="product">
-                                            <div class="addToCart">
-                                                <span class="addToCartBtn"><i class="fa-solid fa-angle-left"></i></span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="foodItem custom-item" id="custom-3" data-price="520" data-product-name="&#1603;&#1610;&#1604;&#1608; &#1588;&#1575;&#1608;&#1585;&#1605;&#1575; &#1601;&#1585;&#1575;&#1582;" onclick="handleProductClick(this, event)">
-                                        <div class="foodDetailsContainer">
-                                            <div class="foodText">
-                                                <h4 class="foodName">&#1603;&#1610;&#1604;&#1608; &#1588;&#1575;&#1608;&#1585;&#1605;&#1575;</h4>
-                                                <p class="foodContent">&#1608;&#1580;&#1576;&#1577; &#1593;&#1575;&#1574;&#1604;&#1610;&#1577; &#1605;&#1578;&#1603;&#1575;&#1605;&#1604;&#1577;</p>
-                                            </div>
-                                            <div class="foodPricing">
-                                                <span class="foodNewPrice">520 &#1580;.&#1605;</span>
-                                            </div>
-                                        </div>
-                                        <div class="foodImage">
-                                            <div class="product-qty-badge">0</div>
-                                            <img src="images/placeholderImage.webp" alt="product">
-                                            <div class="addToCart">
-                                                <span class="addToCartBtn"><i class="fa-solid fa-angle-left"></i></span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="foodItem custom-item" id="custom-4" data-price="85" data-product-name="&#1588;&#1575;&#1608;&#1585;&#1605;&#1575; &#1589;&#1575;&#1580;" onclick="handleProductClick(this, event)">
-                                        <div class="foodDetailsContainer">
-                                            <div class="foodText">
-                                                <h4 class="foodName">&#1588;&#1575;&#1608;&#1585;&#1605;&#1575; &#1589;&#1575;&#1580;</h4>
-                                                <p class="foodContent">&#1587;&#1575;&#1606;&#1583;&#1608;&#1578;&#1588; &#1589;&#1575;&#1580; &#1605;&#1605;&#1610;&#1586;</p>
-                                            </div>
-                                            <div class="foodPricing">
-                                                <span class="foodNewPrice">85 &#1580;.&#1605;</span>
                                             </div>
                                         </div>
                                         <div class="foodImage">
@@ -1595,6 +1540,145 @@
                     </figure>
 
 
+
+                    <div id="hardcoded-product-modal-content" style="display:none;">
+                        <div class="full-modal-container">
+                            <div class="modal-banner">
+                                <img src="images/placeholderImage.webp" alt="&#1585;&#1576;&#1593; &#1603;&#1610;&#1604;&#1608; &#1588;&#1575;&#1608;&#1585;&#1605;&#1575; &#1601;&#1585;&#1575;&#1582;">
+                                <button class="modal-close-btn" onclick="Swal.close()">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </div>
+
+                            <div class="modal-content-body">
+                                <div class="modal-main-info">
+                                    <div class="title-price-row">
+                                        <h1>&#1585;&#1576;&#1593; &#1603;&#1610;&#1604;&#1608; &#1588;&#1575;&#1608;&#1585;&#1605;&#1575; &#1601;&#1585;&#1575;&#1582;</h1>
+                                        <span class="compact-price">130 &#1580;.&#1605;</span>
+                                    </div>
+                                    <p class="modal-desc">&#1588;&#1575;&#1608;&#1585;&#1605;&#1575; &#1583;&#1580;&#1575;&#1580; &#1605;&#1593; &#1575;&#1604;&#1578;&#1608;&#1605;&#1610;&#1577;</p>
+                                </div>
+
+                                <div class="modal-section">
+                                    <div class="section-header">
+                                        <h3>&#1575;&#1582;&#1578;&#1575;&#1585; &#1575;&#1604;&#1581;&#1580;&#1605;</h3>
+                                        <span class="required-badge">&#1573;&#1580;&#1576;&#1575;&#1585;&#1610;</span>
+                                    </div>
+                                    <div class="options-list">
+                                        <div class="option-row active"  data-item-id="size-small" data-size-id="size-small" onclick="selectModalOption(this, 0, 'size-small')">
+                                            <span>&#1589;&#1594;&#1610;&#1585;</span>
+                                            <div class="price-radio">
+                                                <span>+0 &#1580;.&#1605;</span>
+                                                <div class="radio-circle"></div>
+                                            </div>
+                                        </div>
+                                        <div class="option-row" data-item-id="size-medium" data-size-id="size-medium" onclick="selectModalOption(this, 50, 'size-medium')">
+                                            <span>&#1608;&#1587;&#1591;</span>
+                                            <div class="price-radio">
+                                                <span>+50 &#1580;.&#1605;</span>
+                                                <div class="radio-circle"></div>
+                                            </div>
+                                        </div>
+                                        <div class="option-row" data-item-id="size-large" data-size-id="size-large" onclick="selectModalOption(this, 100, 'size-large')">
+                                            <span>&#1603;&#1576;&#1610;&#1585;</span>
+                                            <div class="price-radio">
+                                                <span>+100 &#1580;.&#1605;</span>
+                                                <div class="radio-circle"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                 <!-- Other Additions section removed -->
+
+
+                                <div class="modal-section upsell-section">
+                                    <div class="section-header">
+                                        <h3>&#1594;&#1575;&#1604;&#1576;&#1575;&#1611; &#1605;&#1575; &#1610;&#1615;&#1591;&#1604;&#1576; &#1605;&#1593;</h3>
+                                    </div>
+                                    <div class="swiper related-products-swiper">
+                                        <div class="swiper-wrapper">
+                                            <div class="swiper-slide upsell-card-new" data-item-id="upsell-orange-juice" data-upsell-id="upsell-orange-juice">
+                                                <div class="upsell-img-wrapper">
+                                                    <div class="upsell-badge" style="display:none;">1</div>
+                                                    <img src="images/placeholderImage.webp" alt="upsell">
+                                                    <div class="upsell-add-btn" onclick="addUpsellItem(this, 25, 'upsell-orange-juice', '&#1593;&#1589;&#1610;&#1585; &#1576;&#1585;&#1578;&#1602;&#1575;&#1604;')">
+                                                        <i class="fa-solid fa-plus"></i>
+                                                    </div>
+                                                    <div class="qty-control" onclick="event.stopPropagation()">
+                                                        <button onclick="updateUpsellQty(this, -1, 25, 'upsell-orange-juice')"><i class="fa-solid fa-minus"></i></button>
+                                                        <span class="upsell-qty-val">1</span>
+                                                        <button onclick="updateUpsellQty(this, 1, 25, 'upsell-orange-juice')"><i class="fa-solid fa-plus"></i></button>
+                                                    </div>
+                                                </div>
+                                                <div class="upsell-info">
+                                                    <h5>&#1593;&#1589;&#1610;&#1585; &#1576;&#1585;&#1578;&#1602;&#1575;&#1604;</h5>
+                                                    <p>EGP 25.00</p>
+                                                </div>
+                                            </div>
+                                            <div class="swiper-slide upsell-card-new" data-item-id="upsell-green-salad" data-upsell-id="upsell-green-salad">
+                                                <div class="upsell-img-wrapper">
+                                                    <div class="upsell-badge" style="display:none;">1</div>
+                                                    <img src="images/placeholderImage.webp" alt="upsell">
+                                                    <div class="upsell-add-btn" onclick="addUpsellItem(this, 35, 'upsell-green-salad', '&#1587;&#1604;&#1591;&#1577; &#1582;&#1590;&#1585;&#1575;&#1569;')">
+                                                        <i class="fa-solid fa-plus"></i>
+                                                    </div>
+                                                    <div class="qty-control" onclick="event.stopPropagation()">
+                                                        <button onclick="updateUpsellQty(this, -1, 35, 'upsell-green-salad')"><i class="fa-solid fa-minus"></i></button>
+                                                        <span class="upsell-qty-val">1</span>
+                                                        <button onclick="updateUpsellQty(this, 1, 35, 'upsell-green-salad')"><i class="fa-solid fa-plus"></i></button>
+                                                    </div>
+                                                </div>
+                                                <div class="upsell-info">
+                                                    <h5>&#1587;&#1604;&#1591;&#1577; &#1582;&#1590;&#1585;&#1575;&#1569;</h5>
+                                                    <p>EGP 35.00</p>
+                                                </div>
+                                            </div>
+                                            <div class="swiper-slide upsell-card-new" data-item-id="upsell-toum" data-upsell-id="upsell-toum">
+                                                <div class="upsell-img-wrapper">
+                                                    <div class="upsell-badge" style="display:none;">1</div>
+                                                    <img src="images/placeholderImage.webp" alt="upsell">
+                                                    <div class="upsell-add-btn" onclick="addUpsellItem(this, 15, 'upsell-toum', '&#1578;&#1608;&#1605;&#1610;&#1577;')">
+                                                        <i class="fa-solid fa-plus"></i>
+                                                    </div>
+                                                    <div class="qty-control" onclick="event.stopPropagation()">
+                                                        <button onclick="updateUpsellQty(this, -1, 15, 'upsell-toum')"><i class="fa-solid fa-minus"></i></button>
+                                                        <span class="upsell-qty-val">1</span>
+                                                        <button onclick="updateUpsellQty(this, 1, 15, 'upsell-toum')"><i class="fa-solid fa-plus"></i></button>
+                                                    </div>
+                                                </div>
+                                                <div class="upsell-info">
+                                                    <h5>&#1578;&#1608;&#1605;&#1610;&#1577;</h5>
+                                                    <p>EGP 15.00</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                  <div class="modal-section">
+                                    <div class="section-header">
+                                        <h3>&#1605;&#1604;&#1581;&#1592;&#1575;&#1578;</h3>
+                                        <span class="optional-badge">&#1575;&#1582;&#1578;&#1610;&#1575;&#1585;&#1610;</span>
+                                    </div>
+                                    <textarea id="product-notes" placeholder="&#1571;&#1590;&#1601; &#1605;&#1604;&#1581;&#1592;&#1575;&#1578;&#1603; &#1607;&#1606;&#1575;..."></textarea>
+                                </div>
+
+                            </div>
+
+                            <div class="modal-footer-sticky">
+                                <div class="qty-control">
+                                    <button onclick="updateModalQty(-1)"><i class="fa-solid fa-minus"></i></button>
+                                    <span id="modal-qty">1</span>
+                                    <button onclick="updateModalQty(1)"><i class="fa-solid fa-plus"></i></button>
+                                </div>
+                                <button class="add-to-cart-big" onclick="submitModalCart()">
+                                    <span>&#1573;&#1590;&#1575;&#1601;&#1577; &#1575;&#1604;&#1587;&#1604;&#1577;</span>
+                                    <strong id="modal-total-price">130 &#1580;.&#1605;</strong>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
 
                     <article id="shoppingCart">
                         <div id="cartHolder">
@@ -1732,7 +1816,7 @@
             border-bottom-left-radius: 0 !important;
             border-bottom-right-radius: 0 !important;
             margin: 0 !important;
-            max-height: 80vh;
+            max-height: 90vh;
             overflow: hidden;
         }
 
@@ -1874,28 +1958,94 @@
             height: 24px;
             font-size: 10px;
         }
-        .upsell-card-new .qty-control .upsell-qty-val {
-            font-size: 12px;
-            min-width: 15px;
-            text-align: center;
-        }
-
-        .upsell-badge {
+        .upsell-card-new .upsell-badge {
             position: absolute;
-            top: 5px;
-            right: 5px;
-            background: #ffc119;
-            color: #fff;
+            top: 8px;
+            right: 8px;
+            background: #ff6b00;
+            color: white;
             width: 22px;
             height: 22px;
             border-radius: 50%;
-            display: flex;
+            display: none;
             align-items: center;
             justify-content: center;
             font-size: 11px;
             font-weight: bold;
-            z-index: 15;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 11;
+            border: 2px solid white;
+        }
+
+        /* Cart Badge Styles */
+        .cart-item-badges {
+            display: flex;
+            flex-direction: row;
+            gap: 8px;
+            margin-top: 5px;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+        }
+
+        .addons-badge, .notes-badge {
+            font-size: 0.7rem;
+            padding: 3px 10px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        .addons-badge {
+            background: #e7f3ff;
+            color: #007bff;
+            border: 1px solid #cce5ff;
+        }
+
+        .notes-badge {
+            background: #fff4e5;
+            color: #ff9800;
+            border: 1px solid #ffe8cc;
+        }
+
+        .addons-badge:hover, .notes-badge:hover {
+            transform: scale(1.05);
+            background: #f0f0f0;
+        }
+
+        .cart-item-size {
+            display: block;
+            font-size: 0.8rem;
+            color: #777;
+            margin-top: 2px;
+        }
+
+        .customized-cart-item .orderedItemName {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .checkout-item-size {
+            font-size: 0.85rem;
+            color: #888;
+            margin-right: 5px;
+        }
+
+        .checkout-item-badges {
+            display: inline-flex;
+            gap: 5px;
+            margin-right: 10px;
+        }
+
+        .checkout-item-badges .addons-badge,
+        .checkout-item-badges .notes-badge {
+            cursor: pointer;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
         }
 
         /* Bottom Sheet Animations */
@@ -1914,14 +2064,242 @@
             animation: slideOutDownCustom 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
         }
 
+        /* Nested Upsells in Cart */
+        .cart-item-group {
+            background: #fff;
+            border: 1px solid #f0f0f0;
+            border-radius: 1.25rem;
+            margin-bottom: 1rem;
+            min-height: fit-content;
+            padding: 0.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+        .cart-item-group:hover {
+            border-color: var(--fd-blue);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+        }
+        .cart-item-group .orderedItem {
+            border: none !important;
+            background: transparent !important;
+            margin-bottom: 0 !important;
+            padding-bottom: 0.75rem !important;
+        }
+        .cart-item-customizations {
+            padding: 8px 12px 8px 45px;
+            margin-top: 2px;
+            border-top: 1px dashed #eee;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            background: #fcfcfc;
+        }
+        .customization-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: #777;
+            align-items: center;
+        }
+        .customization-row span:first-child {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .customization-row span:first-child::before {
+            content: "•";
+            color: var(--fd-blue);
+            font-weight: bold;
+        }
+        .cust-price {
+            font-weight: 600;
+            color: #444;
+            font-size: 0.8rem;
+        }
+        .cart-nested-upsells {
+            margin-top: 2px;
+        }
+        .upsell-cart-item {
+            background: #f9f9f9 !important;
+            padding: 8px 12px 8px 15px !important;
+            border: none !important;
+            border-right: 3px solid #ffc119 !important;
+            margin-bottom: 2px !important;
+            border-radius: 0 !important;
+            opacity: 0.95;
+            display: flex !important;
+            align-items: center;
+        }
+        .upsell-connector {
+            width: 15px;
+            height: 2px;
+            background: #ffc119;
+            margin-left: 8px;
+            opacity: 0.5;
+        }
+        .upsell-qty-label {
+            color: #ffc119;
+            font-weight: 700;
+            margin-inline-start: 5px;
+        }
+        .removeUpsellItem {
+            color: #ccc;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 5px;
+            margin-inline-start: auto;
+        }
+        .removeUpsellItem:hover {
+            color: #ff4d4d;
+        }
+
         .bottom-sheet-modal {
             border-bottom-left-radius: 0 !important;
             border-bottom-right-radius: 0 !important;
+            max-width: 800px;
         }
 
         .fav-nav-icon.active i {
             color: palevioletred  !important;
         }
+
+        /* Cart Addon Handlers */
+        .cust-handlers {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f8f8f8;
+            padding: 4px 10px;
+            border-radius: 20px;
+            border: 1px solid #eee;
+            margin-inline-start: 10px;
+        }
+        .cust-handlers button {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: none;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+            cursor: pointer;
+            color: var(--fd-blue);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: all 0.2s;
+        }
+        .cust-handlers button:hover {
+            background: var(--fd-blue);
+            color: #fff;
+        }
+        .cust-qty-val {
+            font-weight: 800;
+            font-size: 11px;
+            min-width: 12px;
+            text-align: center;
+            color: #333;
+        }
+        .remove-addon-btn, .removeUpsellItem {
+            margin-inline-start: 8px;
+            color: #ddd;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+        .remove-addon-btn:hover, .removeUpsellItem:hover {
+            color: #ff4d4d;
+        }
+        .cust-row-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-grow: 1;
+        }
+        .customization-row {
+            flex-direction: row !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 10px 0 !important;
+            border-bottom: 1px dashed #eee;
+            display: flex !important;
+        }
+        .customization-row:last-child {
+            border-bottom: none;
+        }
+
+        .compact-modal-container .swal2-textarea {
+            border-radius: 15px !important;
+            padding: 15px !important;
+            border: 1px solid #eee !important;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02) !important;
+            font-size: 0.95rem !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+        }
+        .notes-badge {
+            background: #e6f3ff;
+            color: #007bff;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-inline-start: 5px;
+        }
+
+        /* Modal Radio-like behavior styling removed/updated */
+        .quick-card.active .check-box {
+            display: none !important;
+        }
+        .quick-card.active {
+            border-color: var(--fd-blue) !important;
+            background-color: #fff9e6 !important;
+        }
+
+        .quick-qty-control {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            display: none;
+            align-items: center;
+            background: #fff;
+            border: 1px solid var(--fd-blue);
+            border-radius: 20px;
+            padding: 2px 6px;
+            gap: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            z-index: 5;
+        }
+        .quick-card.active .quick-qty-control {
+            display: flex;
+        }
+        .quick-qty-control button {
+            background: var(--fd-blue);
+            color: #fff;
+            border: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .quick-qty-control button:hover {
+            transform: scale(1.1);
+            background: #ff6b00;
+        }
+        .quick-qty-val {
+            font-weight: 700;
+            font-size: 14px;
+            min-width: 18px;
+            text-align: center;
+            color: #333;
+        }
+
         </style>
 
     <script>
@@ -1929,29 +2307,23 @@
 
         function openProductModal(triggerEl, productName, description = "\u0637\u0639\u0645 \u0644\u0627 \u064a\u0642\u0627\u0648\u0645 \u0645\u062d\u0636\u0631 \u0645\u0646 \u0623\u062c\u0648\u062f \u0627\u0644\u0645\u0643\u0648\u0646\u0627\u062a", isCustom = false, price = 100) {
             currentTriggeringProduct = triggerEl;
-            window.history.pushState({ modal: 'product' }, '');
+            if (isCustom) {
+                openHardcodedModal(null, productName, price, triggerEl, description);
+                return;
+            }
 
+            window.history.pushState({ modal: 'product' }, '');
             basePrice = price;
             addonsPrice = 0;
             quantity = 1;
 
             const modalOptions = {
                 html: `
-                    <div class="${isCustom ? 'full-modal-container' : 'compact-modal-container'}">
-                        ${isCustom ? `
-                        <div class="modal-banner">
-                            <img src="${triggerEl.querySelector('img')?.src || 'images/placeholderImage.webp'}" alt="${productName}">
-                            <button class="modal-close-btn" onclick="Swal.close()">
-                                <i class="fa-solid fa-xmark"></i>
-                            </button>
-                        </div>
-                        ` : `
+                    <div class="compact-modal-container">
                         <div class="compact-modal-header">
                             <div class="handle"></div>
                             <button class="compact-close" onclick="Swal.close()"><i class="fa-solid fa-xmark"></i></button>
                         </div>
-                        `}
-
                         <div class="modal-content-body">
                             <div class="modal-main-info">
                                 <div class="title-price-row">
@@ -1960,67 +2332,6 @@
                                 </div>
                                 <p class="modal-desc">${description}</p>
                             </div>
-
-                            ${isCustom ? `
-                            <div class="modal-section">
-                                <div class="section-header">
-                                    <h3>\u0627\u062e\u062a\u0627\u0631 \u0627\u0644\u062d\u062c\u0645</h3>
-                                    <span class="required-badge">\u0625\u062c\u0628\u0627\u0631\u064a</span>
-                                </div>
-                                <div class="options-list">
-                                    <div class="option-row active" onclick="selectModalOption(this, 0)">
-                                        <span>\u0635\u063a\u064a\u0631</span>
-                                        <div class="price-radio">
-                                            <span>+0 \u062c.\u0645</span>
-                                            <div class="radio-circle"></div>
-                                        </div>
-                                    </div>
-                                    <div class="option-row" onclick="selectModalOption(this, 50)">
-                                        <span>\u0648\u0633\u0637</span>
-                                        <div class="price-radio">
-                                            <span>+50 \u062c.\u0645</span>
-                                            <div class="radio-circle"></div>
-                                        </div>
-                                    </div>
-                                    <div class="option-row" onclick="selectModalOption(this, 100)">
-                                        <span>\u0643\u0628\u064a\u0631</span>
-                                        <div class="price-radio">
-                                            <span>+100 \u062c.\u0645</span>
-                                            <div class="radio-circle"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="modal-section">
-                                <div class="section-header">
-                                    <h3>\u0627\u0622\u0642\u062a\u0631\u0627\u062d\u0627\u062a \u0633\u0631\u064a\u0639\u0629</h3>
-                                    <span class="optional-badge">\u0627\u062e\u062a\u064a\u0627\u0631\u064a</span>
-                                </div>
-                                <div class="swiper quick-choices-swiper">
-                                    <div class="swiper-wrapper">
-                                        <div class="swiper-slide quick-card" onclick="toggleQuickChoice(this, 25)">
-                                            <div class="quick-card-badge"><i class="fa-solid fa-fire"></i> \u0631\u0627\u0626\u062c</div>
-                                            <h4>\u0646\u0648\u062a\u064a\u0644\u0627</h4>
-                                            <p>+25 \u062c.\u0645</p>
-                                            <div class="check-box"></div>
-                                        </div>
-                                        <div class="swiper-slide quick-card" onclick="toggleQuickChoice(this, 15)">
-                                            <h4>\u0645\u0643\u0633\u0631\u0627\u062a</h4>
-                                            <p>+15 \u062c.\u0645</p>
-                                            <div class="check-box"></div>
-                                        </div>
-                                        <div class="swiper-slide quick-card" onclick="toggleQuickChoice(this, 30)">
-                                            <div class="quick-card-badge"><i class="fa-solid fa-fire"></i> \u0627\u0624\u0643\u062b\u0631 \u0645\u0628\u064a\u0639\u0627\u064b</div>
-                                            <h4>\u0625\u0636\u0627\u0641\u0629 \u062c\u0628\u0646\u0629</h4>
-                                            <p>+30 \u062c.\u0645</p>
-                                            <div class="check-box"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            ` : ''}
-
                             <div class="modal-section">
                                 <div class="section-header">
                                     <h3>\u0645\u0644\u0627\u062d\u0638\u0627\u062a</h3>
@@ -2028,95 +2339,6 @@
                                 </div>
                                 <textarea id="product-notes" placeholder="\u0623\u0636\u0641 \u0645\u0644\u0627\u062d\u0638\u0627\u062a\u0643 \u0647\u0646\u0627..."></textarea>
                             </div>
-
-                            ${isCustom ? `
-                            <div class="modal-section">
-                                <div class="section-header">
-                                    <h3>\u0625\u0636\u0627\u0641\u0627\u062a \u0623\u062e\u0631\u0649</h3>
-                                    <span class="optional-badge">\u0627\u062e\u062a\u064a\u0627\u0631\u064a</span>
-                                </div>
-                                <div class="extras-list">
-                                    <div class="extra-item" onclick="toggleExtra(this, 10)">
-                                        <div class="extra-text">
-                                            <span>\u0639\u0633\u0644</span>
-                                            <small>+10 \u062c.\u0645</small>
-                                        </div>
-                                        <div class="check-box"></div>
-                                    </div>
-                                    <div class="extra-item" onclick="toggleExtra(this, 20)">
-                                        <div class="extra-text">
-                                            <span>\u0641\u0648\u0627\u0643\u0647</span>
-                                            <small>+20 \u062c.\u0645</small>
-                                        </div>
-                                        <div class="check-box"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="modal-section upsell-section">
-                                <div class="section-header">
-                                    <h3>\u063a\u0627\u0644\u0628\u0627\u064b \u0645\u0627 \u064a\u064f\u0637\u0644\u0628 \u0645\u0639</h3>
-                                </div>
-                                <div class="swiper related-products-swiper">
-                                    <div class="swiper-wrapper">
-                                        <div class="swiper-slide upsell-card-new">
-                                            <div class="upsell-img-wrapper">
-                                                <div class="upsell-badge" style="display:none;">1</div>
-                                                <img src="images/placeholderImage.webp" alt="upsell">
-                                                <div class="upsell-add-btn" onclick="addUpsellItem(this, 25)">
-                                                    <i class="fa-solid fa-plus"></i>
-                                                </div>
-                                                <div class="qty-control" onclick="event.stopPropagation()">
-                                                    <button onclick="updateUpsellQty(this, -1, 25)"><i class="fa-solid fa-minus"></i></button>
-                                                    <span class="upsell-qty-val">1</span>
-                                                    <button onclick="updateUpsellQty(this, 1, 25)"><i class="fa-solid fa-plus"></i></button>
-                                                </div>
-                                            </div>
-                                            <div class="upsell-info">
-                                                <h5>\u0639\u0635\u064a\u0631 \u0628\u0631\u062a\u0642\u0627\u0644</h5>
-                                                <p>EGP 25.00</p>
-                                            </div>
-                                        </div>
-                                        <div class="swiper-slide upsell-card-new">
-                                            <div class="upsell-img-wrapper">
-                                                <div class="upsell-badge" style="display:none;">1</div>
-                                                <img src="images/placeholderImage.webp" alt="upsell">
-                                                <div class="upsell-add-btn" onclick="addUpsellItem(this, 35)">
-                                                    <i class="fa-solid fa-plus"></i>
-                                                </div>
-                                                <div class="qty-control" onclick="event.stopPropagation()">
-                                                    <button onclick="updateUpsellQty(this, -1, 35)"><i class="fa-solid fa-minus"></i></button>
-                                                    <span class="upsell-qty-val">1</span>
-                                                    <button onclick="updateUpsellQty(this, 1, 35)"><i class="fa-solid fa-plus"></i></button>
-                                                </div>
-                                            </div>
-                                            <div class="upsell-info">
-                                                <h5>\u0633\u0644\u0637\u0629 \u062e\u0636\u0631\u0627\u0621</h5>
-                                                <p>EGP 35.00</p>
-                                            </div>
-                                        </div>
-                                        <div class="swiper-slide upsell-card-new">
-                                            <div class="upsell-img-wrapper">
-                                                <div class="upsell-badge" style="display:none;">1</div>
-                                                <img src="images/placeholderImage.webp" alt="upsell">
-                                                <div class="upsell-add-btn" onclick="addUpsellItem(this, 15)">
-                                                    <i class="fa-solid fa-plus"></i>
-                                                </div>
-                                                <div class="qty-control" onclick="event.stopPropagation()">
-                                                    <button onclick="updateUpsellQty(this, -1, 15)"><i class="fa-solid fa-minus"></i></button>
-                                                    <span class="upsell-qty-val">1</span>
-                                                    <button onclick="updateUpsellQty(this, 1, 15)"><i class="fa-solid fa-plus"></i></button>
-                                                </div>
-                                            </div>
-                                            <div class="upsell-info">
-                                                <h5>\u062a\u0648\u0645\u064a\u0629</h5>
-                                                <p>EGP 15.00</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            ` : ''}
                         </div>
 
                         <div class="modal-footer-sticky">
@@ -2133,20 +2355,15 @@
                     </div>
                 `,
                 showConfirmButton: false,
-                width: isCustom ? '600px' : '100%',
+                width: '100%',
                 padding: '0',
                 background: '#f8f9fa',
-                position: isCustom ? 'center' : 'bottom',
-                customClass: { popup: isCustom ? 'product-modal-popup' : 'bottom-sheet-modal' },
+                position: 'bottom',
+                customClass: { popup: 'bottom-sheet-modal' },
                 scrollbarPadding: false,
-                showClass: { popup: isCustom ? 'swal2-show' : 'animate__animated animate__slideInUp animate__faster' },
-                hideClass: { popup: isCustom ? 'swal2-hide' : 'animate__animated animate__slideOutDown animate__faster' },
-                didOpen: () => {
-                    if (isCustom) {
-                        new Swiper('.quick-choices-swiper', { slidesPerView: 'auto', spaceBetween: 12, freeMode: true });
-                        new Swiper('.related-products-swiper', { slidesPerView: 'auto', spaceBetween: 12, freeMode: true });
-                    }
-                },
+                showClass: { popup: 'animate__animated animate__slideInUp animate__faster' },
+                hideClass: { popup: 'animate__animated animate__slideOutDown animate__faster' },
+                didOpen: () => { },
                 willClose: () => {
                     if (window.history.state && window.history.state.modal === 'product') {
                         window.history.back();
@@ -2194,35 +2411,79 @@
         let addonsPrice = 0;
         let quantity = 1;
 
-        function selectModalOption(el, addPrice) {
+        function selectModalOption(el, addPrice, sizeId) {
             el.parentElement.querySelectorAll('.option-row').forEach(r => r.classList.remove('active'));
             el.classList.add('active');
-            basePrice = 100 + addPrice;
+
+            // Get original base price from the triggering product or current state
+            const origBase = (currentTriggeringProduct ? parseFloat(currentTriggeringProduct.getAttribute('data-price')) : 130) || 130;
+            basePrice = origBase + addPrice;
+
+            currentCustomization.size = {
+                id: sizeId,
+                name: el.querySelector('span').innerHTML,
+                price: addPrice
+            };
+
+            updateModalTotal();
+        }
+        window.openNotesModal = function(itemId, shopId) {
+            const currentCart = window.cart || cart;
+            const item = currentCart.items.find(i => i.id === itemId && i.shopId === shopId);
+            if (!item) return;
+
+            const existingNotes = item.customization?.notes || item.notes || '';
+
+            Swal.fire({
+                title: '&#1605;&#1604;&#1575;&#1581;&#1592;&#1575;&#1578; &#1575;&#1604;&#1591;&#1604;&#1576;',
+                input: 'textarea',
+                inputLabel: item.name,
+                inputValue: existingNotes,
+                inputPlaceholder: '&#1571;&#1590;&#1601; &#1605;&#1604;&#1575;&#1581;&#1592;&#1575;&#1578;&#1603; &#1607;&#1606;&#1575;...',
+                showCancelButton: true,
+                confirmButtonText: '&#1581;&#1601;&#1592;',
+                cancelButtonText: '&#1573;&#1604;&#1594;&#1575;&#1569;',
+                customClass: {
+                    container: 'compact-modal-container',
+                    popup: 'bottom-sheet-modal'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const newNotes = result.value;
+                    if (!item.customization) item.customization = {};
+                    item.customization.notes = newNotes;
+                    item.notes = newNotes;
+                    currentCart.save();
+                }
+            });
+        };
+
+
+        function toggleExtra(el, price, id) {
+            // Section removed but function kept for compatibility if called
+            el.classList.toggle('active');
+            recalculateAddonsPrice();
             updateModalTotal();
         }
 
-        function toggleQuickChoice(el, price) {
-            el.classList.toggle('active');
-            addonsPrice += el.classList.contains('active') ? price : -price;
-            updateModalTotal();
-        }
-
-        function toggleExtra(el, price) {
-            el.classList.toggle('active');
-            addonsPrice += el.classList.contains('active') ? price : -price;
-            updateModalTotal();
+        function recalculateAddonsPrice() {
+            let total = 0;
+            if (currentCustomization.extras) currentCustomization.extras.forEach(x => total += (x.price || 0));
+            if (currentCustomization.upsells) currentCustomization.upsells.forEach(x => total += ((x.price || 0) * (x.qty || 0)));
+            addonsPrice = total;
         }
 
         function updateModalQty(delta) {
             quantity = Math.max(1, quantity + delta);
-            document.getElementById('modal-qty').innerText = quantity;
+            const qtyEl = document.querySelector('.swal2-container #modal-qty') || document.getElementById('modal-qty');
+            if (qtyEl) qtyEl.innerText = quantity;
             updateModalTotal();
         }
 
         function updateModalTotal() {
-            const total = (basePrice + addonsPrice) * quantity;
-            const el = document.getElementById('modal-total-price');
-            if (el) el.innerText = total + ' \u062c.\u0645';
+            const total = (basePrice * quantity) + addonsPrice;
+            const el = document.querySelector('.swal2-container #modal-total-price') || document.getElementById('modal-total-price');
+            if (el) el.innerText = total + ' &#1580;.&#1605;';
         }
 
         function handleProductClick(el, event) {
@@ -2280,7 +2541,9 @@
             const counts = {};
             window.cart.items.forEach(item => {
                 if (String(item.shopId) === shopId) {
-                    counts[item.id] = (counts[item.id] || 0) + item.amount;
+                    // Get base ID (remove size suffix if exists)
+                    const baseId = item.id.split('-size-')[0];
+                    counts[baseId] = (counts[baseId] || 0) + item.amount;
                 }
             });
 
@@ -2317,31 +2580,66 @@
             setTimeout(syncProductBadges, 500); // Wait for cart initialization
         });
 
+        let currentEditItem = null;
+
         function submitModalCart() {
-            const productName = document.querySelector('.product-modal-popup h1').innerText;
-            const notes = document.getElementById('product-notes')?.value || '';
-            const item = {
-                id: currentTriggeringProduct?.id || ('custom-' + Date.now()),
+            const popup = document.querySelector('.swal2-popup');
+            if (!popup) {
+                Swal.close();
+                return;
+            }
+
+            const productName = popup.querySelector('h1')?.innerText || 'Product';
+            const notesEl = popup.querySelector('#product-notes') || popup.querySelector('textarea');
+            const notes = notesEl?.value || '';
+
+            const shopId = String(document.getElementById('shopId')?.innerText.trim() || '');
+            const shopName = document.querySelector('.shop-header-info h1')?.innerText || '';
+
+            // Unique ID based on product ID and size ID
+            const baseId = currentTriggeringProduct?.id || (currentEditItem ? currentEditItem.id.split('-size-')[0] : 'custom');
+            const sizeSuffix = (currentCustomization && currentCustomization.size) ? `-size-${currentCustomization.size.id}` : '';
+            const uniqueId = baseId + sizeSuffix;
+
+            const mainItem = {
+                id: uniqueId,
                 name: productName,
-                price: basePrice + addonsPrice,
-                hasAddons: (addonsPrice > 0) || (notes.length > 0),
-                notes: notes
+                price: basePrice,
+                isCustomized: !!(currentCustomization && ((currentCustomization.upsells && currentCustomization.upsells.length > 0) || (currentCustomization.size && currentCustomization.size.id !== 'size-small'))),
+                customization: currentCustomization ? {
+                    size: currentCustomization.size,
+                    extras: [...currentCustomization.extras],
+                    upsells: [...currentCustomization.upsells],
+                    notes: notes
+                } : { notes: notes },
+                shopId: shopId,
+                shopName: shopName,
+                notes: notes,
+                image: popup.querySelector('.modal-banner img')?.src || ''
             };
+            mainItem.hasAddons = mainItem.isCustomized;
 
             if (window.cart) {
-                window.cart.addItem(item, quantity);
+                // If we are editing, replace the old item
+                if (currentEditItem) {
+                    window.cart.removeItem(currentEditItem.id, currentEditItem.shopId);
+                }
+
+                window.cart.addItem(mainItem, quantity);
             }
 
             Swal.close();
             Swal.fire({
                 icon: 'success',
-                title: '\u062a\u0645\u062a \u0627\u0644\u0625\u0636\u0627\u0641\u0629',
+                title: '&#1578;&#1605;&#1578; &#1575;&#1604;&#1573;&#1590;&#1575;&#1601;&#1577; &#1576;&#1606;&#1580;&#1575;&#1581;',
                 timer: 1500,
-                showConfirmButton: false
+                showConfirmButton: false,
+                toast: true,
+                position: 'top-end'
             });
         }
 
-        function addUpsellItem(btn, price) {
+        function addUpsellItem(btn, price, id, name) {
             const wrapper = btn.closest('.upsell-img-wrapper');
             const qtyCtrl = wrapper.querySelector('.qty-control');
             const badge = wrapper.querySelector('.upsell-badge');
@@ -2353,11 +2651,12 @@
                 badge.innerText = '1';
             }
 
+            currentCustomization.upsells.push({ id: id, name: name, price: price, qty: 1 });
             addonsPrice += price;
             updateModalTotal();
         }
 
-        function updateUpsellQty(btn, delta, price) {
+        function updateUpsellQty(btn, delta, price, id) {
             const container = btn.closest('.qty-control');
             const valSpan = container.querySelector('.upsell-qty-val');
             let currentQty = parseInt(valSpan.innerText);
@@ -2365,11 +2664,18 @@
             const newQty = Math.max(0, currentQty + delta);
             valSpan.innerText = newQty;
 
+            // Update customization state
+            const upsell = currentCustomization.upsells.find(x => x.id === id);
+            if (upsell) {
+                upsell.qty = newQty;
+            }
+
             // Update modal price
             addonsPrice += (delta * price);
             updateModalTotal();
 
             if (newQty === 0) {
+                currentCustomization.upsells = currentCustomization.upsells.filter(x => x.id !== id);
                 const wrapper = btn.closest('.upsell-img-wrapper');
                 wrapper.querySelector('.upsell-add-btn').style.display = 'flex';
                 wrapper.querySelector('.upsell-badge').style.display = 'none';
@@ -2390,11 +2696,65 @@
         };
 
         function openSizesModal(el, name) { openProductModal(el, name); }
-
         function selectSwalSize(el) {
             document.querySelectorAll('.size-option').forEach(opt => opt.classList.remove('active'));
             el.classList.add('active');
-        }        function toggleFavorite(event, element) {
+        }
+
+        function openProductModal(triggerEl, name, desc, isCustom, price) {
+            if (isCustom) {
+                openHardcodedModal(null, name, price, triggerEl, desc);
+            } else {
+                openSimpleNotesModal(triggerEl, name, price);
+            }
+        }
+
+        function openSimpleNotesModal(el, name, price) {
+            const id = el.getAttribute('id');
+            const shopId = String(document.getElementById('shopId')?.innerText.trim() || '');
+            const shopName = document.querySelector('.shop-header-info h1')?.innerText || '';
+
+            // Check if already in cart to pre-populate notes
+            const existingInCart = window.cart?.items.find(i => i.id === id && i.shopId === shopId);
+            const existingNotes = existingInCart ? (existingInCart.customization?.notes || existingInCart.notes || '') : '';
+
+            Swal.fire({
+                title: '&#1605;&#1604;&#1575;&#1581;&#1592;&#1575;&#1578; &#1575;&#1604;&#1591;&#1604;&#1576;',
+                input: 'textarea',
+                inputLabel: name,
+                inputValue: existingNotes,
+                inputPlaceholder: '&#1571;&#1590;&#1601; &#1605;&#1604;&#1575;&#1581;&#1592;&#1575;&#1578;&#1603; &#1607;&#1606;&#1575;...',
+                showCancelButton: true,
+                confirmButtonText: existingInCart ? '&#1581;&#1601;&#1592;' : '&#1573;&#1590;&#1575;&#1601;&#1577; &#1604;&#1604;&#1587;&#1604;&#1577;',
+                cancelButtonText: '&#1573;&#1604;&#1594;&#1575;&#1569;',
+                customClass: {
+                    container: 'compact-modal-container',
+                    popup: 'bottom-sheet-modal'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const notes = result.value || '';
+                    if (window.cart) {
+                        if (existingInCart) {
+                            if (!existingInCart.customization) existingInCart.customization = {};
+                            existingInCart.customization.notes = notes;
+                            existingInCart.notes = notes;
+                            window.cart.save();
+                        } else {
+                            window.cart.addItem({
+                                id, name, price,
+                                shopId, shopName,
+                                notes: notes,
+                                customization: { notes: notes }
+                            }, 1);
+                        }
+                        syncProductBadges();
+                    }
+                }
+            });
+        }
+
+        function toggleFavorite(event, element) {
             if (event) {
                 event.preventDefault();
                 event.stopPropagation();
@@ -2561,6 +2921,103 @@
             });
         }
 
+        function openHardcodedModal(editItem = null, prodName = null, prodPrice = null, triggerEl = null, prodDesc = null, focusNotes = false) {
+            // Reset modal state
+            currentEditItem = editItem;
+            basePrice = prodPrice || 130;
+            addonsPrice = 0;
+            quantity = editItem ? editItem.amount : 1;
+            currentCustomization = {
+                size: { id: 'size-small', name: '&#1589;&#1594;&#1610;&#1585;', price: 0 },
+                extras: [],
+                upsells: []
+            };
+
+            const actualName = prodName || (editItem ? editItem.name : '&#1585;&#1576;&#1593; &#1603;&#1610;&#1604;&#1608; &#1588;&#1575;&#1608;&#1585;&#1605;&#1575; &#1601;&#1585;&#1575;&#1582;');
+            const actualImg = (triggerEl ? triggerEl.querySelector('img')?.src : null) || (editItem ? editItem.image : 'images/placeholderImage.webp');
+            const actualDesc = prodDesc || (editItem ? editItem.description : '&#1588;&#1575;&#1608;&#1585;&#1605;&#1575; &#1583;&#1580;&#1575;&#1580; &#1605;&#1593; &#1575;&#1604;&#1578;&#1608;&#1605;&#1610;&#1577;');
+
+            // If editing, populate state
+            if (editItem && editItem.customization) {
+                currentCustomization.size = { ...editItem.customization.size };
+                currentCustomization.extras = [...editItem.customization.extras];
+                currentCustomization.upsells = editItem.customization.upsells ? [...editItem.customization.upsells] : [];
+
+                basePrice = (prodPrice || 130) + (currentCustomization.size ? (currentCustomization.size.price || 0) : 0);
+                addonsPrice = currentCustomization.extras.reduce((s, x) => s + (x.price || 0), 0) +
+                              currentCustomization.upsells.reduce((s, x) => s + (x.price * x.qty), 0);
+            }
+
+            Swal.fire({
+                html: document.getElementById('hardcoded-product-modal-content').innerHTML,
+                showConfirmButton: false,
+                width: '600px',
+                padding: '0',
+                background: '#f8f9fa',
+                customClass: { popup: 'product-modal-popup' },
+                didOpen: () => {
+                    const popup = document.querySelector('.swal2-popup');
+
+                    // Set dynamic content
+                    popup.querySelector('h1').innerHTML = actualName;
+                    popup.querySelector('.compact-price').innerHTML = (basePrice + addonsPrice) + ' &#1580;.&#1605;';
+                    popup.querySelector('.modal-banner img').src = actualImg;
+                    popup.querySelector('.modal-desc').innerHTML = actualDesc;
+                    popup.querySelector('#modal-qty').innerText = quantity;
+
+                    const notesArea = popup.querySelector('#product-notes') || popup.querySelector('textarea');
+                    if (notesArea) notesArea.value = editItem ? (editItem.customization?.notes || editItem.notes || '') : '';
+
+                    if (focusNotes && notesArea) {
+                        setTimeout(() => {
+                            notesArea.focus();
+                            notesArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }, 500);
+                    }
+
+                    // Pre-select size
+                    if (currentCustomization.size) {
+                        const sizeRow = popup.querySelector(`.option-row[data-size-id="${currentCustomization.size.id}"]`);
+                        if (sizeRow) {
+                            popup.querySelectorAll('.option-row').forEach(r => r.classList.remove('active'));
+                            sizeRow.classList.add('active');
+                        }
+                    }
+
+
+                    // Pre-select extras
+                    currentCustomization.extras.forEach(ex => {
+                        const exRow = popup.querySelector(`.extra-item[data-quickOption-id="${ex.id}"]`);
+                        if (exRow) exRow.classList.add('active');
+                    });
+
+                    // Pre-select upsells
+                    currentCustomization.upsells.forEach(up => {
+                        const upCard = popup.querySelector(`.upsell-card-new[data-upsell-id="${up.id}"]`);
+                        if (upCard) {
+                            const addBtn = upCard.querySelector('.upsell-add-btn');
+                            const qtyCtrl = upCard.querySelector('.qty-control');
+                            const badge = upCard.querySelector('.upsell-badge');
+                            const qtyVal = upCard.querySelector('.upsell-qty-val');
+
+                            if (addBtn) addBtn.style.display = 'none';
+                            if (qtyCtrl) qtyCtrl.style.display = 'flex';
+                            if (badge) {
+                                badge.style.display = 'flex';
+                                badge.innerText = up.qty;
+                            }
+                            if (qtyVal) qtyVal.innerText = up.qty;
+                        }
+                    });
+
+                    // Init Swipers
+                    new Swiper('.related-products-swiper', { slidesPerView: 'auto', spaceBetween: 12, freeMode: true });
+
+                    updateModalTotal();
+                }
+            });
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             initFavorites();
             syncAllHearts(); // Update navbar icon too
@@ -2596,7 +3053,7 @@
         #foodListsNav {
             background: white;
             border-radius: 12px;
-            overflow: hidden;
+            overflow-x: hidden;
             box-shadow: 0 4px 20px rgba(0,0,0,0.05);
             border: 1px solid #eee;
             position: sticky;
@@ -3140,6 +3597,9 @@
             align-items: center;
             gap: 3px;
             font-weight: 500;
+            i{
+                font-size: 0.7rem;
+            }
         }
 
 
@@ -3164,6 +3624,102 @@
                 height: 100vh !important;
                 max-height: 100vh !important;
             }
+        }
+
+        /* Missing Modal Styles */
+        .title-price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+            width: 100%;
+        }
+        .compact-price {
+            font-weight: 700;
+            color: #ffc119;
+            font-size: 1.2rem;
+        }
+        .upsell-card-new {
+            width: 150px !important;
+            flex-shrink: 0;
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            padding: 10px;
+            text-align: center;
+        }
+        .upsell-img-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        .upsell-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .upsell-badge {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #ffc119;
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 800;
+            z-index: 5;
+            border: 1.5px solid white;
+        }
+        .upsell-add-btn {
+            position: absolute;
+            bottom: 5px;
+            left: 5px;
+            width: 30px;
+            height: 30px;
+            background: white;
+            color: #ffc119;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            cursor: pointer;
+            z-index: 5;
+            font-size: 0.9rem;
+        }
+        .upsell-info h5 {
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin: 0 0 4px;
+            color: #333;
+        }
+        .upsell-info p {
+            font-size: 0.8rem;
+            color: #ffc119;
+            font-weight: 700;
+            margin: 0;
+        }
+        .qty-control.card-qty {
+            background: #f8f9fa;
+            border-radius: 20px;
+            padding: 2px 8px;
+            gap: 10px;
+        }
+        .qty-control.card-qty button {
+            background: none;
+            border: none;
+            color: #ffc119;
+            cursor: pointer;
+            padding: 4px;
+            font-size: 0.8rem;
         }
     </style>
     </asp:Content>
