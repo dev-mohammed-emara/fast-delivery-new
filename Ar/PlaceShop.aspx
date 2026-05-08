@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true"
+<%@ Page Title="" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true"
     CodeFile="PlaceShop.aspx.cs" Inherits="Ar_PlaceShop" ResponseEncoding="utf-8" ContentType="text/html" %>
     <asp:Content ID="Content3" ContentPlaceHolderID="head" Runat="Server">
 
@@ -892,6 +892,7 @@
                 display: flex;
                 flex-wrap: wrap;
                 flex-grow: 1;
+                gap: 0.5rem;
                 margin: 0 12px;
             }
 
@@ -1434,7 +1435,8 @@
                             <div class="custom-selection-section">
                                 <h2 class="foodListTitle">اختار على ذوقك</h2>
                                 <div class="custom-grid">
-                                    <div class="foodItem custom-item" id="custom-shawarma-hardcoded" data-price="130" data-product-name="ربع كيلو شاورما فراخ" onclick="openHardcodedModal()">
+                                    <div class="foodItem custom-item" id="custom-shawarma-hardcoded" data-price="130" data-product-name="ربع كيلو شاورما فراخ" onclick="openHardcodedModal(null, null, null, this)">
+                                        <div class="product-qty-badge">0</div>
                                         <div class="foodDetailsContainer">
                                             <div class="foodText">
                                                 <h4 class="foodName">ربع كيلو شاورما فراخ</h4>
@@ -1445,7 +1447,6 @@
                                             </div>
                                         </div>
                                         <div class="foodImage">
-                                            <div class="product-qty-badge">0</div>
                                             <img src="images/placeholderImage.webp" alt="product">
                                             <div class="addToCart">
                                                 <span class="addToCartBtn"><i class="fa-solid fa-angle-left"></i></span>
@@ -1702,7 +1703,7 @@
                                         <asp:Literal ID="ltSubtotal" runat="server"
                                             Text="<%$ Resources:texts, Subtotal %>"></asp:Literal>
                                     </p>
-                                    <span class="subtotalAmount">0.00 ط·آ¬.ط¸â€¦</span>
+                                    <span class="subtotalAmount">0.00 <%= Resources.Texts.Currency %></span>
                                 </div>
 
                                 <div class="deliveryAmount">
@@ -1711,7 +1712,7 @@
                                             Text="<%$ Resources:texts, DeliveryFee %>"></asp:Literal>
                                         <i class="fa-solid fa-circle-info"></i>
                                     </p>
-                                    <span class="deliveryFee">0.00 ط·آ¬.ط¸â€¦</span>
+                                    <span class="deliveryFee">0.00 <%= Resources.Texts.Currency %></span>
                                 </div>
 
 
@@ -1721,7 +1722,7 @@
                                         <asp:Literal ID="ltTotalAmountText" runat="server"
                                             Text="<%$ Resources:texts, TotalAmount %>"></asp:Literal>
                                     </p>
-                                    <span class="totalAmount">0.00 ط·آ¬.ط¸â€¦</span>
+                                    <span class="totalAmount">0.00 <%= Resources.Texts.Currency %></span>
                                 </div>
 
                                 <div class="confirmCartActions">
@@ -2818,7 +2819,7 @@
             Swal.close();
             Swal.fire({
                 icon: 'success',
-                title: 'ط·ع¾ط¸â€¦ط·ع¾ ط·آ§ط¸â€‍ط·آ¥ط·آ¶ط·آ§ط¸ظ¾ط·آ© ط·آ¨ط¸â€ ط·آ¬ط·آ§ط·آ­',
+                title: '\u062a\u0645\u062a \u0627\u0644\u0625\u0636\u0627\u0641\u0629 \u0628\u0646\u062c\u0627\u062d',
                 timer: 1500,
                 showConfirmButton: false,
                 toast: true,
@@ -3155,6 +3156,7 @@
         }
 
         function openHardcodedModal(editItem = null, prodName = null, prodPrice = null, triggerEl = null, prodDesc = null, focusNotes = false) {
+            currentTriggeringProduct = triggerEl;
             // Reset modal state
             currentEditItem = editItem;
             basePrice = prodPrice || 130;

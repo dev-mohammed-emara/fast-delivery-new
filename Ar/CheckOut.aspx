@@ -119,7 +119,7 @@
         min-width: 100px;
     }
 
-    .cartItemAmountHandlers button, 
+    .cartItemAmountHandlers button,
     .cust-handlers button {
         width: 28px;
         height: 28px;
@@ -283,6 +283,7 @@
         display: flex;
         align-items: center;
         gap: 0.75rem;
+        flex-wrap: wrap;
     }
 
     .checkoutSelectedLocation p span {
@@ -542,7 +543,7 @@
         min-width: 100px;
     }
 
-    .cartItemAmountHandlers button, 
+    .cartItemAmountHandlers button,
     .cust-handlers button {
         width: 28px;
         height: 28px;
@@ -706,6 +707,7 @@
         display: flex;
         align-items: center;
         gap: 0.75rem;
+        flex-wrap: wrap;
     }
 
     .checkoutSelectedLocation p span {

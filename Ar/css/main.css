@@ -2424,15 +2424,12 @@ html[dir="ltr"] .showPassword {
 
 /* Grouping Styles */
 .checkout-item-group.has-addons {
-    background: #fdfdfd;
-    border: 1px solid #f0f0f0;
-    border-radius: 16px;
-    margin-bottom: 1rem;
-    padding: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
 }
 .checkout-main-item-row {
-    border-bottom: 1px solid #f0f0f0 !important;
+    border-bottom: none !important;
 }
 .checkout-customization-row, .checkout-upsell-row {
     background: transparent !important;
@@ -2442,7 +2439,6 @@ html[dir="ltr"] .showPassword {
 }
 .checkout-customization-row span, .checkout-upsell-row span {
     padding: 4px 0 !important;
-    color: #666 !important;
     font-size: 0.9rem !important;
 }
 .checkout-customization-row .orderName, .checkout-upsell-row .orderName {

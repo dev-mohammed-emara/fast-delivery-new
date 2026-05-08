@@ -677,7 +677,7 @@
           <div class="inputHolder">
             <label for="selectedShopSearcher" class="showPassword"><i class="fa-solid fa-magnifying-glass"></i></label>
             <input type="text" name="selectedShopSearcher" id="selectedShopSearcher"
-              placeholder=<%=Resources.Texts.Search %>>
+              placeholder="<%=Resources.Texts.Search %>">
           </div>
           <article class="mainFilters">
             <span>
