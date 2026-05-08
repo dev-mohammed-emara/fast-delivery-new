@@ -1520,7 +1520,7 @@ overflow: initial;
 
 .foodItem {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: space-between;
   column-gap: 1rem;
   row-gap: 4px;
@@ -1594,7 +1594,7 @@ overflow: initial;
   text-decoration: line-through;
 }
 .swiper-wrapper:has(.upsell-card-new){
-  max-height: 200px;
+  max-height: 180px;
 }
 
 .addToCart {

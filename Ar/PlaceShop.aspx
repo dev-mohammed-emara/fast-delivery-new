@@ -1,5 +1,5 @@
-<%@ Page Title="" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true"
-    CodeFile="PlaceShop.aspx.cs" Inherits="Ar_PlaceShop" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true"
+    CodeFile="PlaceShop.aspx.cs" Inherits="Ar_PlaceShop" ResponseEncoding="utf-8" ContentType="text/html" %>
     <asp:Content ID="Content3" ContentPlaceHolderID="head" Runat="Server">
 
         <asp:Literal ID="ltPageTitle" runat="server" Text="<%$ Resources:texts, PagePlaceShopTitle %>"></asp:Literal>
@@ -369,7 +369,7 @@
                 justify-content: space-between;
                 flex: 1;
                 text-align: start;
-                height: 100%;
+                height: auto;
                 padding-block: 0.75rem;
             }
 
@@ -530,7 +530,7 @@
                     padding-inline: 1rem !important;
                 }
 
-                .foodItem:not(.custom-item) {
+                .foodItem {
                     flex-direction: column-reverse !important;
                     padding: 0px !important;
                     gap: 0.5rem !important;
@@ -541,7 +541,7 @@
                     display: flex !important;
                 }
 
-                .foodImage:not(.custom-item .foodImage) {
+                .foodImage{
                     width: 100% !important;
                     height: auto !important;
                     max-width: 100% !important;
@@ -844,7 +844,7 @@
                 line-height: 1.4;
                 text-align: initial !important;
                 display: -webkit-box;
-                -webkit-line-clamp: 3;
+                -webkit-line-clamp: 2;
                 min-height: fit-content;
                 text-overflow: ellipsis;
                 -webkit-box-orient: vertical;
@@ -887,7 +887,7 @@
 
             .orderedItemMain {
                 display: flex;
-                flex-direction: column;
+                flex-wrap: wrap;
                 flex-grow: 1;
                 margin: 0 12px;
             }
@@ -1110,7 +1110,7 @@
                 flex-shrink: 0;
             }
 
-            /* 3. &#1573;&#1604;&#1594;&#1575;&#1569; &#1578;&#1606;&#1587;&#1610;&#1602; &#1575;&#1604;&#1589;&#1608;&#1585; &#1578;&#1605;&#1575;&#1605;&#1575;&#1611; (&#1604;&#1604;&#1578;&#1571;&#1603;&#1583;) */
+            /* 3. ط·آ¥ط¸â€‍ط·ط›ط·آ§ط·طŒ &#1578;&#1606;&#1587;&#1610;&#1602; &#1575;&#1604;&#1589;&#1608;&#1585; &#1578;&#1605;&#1575;&#1605;&#1575;&#1611; (&#1604;&#1604;&#1578;&#1571;&#1603;&#1583;) */
             .category-pill img {
                 display: none;
                 /* &#1573;&#1582;&#1601;&#1575;&#1569; &#1575;&#1604;&#1589;&#1608;&#1585;&#1577; &#1578;&#1605;&#1575;&#1605;&#1575;&#1611; */
@@ -1121,7 +1121,7 @@
                 color: #ffc119;
                 /* &#1604;&#1608;&#1606; &#1575;&#1604;&#1606;&#1589; &#1610;&#1589;&#1576;&#1581; &#1605;&#1605;&#1610;&#1586;&#1575;&#1611; */
 
-                /* ✅ &#1575;&#1604;&#1571;&#1607;&#1605;: &#1573;&#1606;&#1588;&#1575;&#1569; &#1575;&#1604;&#1582;&#1591; &#1575;&#1604;&#1587;&#1601;&#1604;&#1610; */
+                /* أ¢إ“â€¦ &#1575;&#1604;&#1571;&#1607;&#1605;: &#1573;&#1606;&#1588;&#1575;&#1569; &#1575;&#1604;&#1582;&#1591; &#1575;&#1604;&#1587;&#1601;&#1604;&#1610; */
                 border-bottom: 3px solid #ffc119;
             }
             .status-badge {
@@ -1427,16 +1427,16 @@
 
 
                             <div class="custom-selection-section">
-                                <h2 class="foodListTitle">&#1575;&#1582;&#1578;&#1575;&#1585; &#1593;&#1604;&#1609; &#1584;&#1608;&#1602;&#1603;</h2>
+                                <h2 class="foodListTitle">اختار على ذوقك</h2>
                                 <div class="custom-grid">
-                                    <div class="foodItem custom-item" id="custom-shawarma-hardcoded" data-price="130" data-product-name="&#1585;&#1576;&#1593; &#1603;&#1610;&#1604;&#1608; &#1588;&#1575;&#1608;&#1585;&#1605;&#1575; &#1601;&#1585;&#1575;&#1582;" onclick="openHardcodedModal()">
+                                    <div class="foodItem custom-item" id="custom-shawarma-hardcoded" data-price="130" data-product-name="ربع كيلو شاورما فراخ" onclick="openHardcodedModal()">
                                         <div class="foodDetailsContainer">
                                             <div class="foodText">
-                                                <h4 class="foodName">&#1585;&#1576;&#1593; &#1603;&#1610;&#1604;&#1608; &#1588;&#1575;&#1608;&#1585;&#1605;&#1575; &#1601;&#1585;&#1575;&#1582;</h4>
-                                                <p class="foodContent">&#1588;&#1575;&#1608;&#1585;&#1605;&#1575; &#1583;&#1580;&#1575;&#1580; &#1605;&#1593; &#1575;&#1604;&#1578;&#1608;&#1605;&#1610;&#1577;</p>
+                                                <h4 class="foodName">ربع كيلو شاورما فراخ</h4>
+                                                <p class="foodContent">شاورما دجاج مع التومية</p>
                                             </div>
                                             <div class="foodPricing">
-                                                <span class="foodNewPrice">130 &#1580;.&#1605;</span>
+                                                <span class="foodNewPrice">اختار الحجم</span>
                                             </div>
                                         </div>
                                         <div class="foodImage">
@@ -1495,7 +1495,7 @@
                                                                         ) %>
                                                                 </p>
                                                                 <%# Convert.ToInt32(Eval("PrepearMin")) > 0 ?
-                                                                    string.Format("<small style='color: #e67e22; font-weight: bold;'><i class='fa-solid fa-utensils'></i> {0} &#1583;&#1602;&#1610;&#1602;&#1577;</small>", Eval("PrepearMin"))
+                                                                    string.Format("<small style='color: #e67e22; font-weight: bold;'><i class='fa-solid fa-utensils'></i> {0} دقيقة</small>", Eval("PrepearMin"))
                                                                     : "" %>
                                                             </div>
                                                             <div class="foodPricing">
@@ -1532,153 +1532,145 @@
                                 </ItemTemplate>
                             </asp:Repeater>
 
+                            <div id="hardcoded-product-modal-content" style="display:none;">
+                                <div class="full-modal-container">
+                                    <div class="modal-banner">
+                                        <img src="images/placeholderImage.webp" alt="ربع كيلو شاورما فراخ">
+                                        <button class="modal-close-btn" onclick="Swal.close()">
+                                            <i class="fa-solid fa-xmark"></i>
+                                        </button>
+                                    </div>
 
+                                    <div class="modal-content-body">
+                                        <div class="modal-main-info">
+                                            <div class="title-price-row">
+                                                <h1>ربع كيلو شاورما فراخ</h1>
+                                                <span class="compact-price" style="display:none;">130 ج.م</span>
+                                            </div>
+                                            <p class="modal-desc">شاورما دجاج مع التومية</p>
+                                        </div>
 
+                                        <div class="modal-section">
+                                            <div class="section-header">
+                                                <h3>اختار الحجم</h3>
+                                                <span class="required-badge">إجباري</span>
+                                            </div>
+                                            <div class="options-list">
+                                                <div class="option-row"  data-item-id="size-small" data-size-id="size-small" onclick="selectModalOption(this, 130, 'size-small')">
+                                                    <span>صغير</span>
+                                                    <div class="price-radio">
+                                                        <span>130 ج.م</span>
+                                                        <div class="radio-circle"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="option-row" data-item-id="size-medium" data-size-id="size-medium" onclick="selectModalOption(this, 180, 'size-medium')">
+                                                    <span>وسط</span>
+                                                    <div class="price-radio">
+                                                        <span>180 ج.م</span>
+                                                        <div class="radio-circle"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="option-row" data-item-id="size-large" data-size-id="size-large" onclick="selectModalOption(this, 230, 'size-large')">
+                                                    <span>كبير</span>
+                                                    <div class="price-radio">
+                                                        <span>230 ج.م</span>
+                                                        <div class="radio-circle"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
 
+                                        <div class="modal-section upsell-section">
+                                            <div class="section-header">
+                                                <h3>غالباً ما يُطلب مع</h3>
+                                            </div>
+                                            <div class="swiper related-products-swiper">
+                                                <div class="swiper-wrapper">
+                                                    <div class="swiper-slide upsell-card-new" data-item-id="upsell-orange-juice" data-upsell-id="upsell-orange-juice">
+                                                        <div class="upsell-img-wrapper">
+                                                            <div class="upsell-badge" style="display:none;">1</div>
+                                                            <img src="images/placeholderImage.webp" alt="upsell">
+                                                            <div class="upsell-add-btn" onclick="addUpsellItem(this, 25, 'upsell-orange-juice', 'عصير برتقال')">
+                                                                <i class="fa-solid fa-plus"></i>
+                                                            </div>
+                                                            <div class="qty-control" onclick="event.stopPropagation()">
+                                                                <button onclick="updateUpsellQty(this, -1, 25, 'upsell-orange-juice')"><i class="fa-solid fa-minus"></i></button>
+                                                                <span class="upsell-qty-val">1</span>
+                                                                <button onclick="updateUpsellQty(this, 1, 25, 'upsell-orange-juice')"><i class="fa-solid fa-plus"></i></button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="upsell-info">
+                                                            <h5>عصير برتقال</h5>
+                                                            <p>EGP 25.00</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="swiper-slide upsell-card-new" data-item-id="upsell-green-salad" data-upsell-id="upsell-green-salad">
+                                                        <div class="upsell-img-wrapper">
+                                                            <div class="upsell-badge" style="display:none;">1</div>
+                                                            <img src="images/placeholderImage.webp" alt="upsell">
+                                                            <div class="upsell-add-btn" onclick="addUpsellItem(this, 35, 'upsell-green-salad', 'سلطة خضراء')">
+                                                                <i class="fa-solid fa-plus"></i>
+                                                            </div>
+                                                            <div class="qty-control" onclick="event.stopPropagation()">
+                                                                <button onclick="updateUpsellQty(this, -1, 35, 'upsell-green-salad')"><i class="fa-solid fa-minus"></i></button>
+                                                                <span class="upsell-qty-val">1</span>
+                                                                <button onclick="updateUpsellQty(this, 1, 35, 'upsell-green-salad')"><i class="fa-solid fa-plus"></i></button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="upsell-info">
+                                                            <h5>سلطة خضراء</h5>
+                                                            <p>EGP 35.00</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="swiper-slide upsell-card-new" data-item-id="upsell-toum" data-upsell-id="upsell-toum">
+                                                        <div class="upsell-img-wrapper">
+                                                            <div class="upsell-badge" style="display:none;">1</div>
+                                                            <img src="images/placeholderImage.webp" alt="upsell">
+                                                            <div class="addToCart">
+                                                                <div class="upsell-add-btn" onclick="addUpsellItem(this, 15, 'upsell-toum', 'تومية')">
+                                                                    <i class="fa-solid fa-plus"></i>
+                                                                </div>
+                                                                <div class="qty-control" onclick="event.stopPropagation()">
+                                                                    <button onclick="updateUpsellQty(this, -1, 15, 'upsell-toum')"><i class="fa-solid fa-minus"></i></button>
+                                                                    <span class="upsell-qty-val">1</span>
+                                                                    <button onclick="updateUpsellQty(this, 1, 15, 'upsell-toum')"><i class="fa-solid fa-plus"></i></button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="upsell-info">
+                                                            <h5>تومية</h5>
+                                                            <p>EGP 15.00</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                          <div class="modal-section">
+                                            <div class="section-header">
+                                                <h3>ملاحظات</h3>
+                                                <span class="optional-badge">اختياري</span>
+                                            </div>
+                                            <textarea id="product-notes" placeholder="أضف ملاحظاتك هنا..."></textarea>
+                                        </div>
 
+                                    </div>
+
+                                    <div class="modal-footer-sticky">
+                                        <div class="qty-control">
+                                            <button onclick="updateModalQty(-1)"><i class="fa-solid fa-minus"></i></button>
+                                            <span id="modal-qty">1</span>
+                                            <button onclick="updateModalQty(1)"><i class="fa-solid fa-plus"></i></button>
+                                        </div>
+                                        <button class="add-to-cart-big" onclick="submitModalCart()">
+                                            <span>إضافة للسلة</span>
+                                            <strong id="modal-total-price">اختار الحجم</strong>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </article>
                     </figure>
 
-
-
-                    <div id="hardcoded-product-modal-content" style="display:none;">
-                        <div class="full-modal-container">
-                            <div class="modal-banner">
-                                <img src="images/placeholderImage.webp" alt="&#1585;&#1576;&#1593; &#1603;&#1610;&#1604;&#1608; &#1588;&#1575;&#1608;&#1585;&#1605;&#1575; &#1601;&#1585;&#1575;&#1582;">
-                                <button class="modal-close-btn" onclick="Swal.close()">
-                                    <i class="fa-solid fa-xmark"></i>
-                                </button>
-                            </div>
-
-                            <div class="modal-content-body">
-                                <div class="modal-main-info">
-                                    <div class="title-price-row">
-                                        <h1>&#1585;&#1576;&#1593; &#1603;&#1610;&#1604;&#1608; &#1588;&#1575;&#1608;&#1585;&#1605;&#1575; &#1601;&#1585;&#1575;&#1582;</h1>
-                                        <span class="compact-price">130 &#1580;.&#1605;</span>
-                                    </div>
-                                    <p class="modal-desc">&#1588;&#1575;&#1608;&#1585;&#1605;&#1575; &#1583;&#1580;&#1575;&#1580; &#1605;&#1593; &#1575;&#1604;&#1578;&#1608;&#1605;&#1610;&#1577;</p>
-                                </div>
-
-                                <div class="modal-section">
-                                    <div class="section-header">
-                                        <h3>&#1575;&#1582;&#1578;&#1575;&#1585; &#1575;&#1604;&#1581;&#1580;&#1605;</h3>
-                                        <span class="required-badge">&#1573;&#1580;&#1576;&#1575;&#1585;&#1610;</span>
-                                    </div>
-                                    <div class="options-list">
-                                        <div class="option-row active"  data-item-id="size-small" data-size-id="size-small" onclick="selectModalOption(this, 0, 'size-small')">
-                                            <span>&#1589;&#1594;&#1610;&#1585;</span>
-                                            <div class="price-radio">
-                                                <span>+0 &#1580;.&#1605;</span>
-                                                <div class="radio-circle"></div>
-                                            </div>
-                                        </div>
-                                        <div class="option-row" data-item-id="size-medium" data-size-id="size-medium" onclick="selectModalOption(this, 50, 'size-medium')">
-                                            <span>&#1608;&#1587;&#1591;</span>
-                                            <div class="price-radio">
-                                                <span>+50 &#1580;.&#1605;</span>
-                                                <div class="radio-circle"></div>
-                                            </div>
-                                        </div>
-                                        <div class="option-row" data-item-id="size-large" data-size-id="size-large" onclick="selectModalOption(this, 100, 'size-large')">
-                                            <span>&#1603;&#1576;&#1610;&#1585;</span>
-                                            <div class="price-radio">
-                                                <span>+100 &#1580;.&#1605;</span>
-                                                <div class="radio-circle"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-
-                                 <!-- Other Additions section removed -->
-
-
-                                <div class="modal-section upsell-section">
-                                    <div class="section-header">
-                                        <h3>&#1594;&#1575;&#1604;&#1576;&#1575;&#1611; &#1605;&#1575; &#1610;&#1615;&#1591;&#1604;&#1576; &#1605;&#1593;</h3>
-                                    </div>
-                                    <div class="swiper related-products-swiper">
-                                        <div class="swiper-wrapper">
-                                            <div class="swiper-slide upsell-card-new" data-item-id="upsell-orange-juice" data-upsell-id="upsell-orange-juice">
-                                                <div class="upsell-img-wrapper">
-                                                    <div class="upsell-badge" style="display:none;">1</div>
-                                                    <img src="images/placeholderImage.webp" alt="upsell">
-                                                    <div class="upsell-add-btn" onclick="addUpsellItem(this, 25, 'upsell-orange-juice', '&#1593;&#1589;&#1610;&#1585; &#1576;&#1585;&#1578;&#1602;&#1575;&#1604;')">
-                                                        <i class="fa-solid fa-plus"></i>
-                                                    </div>
-                                                    <div class="qty-control" onclick="event.stopPropagation()">
-                                                        <button onclick="updateUpsellQty(this, -1, 25, 'upsell-orange-juice')"><i class="fa-solid fa-minus"></i></button>
-                                                        <span class="upsell-qty-val">1</span>
-                                                        <button onclick="updateUpsellQty(this, 1, 25, 'upsell-orange-juice')"><i class="fa-solid fa-plus"></i></button>
-                                                    </div>
-                                                </div>
-                                                <div class="upsell-info">
-                                                    <h5>&#1593;&#1589;&#1610;&#1585; &#1576;&#1585;&#1578;&#1602;&#1575;&#1604;</h5>
-                                                    <p>EGP 25.00</p>
-                                                </div>
-                                            </div>
-                                            <div class="swiper-slide upsell-card-new" data-item-id="upsell-green-salad" data-upsell-id="upsell-green-salad">
-                                                <div class="upsell-img-wrapper">
-                                                    <div class="upsell-badge" style="display:none;">1</div>
-                                                    <img src="images/placeholderImage.webp" alt="upsell">
-                                                    <div class="upsell-add-btn" onclick="addUpsellItem(this, 35, 'upsell-green-salad', '&#1587;&#1604;&#1591;&#1577; &#1582;&#1590;&#1585;&#1575;&#1569;')">
-                                                        <i class="fa-solid fa-plus"></i>
-                                                    </div>
-                                                    <div class="qty-control" onclick="event.stopPropagation()">
-                                                        <button onclick="updateUpsellQty(this, -1, 35, 'upsell-green-salad')"><i class="fa-solid fa-minus"></i></button>
-                                                        <span class="upsell-qty-val">1</span>
-                                                        <button onclick="updateUpsellQty(this, 1, 35, 'upsell-green-salad')"><i class="fa-solid fa-plus"></i></button>
-                                                    </div>
-                                                </div>
-                                                <div class="upsell-info">
-                                                    <h5>&#1587;&#1604;&#1591;&#1577; &#1582;&#1590;&#1585;&#1575;&#1569;</h5>
-                                                    <p>EGP 35.00</p>
-                                                </div>
-                                            </div>
-                                            <div class="swiper-slide upsell-card-new" data-item-id="upsell-toum" data-upsell-id="upsell-toum">
-                                                <div class="upsell-img-wrapper">
-                                                    <div class="upsell-badge" style="display:none;">1</div>
-                                                    <img src="images/placeholderImage.webp" alt="upsell">
-                                                    <div class="upsell-add-btn" onclick="addUpsellItem(this, 15, 'upsell-toum', '&#1578;&#1608;&#1605;&#1610;&#1577;')">
-                                                        <i class="fa-solid fa-plus"></i>
-                                                    </div>
-                                                    <div class="qty-control" onclick="event.stopPropagation()">
-                                                        <button onclick="updateUpsellQty(this, -1, 15, 'upsell-toum')"><i class="fa-solid fa-minus"></i></button>
-                                                        <span class="upsell-qty-val">1</span>
-                                                        <button onclick="updateUpsellQty(this, 1, 15, 'upsell-toum')"><i class="fa-solid fa-plus"></i></button>
-                                                    </div>
-                                                </div>
-                                                <div class="upsell-info">
-                                                    <h5>&#1578;&#1608;&#1605;&#1610;&#1577;</h5>
-                                                    <p>EGP 15.00</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                  <div class="modal-section">
-                                    <div class="section-header">
-                                        <h3>&#1605;&#1604;&#1581;&#1592;&#1575;&#1578;</h3>
-                                        <span class="optional-badge">&#1575;&#1582;&#1578;&#1610;&#1575;&#1585;&#1610;</span>
-                                    </div>
-                                    <textarea id="product-notes" placeholder="&#1571;&#1590;&#1601; &#1605;&#1604;&#1581;&#1592;&#1575;&#1578;&#1603; &#1607;&#1606;&#1575;..."></textarea>
-                                </div>
-
-                            </div>
-
-                            <div class="modal-footer-sticky">
-                                <div class="qty-control">
-                                    <button onclick="updateModalQty(-1)"><i class="fa-solid fa-minus"></i></button>
-                                    <span id="modal-qty">1</span>
-                                    <button onclick="updateModalQty(1)"><i class="fa-solid fa-plus"></i></button>
-                                </div>
-                                <button class="add-to-cart-big" onclick="submitModalCart()">
-                                    <span>&#1573;&#1590;&#1575;&#1601;&#1577; &#1575;&#1604;&#1587;&#1604;&#1577;</span>
-                                    <strong id="modal-total-price">130 &#1580;.&#1605;</strong>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
 
                     <article id="shoppingCart">
                         <div id="cartHolder">
@@ -1705,7 +1697,7 @@
                                         <asp:Literal ID="ltSubtotal" runat="server"
                                             Text="<%$ Resources:texts, Subtotal %>"></asp:Literal>
                                     </p>
-                                    <span class="subtotalAmount">0.00 &#1580;.&#1605;</span>
+                                    <span class="subtotalAmount">0.00 ط·آ¬.ط¸â€¦</span>
                                 </div>
 
                                 <div class="deliveryAmount">
@@ -1714,7 +1706,7 @@
                                             Text="<%$ Resources:texts, DeliveryFee %>"></asp:Literal>
                                         <i class="fa-solid fa-circle-info"></i>
                                     </p>
-                                    <span class="deliveryFee">0.00 &#1580;.&#1605;</span>
+                                    <span class="deliveryFee">0.00 ط·آ¬.ط¸â€¦</span>
                                 </div>
 
 
@@ -1724,7 +1716,7 @@
                                         <asp:Literal ID="ltTotalAmountText" runat="server"
                                             Text="<%$ Resources:texts, TotalAmount %>"></asp:Literal>
                                     </p>
-                                    <span class="totalAmount">0.00 &#1580;.&#1605;</span>
+                                    <span class="totalAmount">0.00 ط·آ¬.ط¸â€¦</span>
                                 </div>
 
                                 <div class="confirmCartActions">
@@ -1776,8 +1768,8 @@
 
 /* &#1573;&#1592;&#1607;&#1575;&#1585; &#1608;&#1578;&#1606;&#1587;&#1610;&#1602; &#1575;&#1604;&#1589;&#1608;&#1585;&#1577; */
 .category-pill img {
-    display: block !important; /* &#1573;&#1604;&#1594;&#1575;&#1569; &#1575;&#1604;&#1600; display: none &#1575;&#1604;&#1587;&#1575;&#1576;&#1602; */
-    width: 60px;  /* &#1610;&#1605;&#1603;&#1606;&#1603; &#1578;&#1603;&#1576;&#1610;&#1585; &#1571;&#1608; &#1578;&#1589;&#1594;&#1610;&#1585; &#1575;&#1604;&#1581;&#1580;&#1605; */
+    display: block !important; /* ط·آ¥ط¸â€‍ط·ط›ط·آ§ط·طŒ &#1575;&#1604;&#1600; display: none &#1575;&#1604;&#1587;&#1575;&#1576;&#1602; */
+    width: 60px;  /* ط¸ظ¹ط¸â€¦ط¸ئ’ط¸â€ ط¸ئ’ ط·ع¾ط¸ئ’ط·آ¨ط¸ظ¹ط·آ± ط·آ£ط¸ث† ط·ع¾ط·آµط·ط›ط¸ظ¹ط·آ± ط·آ§ط¸â€‍ط·آ­ط·آ¬ط¸â€¦ */
     height: 60px;
     border-radius: 50%; /* &#1604;&#1580;&#1593;&#1604; &#1589;&#1608;&#1585;&#1577; &#1575;&#1604;&#1601;&#1574;&#1577; &#1583;&#1575;&#1574;&#1585;&#1610;&#1577; */
     object-fit: cover;
@@ -1793,7 +1785,7 @@
 
 .category-pill.active img {
     border-color: #ffc119;
-    transform: scale(1.1); /* &#1578;&#1603;&#1576;&#1610;&#1585; &#1576;&#1587;&#1610;&#1591; &#1604;&#1604;&#1589;&#1608;&#1585;&#1577; &#1575;&#1604;&#1606;&#1588;&#1591;&#1577; */
+    transform: scale(1.1); /* ط·ع¾ط¸ئ’ط·آ¨ط¸ظ¹ط·آ± ط·آ¨ط·آ³ط¸ظ¹ط·آ· ط¸â€‍ط¸â€‍ط·آµط¸ث†ط·آ±ط·آ© ط·آ§ط¸â€‍ط¸â€ ط·آ´ط·آ·ط·آ© */
 }
         /* Navbar Icons Visibility for this page only */
         .search-nav-icon, .fav-nav-icon {
@@ -1825,7 +1817,7 @@
             padding-bottom: env(safe-area-inset-bottom);
         }
 
-        .compact-modal-header {
+        .compact-modal-header { min-height: 50px;
             padding: 15px;
             display: flex;
             justify-content: center;
@@ -1954,8 +1946,8 @@
             z-index: 10;
         }
         .upsell-card-new .qty-control button {
-            width: 24px;
-            height: 24px;
+            width: 26px;
+            height: 26px;
             font-size: 10px;
         }
         .upsell-card-new .upsell-badge {
@@ -1983,7 +1975,6 @@
             gap: 8px;
             margin-top: 5px;
             flex-wrap: nowrap;
-            overflow-x: auto;
         }
 
         .addons-badge, .notes-badge {
@@ -2048,6 +2039,193 @@
             font-size: 0.75rem;
         }
 
+        /* Compact Modal Styles */
+        .compact-modal-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            background: #f8f9fa;
+            text-align: right;
+        }
+
+        .compact-modal-header {
+            min-height: 50px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: white;
+            border-bottom: 1px solid #eee;
+        }
+
+        .handle {
+            width: 40px;
+            height: 4px;
+            background: #ddd;
+            border-radius: 2px;
+        }
+
+        .compact-close {
+            position: absolute;
+            inset-inline-end: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #f0f0f0;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .modal-content-body {
+            padding: 20px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .modal-main-info {
+            margin-bottom: 20px;
+        }
+
+        .title-price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .modal-main-info h1 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin: 0;
+            color: #1a1a1a;
+        }
+
+        .compact-price {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--fd-blue);
+        }
+
+        .modal-desc {
+            color: #666;
+            font-size: 0.9rem;
+            margin: 8px 0 0;
+            line-height: 1.5;
+        }
+
+        .modal-section {
+            margin-top: 24px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .section-header h3 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .optional-badge {
+            background: #eee;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            color: #777;
+        }
+
+        #product-notes {
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 12px;
+            min-height: 80px;
+            font-family: inherit;
+            resize: none;
+            font-size: 0.95rem;
+            background: #fff;
+        }
+
+        .modal-footer-sticky {
+            position: sticky;
+            bottom: 0;
+            background: white;
+            flex-wrap: wrap;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: baseline;
+            align-items: center;
+            gap: 16px;
+            border-top: 1px solid #eee;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
+            z-index: 100;
+        }
+
+        .qty-control {
+            display: flex;
+            align-items: center;
+            background: #f0f0f0;
+            border-radius: 25px;
+            padding: 4px;
+            gap: 15px;
+        }
+
+        .qty-control button {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            border: none;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            color: #333;
+        }
+
+        #modal-qty {
+            font-weight: 800;
+            font-size: 1rem;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .add-to-cart-big {
+            flex: 1;
+            background: var(--fd-blue);
+            color: white;
+            border: none;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .add-to-cart-big:active { opacity: 0.9; }
+
+        .add-to-cart-big strong {
+            font-size: 0.95rem;
+            background: rgba(255,255,255,0.2);
+            padding: 4px 10px;
+            border-radius: 8px;
+        }
         /* Bottom Sheet Animations */
         @keyframes slideInUpCustom {
             from { transform: translateY(100%); }
@@ -2057,11 +2235,11 @@
             from { transform: translateY(0); }
             to { transform: translateY(100%); }
         }
-        .animate__slideInUp {
-            animation: slideInUpCustom 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+        .animate__slideInUpCustom {
+            animation: slideInUpCustom 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .animate__slideOutDown {
-            animation: slideOutDownCustom 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+        .animate__slideOutDownCustom {
+            animation: slideOutDownCustom 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         /* Nested Upsells in Cart */
@@ -2107,7 +2285,7 @@
             gap: 5px;
         }
         .customization-row span:first-child::before {
-            content: "•";
+            content: "أ¢â‚¬آ¢";
             color: var(--fd-blue);
             font-weight: bold;
         }
@@ -2166,26 +2344,32 @@
         /* Cart Addon Handlers */
         .cust-handlers {
             display: flex;
+            width: fit-content;
             align-items: center;
             gap: 8px;
-            background: #f8f8f8;
+                        background: #f8f8f8;
             padding: 4px 10px;
             border-radius: 20px;
             border: 1px solid #eee;
             margin-inline-start: 10px;
+
+        }
+        .custom-grid{
+            display: grid;
+            grid-template-columns: repeat(2, 1fr) !important;
         }
         .cust-handlers button {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
             border: none;
-            background: #fff;
+            background: var(--fd-blue);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 8px;
+            font-size: 10px;
             cursor: pointer;
-            color: var(--fd-blue);
+            color: white;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
             transition: all 0.2s;
         }
@@ -2305,7 +2489,7 @@
     <script>
         let currentTriggeringProduct = null;
 
-        function openProductModal(triggerEl, productName, description = "\u0637\u0639\u0645 \u0644\u0627 \u064a\u0642\u0627\u0648\u0645 \u0645\u062d\u0636\u0631 \u0645\u0646 \u0623\u062c\u0648\u062f \u0627\u0644\u0645\u0643\u0648\u0646\u0627\u062a", isCustom = false, price = 100) {
+        function openProductModal(triggerEl, productName, description = "طعم لا يقاوم محضر من أجود المكونات", isCustom = false, price = 100) {
             currentTriggeringProduct = triggerEl;
             if (isCustom) {
                 openHardcodedModal(null, productName, price, triggerEl, description);
@@ -2328,16 +2512,16 @@
                             <div class="modal-main-info">
                                 <div class="title-price-row">
                                     <h1>${productName}</h1>
-                                    <span class="compact-price">${price} \u062c.\u0645</span>
+                                    <span class="compact-price">${price} ج.م</span>
                                 </div>
                                 <p class="modal-desc">${description}</p>
                             </div>
                             <div class="modal-section">
                                 <div class="section-header">
-                                    <h3>\u0645\u0644\u0627\u062d\u0638\u0627\u062a</h3>
-                                    <span class="optional-badge">\u0627\u062e\u062a\u064a\u0627\u0631\u064a</span>
+                                    <h3>ملاحظات</h3>
+                                    <span class="optional-badge">اختياري</span>
                                 </div>
-                                <textarea id="product-notes" placeholder="\u0623\u0636\u0641 \u0645\u0644\u0627\u062d\u0638\u0627\u062a\u0643 \u0647\u0646\u0627..."></textarea>
+                                <textarea id="product-notes" placeholder="أضف ملاحظاتك هنا..."></textarea>
                             </div>
                         </div>
 
@@ -2348,8 +2532,8 @@
                                 <button onclick="updateModalQty(1)"><i class="fa-solid fa-plus"></i></button>
                             </div>
                             <button class="add-to-cart-big" onclick="submitModalCart()">
-                                <span>\u0625\u0636\u0627\u0641\u0629 \u0644\u0644\u0633\u0644\u0629</span>
-                                <strong id="modal-total-price">${price} \u062c.\u0645</strong>
+                                <span>إضافة للسلة</span>
+                                <strong id="modal-total-price">${price} ج.م</strong>
                             </button>
                         </div>
                     </div>
@@ -2361,8 +2545,8 @@
                 position: 'bottom',
                 customClass: { popup: 'bottom-sheet-modal' },
                 scrollbarPadding: false,
-                showClass: { popup: 'animate__animated animate__slideInUp animate__faster' },
-                hideClass: { popup: 'animate__animated animate__slideOutDown animate__faster' },
+                showClass: { popup: 'animate__animated animate__slideInUpCustom animate__faster' },
+                hideClass: { popup: 'animate__animated animate__slideOutDownCustom animate__faster' },
                 didOpen: () => { },
                 willClose: () => {
                     if (window.history.state && window.history.state.modal === 'product') {
@@ -2407,24 +2591,21 @@
         }
         document.addEventListener('DOMContentLoaded', checkFavoriteStatus);
 
-        let basePrice = 100;
+        let basePrice = 0;
         let addonsPrice = 0;
         let quantity = 1;
 
-        function selectModalOption(el, addPrice, sizeId) {
-            el.parentElement.querySelectorAll('.option-row').forEach(r => r.classList.remove('active'));
+        function selectModalOption(el, totalSizePrice, sizeId) {
+            const rows = el.parentElement.querySelectorAll('.option-row');
+            rows.forEach(r => r.classList.remove('active'));
             el.classList.add('active');
-
-            // Get original base price from the triggering product or current state
-            const origBase = (currentTriggeringProduct ? parseFloat(currentTriggeringProduct.getAttribute('data-price')) : 130) || 130;
-            basePrice = origBase + addPrice;
 
             currentCustomization.size = {
                 id: sizeId,
-                name: el.querySelector('span').innerHTML,
-                price: addPrice
+                name: el.querySelector('span').innerText,
+                price: totalSizePrice
             };
-
+            basePrice = totalSizePrice;
             updateModalTotal();
         }
         window.openNotesModal = function(itemId, shopId) {
@@ -2432,30 +2613,10 @@
             const item = currentCart.items.find(i => i.id === itemId && i.shopId === shopId);
             if (!item) return;
 
-            const existingNotes = item.customization?.notes || item.notes || '';
-
-            Swal.fire({
-                title: '&#1605;&#1604;&#1575;&#1581;&#1592;&#1575;&#1578; &#1575;&#1604;&#1591;&#1604;&#1576;',
-                input: 'textarea',
-                inputLabel: item.name,
-                inputValue: existingNotes,
-                inputPlaceholder: '&#1571;&#1590;&#1601; &#1605;&#1604;&#1575;&#1581;&#1592;&#1575;&#1578;&#1603; &#1607;&#1606;&#1575;...',
-                showCancelButton: true,
-                confirmButtonText: '&#1581;&#1601;&#1592;',
-                cancelButtonText: '&#1573;&#1604;&#1594;&#1575;&#1569;',
-                customClass: {
-                    container: 'compact-modal-container',
-                    popup: 'bottom-sheet-modal'
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const newNotes = result.value;
-                    if (!item.customization) item.customization = {};
-                    item.customization.notes = newNotes;
-                    item.notes = newNotes;
-                    currentCart.save();
-                }
-            });
+            // Redirect to the new compact notes modal for consistency
+            if (typeof openSimpleNotesModal === 'function') {
+                openSimpleNotesModal(null, item.name, item.price, item.description || '', item.id);
+            }
         };
 
 
@@ -2481,9 +2642,21 @@
         }
 
         function updateModalTotal() {
-            const total = (basePrice * quantity) + addonsPrice;
             const el = document.querySelector('.swal2-container #modal-total-price') || document.getElementById('modal-total-price');
-            if (el) el.innerText = total + ' &#1580;.&#1605;';
+            if (!el) return;
+
+            if (!currentCustomization.size) {
+                el.innerHTML = 'اختار الحجم';
+                const btn = document.querySelector('.swal2-container .add-to-cart-big');
+                if (btn) btn.style.opacity = '0.5';
+                return;
+            }
+
+            const btn = document.querySelector('.swal2-container .add-to-cart-big');
+            if (btn) btn.style.opacity = '1';
+
+            const total = (basePrice * quantity) + addonsPrice;
+            el.innerHTML = total.toFixed(2) + ' \u062C.\u0645';
         }
 
         function handleProductClick(el, event) {
@@ -2589,6 +2762,15 @@
                 return;
             }
 
+            if (!currentCustomization || !currentCustomization.size) {
+                const priceEl = popup.querySelector('#modal-total-price');
+                if (priceEl) {
+                    priceEl.style.color = 'red';
+                    setTimeout(() => priceEl.style.color = '', 1000);
+                }
+                return;
+            }
+
             const productName = popup.querySelector('h1')?.innerText || 'Product';
             const notesEl = popup.querySelector('#product-notes') || popup.querySelector('textarea');
             const notes = notesEl?.value || '';
@@ -2631,7 +2813,7 @@
             Swal.close();
             Swal.fire({
                 icon: 'success',
-                title: '&#1578;&#1605;&#1578; &#1575;&#1604;&#1573;&#1590;&#1575;&#1601;&#1577; &#1576;&#1606;&#1580;&#1575;&#1581;',
+                title: 'ط·ع¾ط¸â€¦ط·ع¾ ط·آ§ط¸â€‍ط·آ¥ط·آ¶ط·آ§ط¸ظ¾ط·آ© ط·آ¨ط¸â€ ط·آ¬ط·آ§ط·آ­',
                 timer: 1500,
                 showConfirmButton: false,
                 toast: true,
@@ -2705,51 +2887,97 @@
             if (isCustom) {
                 openHardcodedModal(null, name, price, triggerEl, desc);
             } else {
-                openSimpleNotesModal(triggerEl, name, price);
+                openSimpleNotesModal(triggerEl, name, price, desc);
             }
         }
 
-        function openSimpleNotesModal(el, name, price) {
-            const id = el.getAttribute('id');
+        function openSimpleNotesModal(el, name, price, desc = '', idOverride = null) {
+            currentTriggeringProduct = el;
+            currentEditItem = null;
+            basePrice = parseFloat(price) || 0;
+            addonsPrice = 0;
+            quantity = 1;
+            currentCustomization = {
+                size: null,
+                extras: [],
+                upsells: [],
+                notes: ''
+            };
+
+            const id = idOverride || el.getAttribute('id');
             const shopId = String(document.getElementById('shopId')?.innerText.trim() || '');
-            const shopName = document.querySelector('.shop-header-info h1')?.innerText || '';
 
             // Check if already in cart to pre-populate notes
             const existingInCart = window.cart?.items.find(i => i.id === id && i.shopId === shopId);
-            const existingNotes = existingInCart ? (existingInCart.customization?.notes || existingInCart.notes || '') : '';
+            if (existingInCart) {
+                currentEditItem = existingInCart;
+                quantity = existingInCart.amount;
+                currentCustomization.notes = existingInCart.customization?.notes || existingInCart.notes || '';
+            }
+
+            const actualDesc = desc || el?.querySelector('.foodContent')?.innerText || '';
+            const currency = 'ج.م';
+
+            // IF ITS A CUSTOM ITEM i need the size cost instead and present the cost next to the name
+            let displayPrice = price;
+            if (existingInCart && existingInCart.isCustomized && existingInCart.customization?.size) {
+                displayPrice = existingInCart.customization.size.price || price;
+            }
+
+            const modalHtml = `
+                <div class="compact-modal-container">
+                    <div class="compact-modal-header">
+                        <div class="handle"></div>
+                        <button class="compact-close" onclick="event.preventDefault(); Swal.close();"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <div class="modal-content-body">
+                        <div class="modal-main-info">
+                            <div class="title-price-row">
+                                <h1>${name} - ${displayPrice} ${currency}</h1>
+                            </div>
+                            <p class="modal-desc">${actualDesc}</p>
+                        </div>
+                        <div class="modal-section">
+                            <div class="section-header">
+                                <h3>ملاحظات</h3>
+                                <span class="optional-badge">اختياري</span>
+                            </div>
+                            <textarea id="product-notes" placeholder="أضف ملاحظاتك هنا...">${currentCustomization.notes}</textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer-sticky">
+                        <div class="qty-control">
+                            <button onclick="updateModalQty(-1)"><i class="fa-solid fa-minus"></i></button>
+                            <span id="modal-qty">${quantity}</span>
+                            <button onclick="updateModalQty(1)"><i class="fa-solid fa-plus"></i></button>
+                        </div>
+                        <button class="add-to-cart-big" onclick="submitModalCart()">
+                            <span>${existingInCart ? 'حفظ' : 'إضافة للسلة'}</span>
+                            <strong id="modal-total-price">${(displayPrice * quantity).toFixed(2)} ${currency}</strong>
+                        </button>
+                    </div>
+                </div>
+            `;
 
             Swal.fire({
-                title: '&#1605;&#1604;&#1575;&#1581;&#1592;&#1575;&#1578; &#1575;&#1604;&#1591;&#1604;&#1576;',
-                input: 'textarea',
-                inputLabel: name,
-                inputValue: existingNotes,
-                inputPlaceholder: '&#1571;&#1590;&#1601; &#1605;&#1604;&#1575;&#1581;&#1592;&#1575;&#1578;&#1603; &#1607;&#1606;&#1575;...',
-                showCancelButton: true,
-                confirmButtonText: existingInCart ? '&#1581;&#1601;&#1592;' : '&#1573;&#1590;&#1575;&#1601;&#1577; &#1604;&#1604;&#1587;&#1604;&#1577;',
-                cancelButtonText: '&#1573;&#1604;&#1594;&#1575;&#1569;',
+                html: modalHtml,
+                showConfirmButton: false,
+                position: 'bottom',
+                width: '100%',
+                padding: '0',
+                background: '#f8f9fa',
+                showClass: {
+                    popup: 'animate__animated animate__slideInUpCustom animate__faster'
+                },
+                hideClass: {
+                    popup: 'animate__animated animate__slideOutDownCustom animate__faster'
+                },
                 customClass: {
-                    container: 'compact-modal-container',
+                    container: 'swal2-rtl',
                     popup: 'bottom-sheet-modal'
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const notes = result.value || '';
-                    if (window.cart) {
-                        if (existingInCart) {
-                            if (!existingInCart.customization) existingInCart.customization = {};
-                            existingInCart.customization.notes = notes;
-                            existingInCart.notes = notes;
-                            window.cart.save();
-                        } else {
-                            window.cart.addItem({
-                                id, name, price,
-                                shopId, shopName,
-                                notes: notes,
-                                customization: { notes: notes }
-                            }, 1);
-                        }
-                        syncProductBadges();
-                    }
+                },
+                didOpen: () => {
+                    updateModalTotal();
                 }
             });
         }
@@ -2928,14 +3156,15 @@
             addonsPrice = 0;
             quantity = editItem ? editItem.amount : 1;
             currentCustomization = {
-                size: { id: 'size-small', name: '&#1589;&#1594;&#1610;&#1585;', price: 0 },
+                size: null,
                 extras: [],
                 upsells: []
             };
+            basePrice = 0;
 
-            const actualName = prodName || (editItem ? editItem.name : '&#1585;&#1576;&#1593; &#1603;&#1610;&#1604;&#1608; &#1588;&#1575;&#1608;&#1585;&#1605;&#1575; &#1601;&#1585;&#1575;&#1582;');
+            const actualName = prodName || (editItem ? editItem.name : '\u0631\u0628\u0639 \u0643\u064A\u0644\u0648 \u0634\u0627\u0648\u0631\u0645\u0627 \u0641\u0631\u0627\u062E');
             const actualImg = (triggerEl ? triggerEl.querySelector('img')?.src : null) || (editItem ? editItem.image : 'images/placeholderImage.webp');
-            const actualDesc = prodDesc || (editItem ? editItem.description : '&#1588;&#1575;&#1608;&#1585;&#1605;&#1575; &#1583;&#1580;&#1575;&#1580; &#1605;&#1593; &#1575;&#1604;&#1578;&#1608;&#1605;&#1610;&#1577;');
+            const actualDesc = prodDesc || (editItem ? editItem.description : '\u0634\u0627\u0648\u0631\u0645\u0627 \u062F\u062C\u0627\u062C \u0645\u0639 \u0627\u0644\u062A\u0648\u0645\u064A\u0629');
 
             // If editing, populate state
             if (editItem && editItem.customization) {
@@ -2960,7 +3189,11 @@
 
                     // Set dynamic content
                     popup.querySelector('h1').innerHTML = actualName;
-                    popup.querySelector('.compact-price').innerHTML = (basePrice + addonsPrice) + ' &#1580;.&#1605;';
+
+                    // Remove compact price from name row as per user request
+                    const compactPriceEl = popup.querySelector('.compact-price');
+                    if (compactPriceEl) compactPriceEl.style.display = 'none';
+
                     popup.querySelector('.modal-banner img').src = actualImg;
                     popup.querySelector('.modal-desc').innerHTML = actualDesc;
                     popup.querySelector('#modal-qty').innerText = quantity;
@@ -3213,7 +3446,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 15px 0;
-            border-bottom: 1px solid #fffcfc;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
             cursor: pointer;
         }
 
@@ -3335,7 +3568,9 @@
         .modal-footer-sticky {
             position: sticky;
             bottom: 0;
+            justify-content: center;
             background: white;
+            flex-wrap: wrap;
             padding: 15px 20px;
             box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
             display: flex;
@@ -3469,7 +3704,7 @@
             position: absolute;
             top: 10px;
             right: 10px;
-            background: #ffc119;
+            background: #e88b0e;
             color: white;
             width: 28px;
             height: 28px;
@@ -3714,9 +3949,9 @@
             gap: 10px;
         }
         .qty-control.card-qty button {
-            background: none;
+            background: var(--fd-blue);
             border: none;
-            color: #ffc119;
+            color: white;
             cursor: pointer;
             padding: 4px;
             font-size: 0.8rem;

@@ -375,6 +375,9 @@ function showCartToast(message = texts.AddedToCartDefault, options = {}) {
         const empty = document.querySelector("#emptyCart");
         if (!inCart || !empty) return;
 
+        // Save scroll position
+        const scrollPos = inCart.scrollTop;
+
         // Remove old wrapper if exists
         const oldWrapper = inCart.querySelector(".orderedItemsWrapper");
         if (oldWrapper) oldWrapper.remove();
@@ -454,8 +457,8 @@ function showCartToast(message = texts.AddedToCartDefault, options = {}) {
                     <div class="orderedItemMain">
                       <span class="orderedItemName">${item.name} ${item.customization?.size ? `<small class="cart-item-size">(${item.customization.size.name})</small>` : ''}</span>
                       <div class="cart-item-badges">
-                        ${item.isCustomized ? `<span class="addons-badge" onclick="event.stopPropagation(); openHardcodedModal(${JSON.stringify(item).replace(/"/g, '&quot;')})">&#1573;&#1590;&#1575;&#1601;&#1575;&#1578;</span>` : ''}
-                        ${(item.customization?.notes || item.notes) ? `<span class="notes-badge" onclick="event.stopPropagation(); if(typeof openNotesModal==='function') openNotesModal('${item.id}', '${item.shopId}'); else openHardcodedModal(${JSON.stringify(item).replace(/"/g, '&quot;')}, null, null, null, null, true)">&#1605;&#1604;&#1575;&#1581;&#1592;&#1575;&#1578;</span>` : ''}
+                        ${item.isCustomized ? `<span class="addons-badge" onclick="event.stopPropagation(); openHardcodedModal(${JSON.stringify(item).replace(/"/g, '&quot;')})">إضافات</span>` : ''}
+                        ${(item.customization?.notes || item.notes) ? `<span class="notes-badge" onclick="event.stopPropagation(); if(typeof openSimpleNotesModal==='function') openSimpleNotesModal(null, '${item.name.replace(/'/g, "\\'")}', ${item.price}, '${(item.desc || '').replace(/'/g, "\\'")}', '${item.id}'); else openHardcodedModal(${JSON.stringify(item).replace(/"/g, '&quot;')}, null, null, null, null, true)">ملاحظات</span>` : ''}
                       </div>
                     </div>
                     <span class="totalItemPrice">${totalPrice.toLocaleString()} ${texts.Currency}</span>
@@ -549,6 +552,9 @@ function showCartToast(message = texts.AddedToCartDefault, options = {}) {
         if (subtotalEl) subtotalEl.textContent = Number(summary.subtotal).toLocaleString() + ` ${texts.Currency}`;
         if (deliveryEls.length >= 1) deliveryEls[0].textContent = Number(summary.delivery).toFixed(2) + ` ${texts.Currency}`;
         if (totalEl) totalEl.textContent = Number(summary.total).toLocaleString() + ` ${texts.Currency}`;
+
+        // Restore scroll position at the very end
+        inCart.scrollTop = scrollPos;
     }
 
 
@@ -826,8 +832,8 @@ function renderCheckoutArticles(items, summary) {
                         ${item.name} 
                         ${item.customization?.size ? `<small class="checkout-item-size">(${item.customization.size.name})</small>` : ''}
                         <div class="checkout-item-badges">
-                            ${item.isCustomized ? `<span class="addons-badge" onclick="if(typeof openHardcodedModal==='function') openHardcodedModal(${JSON.stringify(item).replace(/"/g, '&quot;')})">&#1573;&#1590;&#1575;&#1601;&#1575;&#1578;</span>` : ''}
-                            ${(item.customization?.notes || item.notes) ? `<span class="notes-badge" onclick="if(typeof openNotesModal==='function') openNotesModal('${item.id}', '${item.shopId}'); else openHardcodedModal(${JSON.stringify(item).replace(/"/g, '&quot;')}, null, null, null, null, true)">&#1605;&#1604;&#1575;&#1581;&#1592;&#1575;&#1578;</span>` : ''}
+                            ${item.isCustomized ? `<span class="addons-badge" onclick="if(typeof openHardcodedModal==='function') openHardcodedModal(${JSON.stringify(item).replace(/"/g, '&quot;')})">إضافات</span>` : ''}
+                            ${(item.customization?.notes || item.notes) ? `<span class="notes-badge" onclick="if(typeof openSimpleNotesModal==='function') openSimpleNotesModal(null, '${item.name.replace(/'/g, "\\'")}', ${item.price}, '${(item.desc || '').replace(/'/g, "\\'")}', '${item.id}'); else openHardcodedModal(${JSON.stringify(item).replace(/"/g, '&quot;')}, null, null, null, null, true)">ملاحظات</span>` : ''}
                         </div>
                     </span>
 
