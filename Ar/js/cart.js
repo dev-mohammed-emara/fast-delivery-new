@@ -462,7 +462,7 @@ function showCartToast(message = texts.AddedToCartDefault, options = {}) {
                       </div>
                     </div>
                     <span class="totalItemPrice">${totalPrice.toLocaleString()} ${texts.Currency}</span>
-                    <span class="removeCartItem"><i class="fa-solid fa-trash-can"></i></span>
+                    <span class="removeCartItem"><i class="fa-solid fa-trash"></i></span>
                 `;
                 itemGroup.appendChild(article);
 
@@ -499,16 +499,16 @@ function showCartToast(message = texts.AddedToCartDefault, options = {}) {
                         
                         upsellArticle.innerHTML = `
                             <div class="upsell-connector"></div>
+                            <div class="cartItemAmountHandlers">
+                                <button class="decrease" onclick="event.stopPropagation(); cart.updateAddonQty('${item.id}', '${upsell.id}', -1, 'upsells', '${item.shopId}')"><i class="fa-solid fa-minus"></i></button>
+                                <span class="itemAmount">${upsell.qty}</span>
+                                <button class="increase" onclick="event.stopPropagation(); cart.updateAddonQty('${item.id}', '${upsell.id}', 1, 'upsells', '${item.shopId}')"><i class="fa-solid fa-plus"></i></button>
+                            </div>
                             <div class="orderedItemMain">
                                 <span class="orderedItemName">${upsell.name}</span>
-                                <div class="cust-handlers" style="margin-inline-start: 10px;">
-                                    <button onclick="event.stopPropagation(); cart.updateAddonQty('${item.id}', '${upsell.id}', -1, 'upsells', '${item.shopId}')"><i class="fa-solid fa-minus"></i></button>
-                                    <span class="cust-qty-val">${upsell.qty}</span>
-                                    <button onclick="event.stopPropagation(); cart.updateAddonQty('${item.id}', '${upsell.id}', 1, 'upsells', '${item.shopId}')"><i class="fa-solid fa-plus"></i></button>
-                                </div>
                             </div>
                             <span class="totalItemPrice">${upsellTotal.toLocaleString()} ${texts.Currency}</span>
-                            <span class="removeUpsellItem" onclick="event.stopPropagation(); cart.removeAddon('${item.id}', '${upsell.id}', 'upsells', '${item.shopId}')"><i class="fa-solid fa-trash-can"></i></span>
+                            <span class="removeUpsellItem" onclick="event.stopPropagation(); cart.removeAddon('${item.id}', '${upsell.id}', 'upsells', '${item.shopId}')"><i class="fa-solid fa-trash"></i></span>
                         `;
                         upsellsWrapper.appendChild(upsellArticle);
                     });
@@ -846,7 +846,14 @@ function renderCheckoutArticles(items, summary) {
                     <span class="itemTotal">${itemTotal.toFixed(2)} ${texts.Currency}</span>
                     <span class="removeItem"><i class="fa-solid fa-trash"></i></span>
                 `;
-                orderInfo.appendChild(row);
+
+                const itemGroupWrapper = document.createElement("div");
+                itemGroupWrapper.classList.add("checkout-item-group");
+                if (item.customization && (item.customization.quickChoices?.length > 0 || item.customization.extras?.length > 0 || item.customization.upsells?.length > 0)) {
+                    itemGroupWrapper.classList.add("has-addons");
+                }
+                itemGroupWrapper.appendChild(row);
+                orderInfo.appendChild(itemGroupWrapper);
 
                 // Add Customizations to Checkout
                 if (item.customization) {
@@ -856,16 +863,16 @@ function renderCheckoutArticles(items, summary) {
                         exRow.classList.add("orderStats", "checkout-customization-row");
                         exRow.innerHTML = `
                             <span class="orderName"><small>+ ${qc.name}</small></span>
-                            <div class="cust-handlers" style="margin-inline-start: 10px;">
-                                <button onclick="cart.updateAddonQty('${item.id}', '${qc.id}', -1, 'quickChoices', '${item.shopId}')"><i class="fa-solid fa-minus"></i></button>
-                                <span class="cust-qty-val">${qc.qty || 1}</span>
-                                <button onclick="cart.updateAddonQty('${item.id}', '${qc.id}', 1, 'quickChoices', '${item.shopId}')"><i class="fa-solid fa-plus"></i></button>
+                            <div class="cartItemAmountHandlers">
+                                <button class="decrease" onclick="cart.updateAddonQty('${item.id}', '${qc.id}', -1, 'quickChoices', '${item.shopId}')"><i class="fa-solid fa-minus"></i></button>
+                                <span class="itemAmount">${qc.qty || 1}</span>
+                                <button class="increase" onclick="cart.updateAddonQty('${item.id}', '${qc.id}', 1, 'quickChoices', '${item.shopId}')"><i class="fa-solid fa-plus"></i></button>
                             </div>
                             <span class="itemPrice">${qc.price} ${texts.Currency}</span>
                             <span class="itemTotal">${(qc.price * (qc.qty || 1)).toFixed(2)} ${texts.Currency}</span>
-                            <span class="removeItem" onclick="cart.removeAddon('${item.id}', '${qc.id}', 'quickChoices', '${item.shopId}')"><i class="fa-solid fa-trash-can"></i></span>
+                            <span class="removeItem" onclick="cart.removeAddon('${item.id}', '${qc.id}', 'quickChoices', '${item.shopId}')"><i class="fa-solid fa-trash"></i></span>
                         `;
-                        orderInfo.appendChild(exRow);
+                        itemGroupWrapper.appendChild(exRow);
                     });
 
                     // Extras (legacy)
@@ -879,7 +886,7 @@ function renderCheckoutArticles(items, summary) {
                             <span class="itemTotal">${(ex.price).toFixed(2)} ${texts.Currency}</span>
                             <span></span>
                         `;
-                        orderInfo.appendChild(exRow);
+                        itemGroupWrapper.appendChild(exRow);
                     });
 
                     // Nested Upsells (Independent qty)
@@ -890,16 +897,16 @@ function renderCheckoutArticles(items, summary) {
                             const upTotal = (up.price * up.qty).toFixed(2);
                             upRow.innerHTML = `
                                 <span class="orderName"><small><i class="fa-solid fa-plus"></i> ${up.name}</small></span>
-                                <div class="cust-handlers" style="margin-inline-start: 10px;">
-                                    <button onclick="cart.updateAddonQty('${item.id}', '${up.id}', -1, 'upsells', '${item.shopId}')"><i class="fa-solid fa-minus"></i></button>
-                                    <span class="cust-qty-val">${up.qty}</span>
-                                    <button onclick="cart.updateAddonQty('${item.id}', '${up.id}', 1, 'upsells', '${item.shopId}')"><i class="fa-solid fa-plus"></i></button>
+                                <div class="cartItemAmountHandlers">
+                                    <button class="decrease" onclick="cart.updateAddonQty('${item.id}', '${up.id}', -1, 'upsells', '${item.shopId}')"><i class="fa-solid fa-minus"></i></button>
+                                    <span class="itemAmount">${up.qty}</span>
+                                    <button class="increase" onclick="cart.updateAddonQty('${item.id}', '${up.id}', 1, 'upsells', '${item.shopId}')"><i class="fa-solid fa-plus"></i></button>
                                 </div>
                                 <span class="itemPrice">${up.price} ${texts.Currency}</span>
                                 <span class="itemTotal">${upTotal} ${texts.Currency}</span>
-                                <span class="removeItem" onclick="cart.removeAddon('${item.id}', '${up.id}', 'upsells', '${item.shopId}')"><i class="fa-solid fa-trash-can"></i></span>
+                                <span class="removeItem" onclick="cart.removeAddon('${item.id}', '${up.id}', 'upsells', '${item.shopId}')"><i class="fa-solid fa-trash"></i></span>
                             `;
-                            orderInfo.appendChild(upRow);
+                            itemGroupWrapper.appendChild(upRow);
                         });
                     }
                 }

@@ -138,6 +138,7 @@ document.addEventListener('DOMContentLoaded', loadFavorites);
 </script>
 
 <style>
+
 .allAvailableShops {
     display: flex;
     flex-direction: column;
@@ -146,6 +147,7 @@ document.addEventListener('DOMContentLoaded', loadFavorites);
 }
 .availableShop {
     display: flex;
+    flex-wrap: wrap;
     gap: 1rem !important;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     padding-bottom: 1rem;
@@ -187,6 +189,15 @@ document.addEventListener('DOMContentLoaded', loadFavorites);
     background: #ffebee;
     color: #c62828;
     border: 1px solid #ffcdd2;
+}
+@media (max-width:480px){
+    .availableShop{
+        flex-direction: column;
+        gap: 0.3rem !important;
+    }
+    .shop-img-wrapper{
+        margin: auto;
+    }
 }
 </style>
 </asp:Content>

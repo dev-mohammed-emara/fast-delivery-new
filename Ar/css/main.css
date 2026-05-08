@@ -783,7 +783,6 @@ section#userDashboard {
 .userProfileField {
   padding: 25px;
   padding-top: calc(120px + var(--safe-area-inset-top, 0px));
-  margin-bottom: 25px;
   max-width: 1024px;
   width: 100%;
   margin-inline: auto;
@@ -2262,6 +2261,7 @@ html[dir="ltr"] .showPassword {
     padding: 0 !important;
     overflow: visible !important;
     pointer-events: none;
+    position: static !important;
   }
 
   .logo-container, .nav-links, #userDropDown, #login-modal-btn {
@@ -2294,7 +2294,7 @@ html[dir="ltr"] .showPassword {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    color: #999;
+    color: var(--fd-blue) !important;
     font-size: 10px;
     font-weight: 600;
     gap: 3px;
@@ -2332,7 +2332,7 @@ html[dir="ltr"] .showPassword {
     height: 56px;
     border-radius: 50%;
     background: var(--fd-blue);
-    color: #fff;
+    color: #fff !important;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -2365,15 +2365,16 @@ html[dir="ltr"] .showPassword {
 
   /* Floating Icons */
   #cartIcon {
-    position: fixed !important;
-    top: 15px !important;
+    position: absolute !important;
+    top: 0px !important;
     z-index: 10000 !important;
             background: white;
+            left: -55px;
         color: black;
         box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
   }
   .action-buttons{
-        position: fixed;
+        position: absolute;
     left: 70px;
     top: 15px;
     .icon-btn{
@@ -2393,17 +2394,17 @@ html[dir="ltr"] .showPassword {
 
 
   .dropdown {
-    position: fixed !important;
+    position: static !important;
     top: 15px !important;
     z-index: 10000 !important;
   }
 
-  html[dir="ltr"] #cartIcon {
+  /* html[dir="ltr"] #cartIcon {
     right: 15px !important;
   }
   html[dir="rtl"] #cartIcon {
     left: 15px !important;
-  }
+  } */
 
   html[dir="ltr"] .dropdown {
     left: 15px !important;
@@ -2420,3 +2421,46 @@ html[dir="ltr"] .showPassword {
   }
 
 }
+
+/* Grouping Styles */
+.checkout-item-group.has-addons {
+    background: #fdfdfd;
+    border: 1px solid #f0f0f0;
+    border-radius: 16px;
+    margin-bottom: 1rem;
+    padding: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+.checkout-main-item-row {
+    border-bottom: 1px solid #f0f0f0 !important;
+}
+.checkout-customization-row, .checkout-upsell-row {
+    background: transparent !important;
+    border-bottom: none !important;
+    padding: 8px 0 !important;
+    min-height: unset !important;
+}
+.checkout-customization-row span, .checkout-upsell-row span {
+    padding: 4px 0 !important;
+    color: #666 !important;
+    font-size: 0.9rem !important;
+}
+.checkout-customization-row .orderName, .checkout-upsell-row .orderName {
+    padding-right: 20px !important;
+}
+
+/* Side Cart Grouping */
+.cart-item-group {
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+}
+.cart-item-group:last-child {
+    border-bottom: none;
+}
+.cart-item-customizations, .cart-nested-upsells {
+    padding-right: 40px;
+    font-size: 0.85rem;
+    color: #777;
+}
+

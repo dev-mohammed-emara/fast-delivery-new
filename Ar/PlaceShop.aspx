@@ -316,7 +316,7 @@
             }
 
             .foodDrowdown {
-                padding: 0;
+                padding: 0 !important;
                 display: flex;
                 flex-direction: column;
                 list-style: none;
@@ -785,13 +785,15 @@
             }
 
             .orderedItemsWrapper {
-                max-height: 380px;
+                max-height: 450px;
                 overflow-y: auto;
+                overflow-x: auto;
                 margin-bottom: 1.5rem;
                 padding-inline: 4px;
                 display: flex;
                 flex-direction: column;
-                gap: 2px;
+                gap: 8px;
+                -webkit-overflow-scrolling: touch;
             }
 
             /* Custom Scrollbar */
@@ -822,13 +824,15 @@
 
             .orderedItem {
                 display: grid;
-                grid-template-columns: auto 1fr auto auto;
+                grid-template-columns: 85px 1fr 100px 40px;
                 align-items: center;
                 gap: 12px;
                 padding: 14px 10px;
                 border-radius: 12px;
                 transition: background 0.2s;
                 background: #fff;
+                white-space: nowrap;
+                min-width: 500px;
             }
 
             .orderedItem:hover {
@@ -838,24 +842,23 @@
     overflow: initial !important;
 }
             .orderedItemName {
-                font-weight: 600;
-                color: #333;
-                font-size: 0.8rem;
+                font-weight: 700;
+                color: #2c3e50;
+                font-size: 0.9rem;
                 line-height: 1.4;
                 text-align: initial !important;
-                display: -webkit-box;
-                -webkit-line-clamp: 2;
-                min-height: fit-content;
-                text-overflow: ellipsis;
-                -webkit-box-orient: vertical;
+                white-space: nowrap;
                 overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 250px;
             }
 
             .totalItemPrice {
-                font-weight: 700;
-                color: #222;
-                font-size: 0.8rem;
+                font-weight: 800;
+                color: var(--fd-blue);
+                font-size: 0.95rem;
                 white-space: nowrap;
+                text-align: center;
             }
 
             .removeCartItem {
@@ -895,12 +898,14 @@
             .cartItemAmountHandlers {
                 display: flex;
                 align-items: center;
+                justify-content: center;
                 background: #f5f6f7;
                 border-radius: 10px;
-                padding: 3px;
+                padding: 4px;
                 margin: 0;
-                min-width: fit-content;
-                gap: 2px;
+                min-width: 85px;
+                gap: 6px;
+                border: 1px solid #eee;
             }
 
             .increase, .decrease {

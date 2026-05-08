@@ -1248,7 +1248,6 @@ section#userDashboard {
 .userProfileField {
   padding: 25px;
   padding-top: 120px;
-  margin-bottom: 25px;
   max-width: 1024px;
   width: 100%;
   margin-inline: auto;
@@ -3675,7 +3674,8 @@ html[dir="ltr"] {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    color: #999;
+       color: var(--fd-blue);
+
     font-size: 10px;
     font-weight: 600;
     gap: 3px;
@@ -3705,6 +3705,13 @@ html[dir="ltr"] {
     white-space: nowrap;
   }
 
+  .header{
+    position: static !important;
+  }
+  .dropdown{
+    position: static !important;
+  }
+
   /* Elevated center Profile button */
   .mobile-nav-profile {
     position: relative;
@@ -3713,7 +3720,7 @@ html[dir="ltr"] {
     height: 56px;
     border-radius: 50%;
     background: var(--fd-blue);
-    color: #fff;
+    color: #fff !important;
     display: flex;
     justify-content: center;
     align-items: center;

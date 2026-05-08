@@ -228,6 +228,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ✅ استدعاء عند تحميل الصفحة
     updateLoginBtnBehavior();
+
+    // ✅ تحديد العنصر النشط في القائمة السفلية للجوال
+    function setActiveNavItem() {
+        const navItems = document.querySelectorAll('.mobile-nav-item');
+        const currentPath = window.location.pathname.toLowerCase();
+        
+        navItems.forEach(item => {
+            const href = item.getAttribute('href');
+            if (href) {
+                const normalizedHref = href.toLowerCase().replace(/^\.\//, '');
+                if (currentPath.endsWith(normalizedHref)) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            }
+        });
+
+        // حالة خاصة للرئيسية
+        if (currentPath.endsWith('/') || currentPath.endsWith('default.aspx')) {
+            navItems.forEach(item => {
+                if (item.getAttribute('href')?.toLowerCase() === 'default.aspx') {
+                    item.classList.add('active');
+                }
+            });
+        }
+    }
+    setActiveNavItem();
 });
 
 // user profile settings

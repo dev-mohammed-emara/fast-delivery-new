@@ -177,6 +177,13 @@
     100% { transform: scale(1.6); opacity: 0; }
 }
     </style>
+    <style>
+        .mobile-nav-item.active,
+        .mobile-nav-item.active i,
+        .mobile-nav-item.active span {
+            color: var(--fd-blue) !important;
+        }
+    </style>
 </head>
 <body>
     <div id="loader-wrapper">
@@ -389,23 +396,23 @@
 <nav class="mobile-bottom-nav" id="mobileBottomNav">
     <a href="Default.aspx" class="mobile-nav-item">
         <i class="fa-solid fa-house"></i>
-        <span data-key="nav_home">Home</span>
+        <span data-key="nav_home"><asp:Literal ID="ltBottomHome" runat="server" Text="<%$ Resources:Texts, Home %>" /></span>
     </a>
     <a href="POrders.aspx" class="mobile-nav-item">
         <i class="fa-solid fa-cart-shopping"></i>
-        <span data-key="nav_orders">Orders</span>
+        <span data-key="nav_orders"><asp:Literal ID="ltBottomOrders" runat="server" Text="<%$ Resources:Texts, Orders %>" /></span>
     </a>
     <button class="mobile-nav-item mobile-nav-profile" onclick="showModal(); return false;">
         <i class="fa-solid fa-user"></i>
-        <span data-key="nav_profile">Profile</span>
+        <span data-key="nav_profile"><asp:Literal ID="ltBottomProfile" runat="server" Text="<%$ Resources:Texts, Profile %>" /></span>
     </button>
     <a href="Favorites.aspx" class="mobile-nav-item">
         <i class="fa-solid fa-heart"></i>
-        <span data-key="nav_favorites">Favorites</span>
+        <span data-key="nav_favorites"><asp:Literal ID="ltBottomFavorites" runat="server" Text="<%$ Resources:Texts, nav_favorites %>" /></span>
     </a>
     <a href="Addresses.aspx" class="mobile-nav-item">
         <i class="fa-solid fa-map-location-dot"></i>
-        <span data-key="nav_addresses">Addresses</span>
+        <span data-key="nav_addresses"><asp:Literal ID="ltBottomAddresses" runat="server" Text="<%$ Resources:Texts, Addresses %>" /></span>
     </a>
 </nav>
     </form>
