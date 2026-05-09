@@ -23,6 +23,12 @@
                 <li><a href="Favorites.aspx"><asp:Literal ID="litFav" runat="server" Text="<%$ Resources: texts, nav_favorites %>"></asp:Literal></a></li>
                 <li><a href="Addresses.aspx"><asp:Literal ID="litAddresses" runat="server" Text="<%$ Resources: texts, Addresses %>"></asp:Literal></a></li>
                 <li><a href="POrders.aspx"><asp:Literal ID="litOrders" runat="server" Text="<%$ Resources: texts, Orders %>"></asp:Literal></a></li>
+                <li class="logout-item">
+                    <asp:LinkButton ID="lblogout_profile" runat="server" OnClick="lblogout_Click" OnClientClick="localStorage.removeItem('cartItems');">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <asp:Literal ID="litLogoutProfile" runat="server" Text="<%$ Resources:Texts, Logout %>" />
+                    </asp:LinkButton>
+                </li>
             </ul>
 
             <div class="Uform">
@@ -110,6 +116,12 @@
 </script>
                 <center>
                     <asp:Button ID="btnSave" runat="server" Text='<%$ Resources: texts, Update %>' class="login-button" OnClick="btnSave_Click" />
+                    <div class="logout-btn-wrapper" style="margin-top: 20px;">
+                         <asp:LinkButton ID="btnLogoutMain" runat="server" OnClick="lblogout_Click" class="logout-link" OnClientClick="localStorage.removeItem('cartItems');">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            <asp:Literal ID="litLogoutMain" runat="server" Text="<%$ Resources:Texts, Logout %>" />
+                        </asp:LinkButton>
+                    </div>
                 </center>
             </div>
         </article>
@@ -656,7 +668,7 @@ input[type="radio"] {
     position: absolute;
     left: 0.5rem;
     top: 0.5rem;
-    width: 16px;
+    width: 14px;
   }
 }
 
@@ -796,6 +808,38 @@ input[type="radio"] {
 }
 
 
+.logout-item {
+    margin-top: 20px;
+    border-top: 1px solid rgba(0,0,0,0.1);
+    padding-top: 10px !important;
+}
+.logout-item a {
+    color: #ff4d4d !important;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+}
+.logout-item a:hover {
+    color: #d32f2f !important;
+    background: #fff5f5;
+}
+.logout-link {
+    color: #ff4d4d;
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 30px;
+    border: 2px solid #ff4d4d;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+}
+.logout-link:hover {
+    background-color: #ff4d4d;
+    color: white !important;
+}
     </style>
 
     <style>

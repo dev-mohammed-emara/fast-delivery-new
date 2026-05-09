@@ -621,7 +621,7 @@ a {
 
   .header {
     padding: 15px 20px;
-    display: flex;
+    display: flex !important;
     justify-content: space-between;
   }
 
@@ -1013,7 +1013,7 @@ input[type="radio"] {
     position: absolute;
     left: 0.5rem;
     top: 0.5rem;
-    width: 16px;
+    width: 14px;
   }
 }
 
@@ -2264,9 +2264,14 @@ html[dir="ltr"] .showPassword {
     position: static !important;
   }
 
-  .logo-container, .nav-links, #userDropDown, #login-modal-btn {
+ .nav-links, #userDropDown, #login-modal-btn {
     display: none !important;
   }
+  .logo-container{
+        position: absolute;
+    top: 10px;
+    right: 15px;
+}
 
   .action-buttons {
     pointer-events: auto;
@@ -2346,7 +2351,22 @@ html[dir="ltr"] .showPassword {
   .mobile-nav-profile:focus {
     transform: scale(1.08);
     box-shadow: 0 6px 18px rgba(255, 193, 25, 0.55);
-    color: #fff;
+    color: #fff !important;
+  }
+
+  /* Specific Nav Item Colors */
+  .mobile-nav-item.nav-cart { color: #ff5722 !important; } /* Unique Orange-Red */
+  .mobile-nav-item.nav-fav  { color: #e91e63 !important; } /* Pink */
+  .mobile-nav-item.nav-map  { color: #2196f3 !important; } /* Blue */
+
+  /* Active state logic */
+  .mobile-nav-item.active {
+    opacity: 1;
+    font-weight: 800;
+  }
+
+  .mobile-nav-item.active i {
+    transform: scale(1.1);
   }
 
   .mobile-nav-profile i {
@@ -2420,6 +2440,23 @@ html[dir="ltr"] .showPassword {
     bottom: 150px !important;
   }
 
+  /* Adjustments when bottom nav is hidden (not logged in) */
+  body.not-logged-in #login-modal-btn {
+    display: flex !important;
+    position: absolute;
+    top: 15px;
+    left: 80px; /* Adjust based on other buttons */
+  }
+  html[dir="rtl"] body.not-logged-in #login-modal-btn {
+    left: auto;
+    right: 80px;
+  }
+  body.not-logged-in .whatsapp-float {
+    bottom: 25px !important;
+  }
+  body.not-logged-in .back-to-top {
+    bottom: 90px !important;
+  }
 }
 
 /* Grouping Styles */

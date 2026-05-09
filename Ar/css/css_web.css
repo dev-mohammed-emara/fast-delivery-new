@@ -867,7 +867,7 @@ input[type="radio"] {
     position: absolute;
     left: 0.5rem;
     top: 0.5rem;
-    width: 16px;
+    width: 14px;
   }
 }
 
@@ -2535,7 +2535,7 @@ body:has(#openedShopFoods) #cartShower {
 
   .availableShop {
     align-items: center;
-    flex-wrap: wrap;
+    /* flex-wrap: wrap; */
     justify-content: center;
     /* padding-top: 0; */
     /* padding-inline: 0; */

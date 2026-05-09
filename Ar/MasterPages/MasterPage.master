@@ -185,7 +185,7 @@
         }
     </style>
 </head>
-<body>
+<body class="<%= !HttpContext.Current.User.Identity.IsAuthenticated ? "not-logged-in" : "" %>">
     <div id="loader-wrapper">
         <img src="images/logo.png" alt="Fast Delivery" class="preloader-logo" id="preloaderLogo">
     </div>
@@ -393,28 +393,30 @@
     <i class="fab fa-whatsapp"></i>
 </asp:HyperLink>
 
+<% if (HttpContext.Current.User.Identity.IsAuthenticated) { %>
 <nav class="mobile-bottom-nav" id="mobileBottomNav">
     <a href="Default.aspx" class="mobile-nav-item">
         <i class="fa-solid fa-house"></i>
         <span data-key="nav_home"><asp:Literal ID="ltBottomHome" runat="server" Text="<%$ Resources:Texts, Home %>" /></span>
     </a>
-    <a href="POrders.aspx" class="mobile-nav-item">
+    <a href="CheckOut.aspx" class="mobile-nav-item nav-cart">
         <i class="fa-solid fa-cart-shopping"></i>
-        <span data-key="nav_orders"><asp:Literal ID="ltBottomOrders" runat="server" Text="<%$ Resources:Texts, Orders %>" /></span>
+        <span data-key="nav_cart"><asp:Literal ID="ltBottomCart" runat="server" Text="<%$ Resources:Texts, ViewCart %>" /></span>
     </a>
-    <button class="mobile-nav-item mobile-nav-profile" onclick="showModal(); return false;">
+    <a href="profile.aspx" class="mobile-nav-item mobile-nav-profile">
         <i class="fa-solid fa-user"></i>
         <span data-key="nav_profile"><asp:Literal ID="ltBottomProfile" runat="server" Text="<%$ Resources:Texts, Profile %>" /></span>
-    </button>
-    <a href="Favorites.aspx" class="mobile-nav-item">
+    </a>
+    <a href="Favorites.aspx" class="mobile-nav-item nav-fav">
         <i class="fa-solid fa-heart"></i>
         <span data-key="nav_favorites"><asp:Literal ID="ltBottomFavorites" runat="server" Text="<%$ Resources:Texts, nav_favorites %>" /></span>
     </a>
-    <a href="Addresses.aspx" class="mobile-nav-item">
+    <a href="Addresses.aspx" class="mobile-nav-item nav-map">
         <i class="fa-solid fa-map-location-dot"></i>
         <span data-key="nav_addresses"><asp:Literal ID="ltBottomAddresses" runat="server" Text="<%$ Resources:Texts, Addresses %>" /></span>
     </a>
 </nav>
+<% } %>
     </form>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

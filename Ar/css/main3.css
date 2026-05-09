@@ -1408,7 +1408,7 @@ input[type="radio"] {
     position: absolute;
     left: 0.5rem;
     top: 0.5rem;
-    width: 16px;
+    width: 14px;
   }
 }
 
@@ -3644,7 +3644,7 @@ html[dir="ltr"] {
     pointer-events: none;
   }
 
-  .logo-container, .nav-links, #userDropDown, #login-modal-btn {
+ .nav-links, #userDropDown, #login-modal-btn {
     display: none !important;
   }
 

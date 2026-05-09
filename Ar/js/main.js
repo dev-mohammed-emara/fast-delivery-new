@@ -229,6 +229,19 @@ document.addEventListener("DOMContentLoaded", () => {
     // ✅ استدعاء عند تحميل الصفحة
     updateLoginBtnBehavior();
 
+    // ✅ Logic for mobile bottom nav "Orders" icon to open cart modal on shop page
+    document.addEventListener("click", (e) => {
+        const ordersItem = e.target.closest(".mobile-nav-item.nav-cart");
+        if (ordersItem) {
+            // Check if we are on a page with a cart modal (like PlaceShop.aspx)
+            const cartShowerBtn = document.querySelector("#cartShower .submit button, #cartShower .submit");
+            if (cartShowerBtn) {
+                e.preventDefault();
+                cartShowerBtn.click();
+            }
+        }
+    });
+
     // ✅ تحديد العنصر النشط في القائمة السفلية للجوال
     function setActiveNavItem() {
         const navItems = document.querySelectorAll('.mobile-nav-item');

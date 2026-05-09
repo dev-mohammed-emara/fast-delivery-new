@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', loadFavorites);
 }
 .availableShop {
     display: flex;
-    flex-wrap: wrap;
+    /* flex-wrap: wrap; */
     gap: 1rem !important;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     padding-bottom: 1rem;

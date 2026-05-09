@@ -886,13 +886,13 @@ function reverseGeocode(latlng, retries = 2) {
             isolation: isolate;
             width: 100%;
             max-width: 300px;
-            svg;
+            svg
 
         {
             position: absolute;
             left: 0.5rem;
             top: 0.5rem;
-            width: 16px;
+            width: 14px;
         }
 
         }
