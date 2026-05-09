@@ -273,10 +273,13 @@
                     a {
                         padding: 1rem 0.5rem;
                         transition: var(--transition);
+                        border-right: 3px solid transparent;
 
-                        &:hover {
+                        &:hover, &.active {
                             background-color: #f8f9fa;
                             color: var(--fd-blue);
+                            border-right-color: var(--fd-blue);
+                            font-weight: 700;
                         }
                     }
                 }
@@ -822,18 +825,7 @@
                 border-left: 4px solid var(--fd-blue);
             }
 
-            .orderedItem {
-                display: grid;
-                grid-template-columns: 85px 1fr 100px 40px;
-                align-items: center;
-                gap: 12px;
-                padding: 14px 10px;
-                border-radius: 12px;
-                transition: background 0.2s;
-                background: #fff;
-                white-space: nowrap;
-                min-width: 500px;
-            }
+
 
             .orderedItem:hover {
                 background: #fcfcfc;
@@ -893,6 +885,7 @@
                 flex-wrap: wrap;
                 flex-grow: 1;
                 gap: 0.5rem;
+                flex-direction: column;
                 margin: 0 12px;
             }
 
@@ -1183,45 +1176,7 @@
             }
         </style>
         <script>
-            // Function to handle click and set the active class
-            function setActiveCategory(clickedElement, event) {
-                // 1. (\u0627\u062e\u062a\u064a\u0627\u0631\u064a) \u0645\u0646\u0639 \u0627\u0644\u062a\u0648\u062c\u064a\u0647 \u0627\u0644\u0641\u0648\u0631\u064a \u0644\u0644\u0631\u0627\u0628\u0637 \u062d\u062a\u0649 \u0646\u0646\u0647\u064a \u0639\u0645\u0644 JavaScript
-                // event.preventDefault();
-
-                // 2. \u062c\u0644\u0628 \u062c\u0645\u064a\u0639 \u0639\u0646\u0627\u0635\u0631 \u0627\u0644\u062a\u0635\u0646\u064a\u0641\u0627\u062a
-                const allPills = document.querySelectorAll('.category-pill');
-
-                // 3. \u0625\u0632\u0627\u0644\u0629 \u0643\u0644\u0627\u0633 'active' \u0645\u0646 \u0643\u0644 \u0627\u0644\u0639\u0646\u0627\u0635\u0631
-                allPills.forEach(pill => {
-                    pill.classList.remove('active');
-                });
-
-                // 4. \u0625\u0636\u0627\u0641\u0629 \u0643\u0644\u0627\u0633 'active' \u0644\u0644\u0639\u0646\u0635\u0631 \u0627\u0644\u0630\u064a \u062a\u0645 \u0627\u0644\u0646\u0642\u0631 \u0639\u0644\u064a\u0647
-                clickedElement.classList.add('active');
-
-                // 5. (\u0625\u062c\u0631\u0627\u0621 \u0627\u062e\u062a\u064a\u0627\u0631\u064a) \u064a\u0645\u0643\u0646\u0643 \u0647\u0646\u0627 \u0627\u0633\u062a\u062e\u062f\u0627\u0645 fetch \u0623\u0648 AJAX
-                // \u0644\u062a\u062d\u0645\u064a\u0644 \u0642\u0627\u0626\u0645\u0629 \u0627\u0644\u0637\u0639\u0627\u0645 \u0627\u0644\u062c\u062f\u064a\u062f\u0629 \u0628\u0646\u0627\u0621\u064b \u0639\u0644\u0649 ID \u0627\u0644\u062a\u0635\u0646\u064a\u0641 \u0627\u0644\u0630\u064a \u062a\u0645 \u0627\u062e\u062a\u064a\u0627\u0631\u0647
-                // const categoryId = clickedElement.getAttribute('data-category-id');
-                // loadFoodItems(categoryId);
-
-                // 6. \u0625\u0630\u0627 \u0643\u0646\u062a \u062a\u0631\u064a\u062f \u0627\u0633\u062a\u0639\u0627\u062f\u0629 \u0648\u0638\u064a\u0641\u0629 \u0627\u0644\u062a\u0648\u062c\u064a\u0647 \u0644\u0644\u0631\u0627\u0628\u0637 \u0628\u0639\u062f \u0627\u0646\u062a\u0647\u0627\u0621 \u0627\u0644\u0639\u0645\u0644\u064a\u0629:
-                // window.location.href = clickedElement.href;
-            }
-
-            // Function to set the initial active category on page load (from Query String)
-            document.addEventListener('DOMContentLoaded', () => {
-                // \u062c\u0644\u0628 ID \u0627\u0644\u062a\u0635\u0646\u064a\u0641 \u0645\u0646 \u0631\u0627\u0628\u0637 URL (Query String)
-                const urlParams = new URLSearchParams(window.location.search);
-                const initialId = urlParams.get('categoryID') || '1'; // \u0627\u0644\u0642\u064a\u0645\u0629 \u0627\u0644\u0627\u0641\u062a\u0631\u0627\u0636\u064a\u0629 '1'
-
-                // \u0627\u0644\u0628\u062d\u062b \u0639\u0646 \u0627\u0644\u0639\u0646\u0635\u0631 \u0627\u0644\u0630\u064a \u064a\u0637\u0627\u0628\u0642 \u0627\u0644\u0640 ID
-                const initialActive = document.querySelector(`.category-pill[data-category-id="${initialId}"]`);
-
-                // \u062a\u0637\u0628\u064a\u0642 \u0627\u0644\u0643\u0644\u0627\u0633 \u0627\u0644\u0646\u0634\u0637 \u0625\u0630\u0627 \u0648\u064f\u062c\u062f
-                if (initialActive) {
-                    initialActive.classList.add('active');
-                }
-            });
+            // Logic consolidated in initSidebarActiveState below
         </script>
         <section id="openedShopFoods">
 
@@ -1328,7 +1283,7 @@
                         </p>
 
                         <p class="pay-badge safe">
-                            <i class="fa-solid fa-shield-halved"></i>
+                            <i class="fa-solid fa-shield"></i>
                             <asp:Literal ID="ltSafeDelivery" runat="server" Text="<%$ Resources:texts, SafeDelivery %>"></asp:Literal>
                         </p>
 
@@ -1366,9 +1321,7 @@
                             <ItemTemplate>
                                 <%-- &#1610;&#1605;&#1603;&#1606;&#1603; &#1575;&#1587;&#1578;&#1582;&#1583;&#1575;&#1605; &#1575;&#1604;&#1605;&#1606;&#1591;&#1602; &#1575;&#1604;&#1588;&#1585;&#1591;&#1610; &#1604;&#1578;&#1591;&#1576;&#1610;&#1602; active class &#1607;&#1606;&#1575; --%>
 
-                                    <a href='#<%# Eval("id")%>' class="category-pill" data-category-id="<%# Eval(" ID")
-                                        %>"
-                                        onclick="setActiveCategory(this, event)">
+                                    <a href='#<%# Eval("id")%>' class="category-pill" data-category-id="<%# Eval("ID") %>">
 
                                         <%-- &#1607;&#1584;&#1607; &#1607;&#1610; &#1575;&#1604;&#1589;&#1608;&#1585;&#1577; &#1575;&#1604;&#1605;&#1589;&#1594;&#1585;&#1577; &#1604;&#1604;&#1578;&#1589;&#1606;&#1610;&#1601; --%>
                                             <img src='<%# Eval("PhotoUrl") %>' alt='<%# Eval("Name") %>' />
@@ -1993,6 +1946,7 @@
             white-space: nowrap;
             font-weight: 600;
             cursor: pointer;
+            min-height: 26px;
             transition: transform 0.2s, background 0.2s;
         }
 
@@ -2255,7 +2209,7 @@
             border-radius: 1.25rem;
             margin-bottom: 1rem;
             min-height: fit-content;
-            padding: 0.5rem;
+            /* padding: 0.5rem; */
             transition: all 0.3s ease;
             box-shadow: 0 4px 12px rgba(0,0,0,0.03);
         }
@@ -2305,8 +2259,9 @@
         }
         .upsell-cart-item {
             background: #f9f9f9 !important;
-            padding: 8px 12px 8px 15px !important;
-            border: none !important;
+padding-block: 8px !important;
+padding-inline: 1rem !important;
+          border: none !important;
             border-right: 3px solid #ffc119 !important;
             margin-bottom: 2px !important;
             border-radius: 0 !important;
@@ -2315,11 +2270,14 @@
             align-items: center;
         }
         .upsell-connector {
-            width: 15px;
+            width: 10px;
             height: 2px;
             background: #ffc119;
             margin-left: 8px;
             opacity: 0.5;
+        }
+        .orderedItem.upsell-cart-item{
+            padding-inline: 1rem !important;
         }
         .upsell-qty-label {
             color: #ffc119;
@@ -2651,7 +2609,10 @@
             const el = document.querySelector('.swal2-container #modal-total-price') || document.getElementById('modal-total-price');
             if (!el) return;
 
-            if (!currentCustomization.size) {
+            // Check if sizes are present in the DOM (only for hardcoded customization modal)
+            const hasSizes = !!(document.querySelector('.swal2-container .option-row') || document.getElementById('option-row'));
+
+            if (hasSizes && !currentCustomization.size) {
                 el.innerHTML = 'اختار الحجم';
                 const btn = document.querySelector('.swal2-container .add-to-cart-big');
                 if (btn) btn.style.opacity = '0.5';
@@ -2768,7 +2729,8 @@
                 return;
             }
 
-            if (!currentCustomization || !currentCustomization.size) {
+            const hasSizes = !!(popup.querySelector('.option-row') || document.getElementById('option-row'));
+            if (hasSizes && (!currentCustomization || !currentCustomization.size)) {
                 const priceEl = popup.querySelector('#modal-total-price');
                 if (priceEl) {
                     priceEl.style.color = 'red';
@@ -2793,7 +2755,7 @@
                 id: uniqueId,
                 name: productName,
                 price: basePrice,
-                isCustomized: !!(currentCustomization && ((currentCustomization.upsells && currentCustomization.upsells.length > 0) || (currentCustomization.size && currentCustomization.size.id !== 'size-small'))),
+                isCustomized: !!(currentCustomization && ((currentCustomization.upsells && currentCustomization.upsells.length > 0) || (currentCustomization.size && currentCustomization.size.id && currentCustomization.size.id !== 'size-small'))),
                 customization: currentCustomization ? {
                     size: currentCustomization.size,
                     extras: [...currentCustomization.extras],
@@ -3108,49 +3070,76 @@
         function initSidebarActiveState() {
             const allLinks = document.querySelectorAll('.foodNavLinks a, .category-pill');
             const sections = document.querySelectorAll('.foodList');
+            let isManualClick = false;
+            let clickTimeout;
+            let currentActiveId = null;
 
-            // Set initial active state based on hash or first item
-            const hash = window.location.hash;
-            if (hash) {
-                const activeLink = document.querySelector(`.foodNavLinks a[href="${hash}"], .category-pill[href="${hash}"]`);
-                if (activeLink) activeLink.classList.add('active');
-            } else if (allLinks.length > 0) {
-                allLinks[0].classList.add('active');
+            function syncActiveState(id) {
+                if (!id || id === currentActiveId) return;
+                currentActiveId = id;
+
+                allLinks.forEach(l => l.classList.remove('active'));
+                const targetLinks = document.querySelectorAll(`.foodNavLinks a[href="#${id}"], .category-pill[href="#${id}"]`);
+
+                targetLinks.forEach(link => {
+                    link.classList.add('active');
+                });
+
+                // Only update hash on manual click to avoid jumping/history pollution during scroll
+                if (history.replaceState && isManualClick) {
+                    history.replaceState(null, null, '#' + id);
+                }
             }
 
-            // Intersection Observer for Scroll Spy
+            // Set initial state (Hash > Query Param > First Link)
+            const urlParams = new URLSearchParams(window.location.search);
+            const categoryIdParam = urlParams.get('categoryID');
+            const hash = window.location.hash.replace('#', '');
+
+            if (hash) {
+                syncActiveState(hash);
+            } else if (categoryIdParam) {
+                syncActiveState(categoryIdParam);
+            } else if (allLinks.length > 0) {
+                const firstId = allLinks[0].getAttribute('href')?.replace('#', '');
+                if (firstId) syncActiveState(firstId);
+            }
+
+            // Scroll Spy logic
             const observerOptions = {
                 root: null,
-                rootMargin: '-20% 0px -60% 0px',
+                rootMargin: '-15% 0px -75% 0px',
                 threshold: 0
             };
 
             const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const id = entry.target.id;
-                        if (!id) return;
+                if (isManualClick) return;
 
-                        allLinks.forEach(l => l.classList.remove('active'));
-
-                        const targetLinks = document.querySelectorAll(`.foodNavLinks a[href="#${id}"], .category-pill[href="#${id}"]`);
-                        targetLinks.forEach(link => link.classList.add('active'));
-
-                        // Sync hash without jumping
-                        if (id && history.pushState) {
-                            history.pushState(null, null, '#' + id);
-                        }
-                    }
-                });
+                // Find the entry that is most visible
+                const visibleEntries = entries.filter(e => e.isIntersecting);
+                if (visibleEntries.length > 0) {
+                    // Sort by how close they are to the top
+                    visibleEntries.sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+                    syncActiveState(visibleEntries[0].target.id);
+                }
             }, observerOptions);
 
             sections.forEach(section => observer.observe(section));
 
+            // Click handling
             allLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
-                    // Manual override temporarily to prevent observer fight
-                    allLinks.forEach(l => l.classList.remove('active'));
-                    this.classList.add('active');
+                    const id = this.getAttribute('href').replace('#', '');
+                    if (!id) return;
+
+                    isManualClick = true;
+                    clearTimeout(clickTimeout);
+
+                    syncActiveState(id);
+
+                    clickTimeout = setTimeout(() => {
+                        isManualClick = false;
+                    }, 800);
                 });
             });
         }

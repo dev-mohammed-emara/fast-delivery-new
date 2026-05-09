@@ -438,7 +438,10 @@ function showCartToast(message = texts.AddedToCartDefault, options = {}) {
                     (item.customization.extras || []).forEach(ex => addonsTotal += (Number(ex.price) || 0));
                     (item.customization.upsells || []).forEach(up => addonsTotal += (Number(up.price) || 0) * (up.qty || 0));
                 }
-                const totalPrice = (priceNum * item.amount) + addonsTotal;
+                // Parent item total (just product * amount)
+                const itemOnlyTotal = priceNum * item.amount;
+                // Group total (item + all addons)
+                const groupTotalPrice = itemOnlyTotal + addonsTotal;
 
                 const itemGroup = document.createElement("div");
                 itemGroup.classList.add("cart-item-group");
@@ -455,13 +458,13 @@ function showCartToast(message = texts.AddedToCartDefault, options = {}) {
                       <button class="increase" type="button"><i class="fa-solid fa-plus"></i></button>
                     </div>
                     <div class="orderedItemMain">
-                      <span class="orderedItemName">${item.name} ${item.customization?.size ? `<small class="cart-item-size">(${item.customization.size.name})</small>` : ''}</span>
+                      <span class="orderedItemName">${item.name} ${item.customization?.size ? `<small class="cart-item-size">(${item.customization.size.name})</small>` : ''} <small class="unit-price">(${item.price} ${texts.Currency})</small></span>
                       <div class="cart-item-badges">
                         ${item.isCustomized ? `<span class="addons-badge" onclick="event.stopPropagation(); openHardcodedModal(${JSON.stringify(item).replace(/"/g, '&quot;')})">إضافات</span>` : ''}
                         ${(item.customization?.notes || item.notes) ? `<span class="notes-badge" onclick="event.stopPropagation(); if(typeof openSimpleNotesModal==='function') openSimpleNotesModal(null, '${item.name.replace(/'/g, "\\'")}', ${item.price}, '${(item.desc || '').replace(/'/g, "\\'")}', '${item.id}'); else openHardcodedModal(${JSON.stringify(item).replace(/"/g, '&quot;')}, null, null, null, null, true)">ملاحظات</span>` : ''}
                       </div>
                     </div>
-                    <span class="totalItemPrice">${totalPrice.toLocaleString()} ${texts.Currency}</span>
+                    <span class="totalItemPrice">${itemOnlyTotal.toLocaleString()} ${texts.Currency}</span>
                     <span class="removeCartItem"><i class="fa-solid fa-trash"></i></span>
                 `;
                 itemGroup.appendChild(article);
@@ -477,7 +480,13 @@ function showCartToast(message = texts.AddedToCartDefault, options = {}) {
                         item.customization.extras.forEach(ex => {
                             const div = document.createElement("div");
                             div.classList.add("customization-row");
-                            div.innerHTML = `<span>+ ${ex.name}</span> <span class="cust-price">${(Number(ex.price) || 0).toLocaleString()} ${texts.Currency}</span>`;
+                            div.innerHTML = `
+                                <span>+ ${ex.name}</span> 
+                                <div class="cust-right-col">
+                                    <span class="cust-price">${(Number(ex.price) || 0).toLocaleString()} ${texts.Currency}</span>
+                                    <span class="remove-cust-item" onclick="event.stopPropagation(); cart.removeAddon('${item.id}', '${ex.id}', 'extras', '${item.shopId}')"><i class="fa-solid fa-trash"></i></span>
+                                </div>
+                            `;
                             custWrapper.appendChild(div);
                         });
                     }
@@ -513,6 +522,17 @@ function showCartToast(message = texts.AddedToCartDefault, options = {}) {
                         upsellsWrapper.appendChild(upsellArticle);
                     });
                     itemGroup.appendChild(upsellsWrapper);
+                }
+
+                // Group Total Row if has addons
+                if (addonsTotal > 0) {
+                    const groupTotalDiv = document.createElement("div");
+                    groupTotalDiv.classList.add("cart-group-total");
+                    groupTotalDiv.innerHTML = `
+                        <span class="group-total-label">${texts.TotalGroupCost || 'إجمالي التكلفة'}:</span>
+                        <span class="group-total-amount">${groupTotalPrice.toLocaleString()} ${texts.Currency}</span>
+                    `;
+                    itemGroup.appendChild(groupTotalDiv);
                 }
 
                 wrapper.appendChild(itemGroup);
@@ -822,28 +842,30 @@ function renderCheckoutArticles(items, summary) {
                     (item.customization.extras || []).forEach(ex => addonsTotal += (Number(ex.price) || 0));
                     (item.customization.upsells || []).forEach(up => addonsTotal += (Number(up.price) || 0) * (up.qty || 0));
                 }
-                const itemTotal = (priceNum * item.amount) + addonsTotal;
+                const itemOnlyTotal = priceNum * item.amount;
+                const groupTotalPrice = itemOnlyTotal + addonsTotal;
 
                 const row = document.createElement("div");
-                row.classList.add("orderStats", "checkout-main-item-row");
+                row.classList.add("orderStats", "checkout-main-item-row", "orderedItem");
 
                 row.innerHTML = `
-                    <span class="orderName">
-                        ${item.name} 
-                        ${item.customization?.size ? `<small class="checkout-item-size">(${item.customization.size.name})</small>` : ''}
-                        <div class="checkout-item-badges">
+                    <div class="cartItemAmountHandlers">
+                      <button class="decrease"><i class="fa-solid fa-minus"></i></button>
+                      <span class="itemAmount">${item.amount}</span>
+                      <button class="increase"><i class="fa-solid fa-plus"></i></button>
+                    </div>
+                    <div class="orderedItemMain">
+                        <span class="orderedItemName">
+                            ${item.name} 
+                            ${item.customization?.size ? `<small class="checkout-item-size">(${item.customization.size.name})</small>` : ''}
+                            <small class="unit-price">(${item.price.toFixed(2)} ${texts.Currency})</small>
+                        </span>
+                        <div class="cart-item-badges">
                             ${item.isCustomized ? `<span class="addons-badge" onclick="if(typeof openHardcodedModal==='function') openHardcodedModal(${JSON.stringify(item).replace(/"/g, '&quot;')})">إضافات</span>` : ''}
                             ${(item.customization?.notes || item.notes) ? `<span class="notes-badge" onclick="if(typeof openSimpleNotesModal==='function') openSimpleNotesModal(null, '${item.name.replace(/'/g, "\\'")}', ${item.price}, '${(item.desc || '').replace(/'/g, "\\'")}', '${item.id}'); else openHardcodedModal(${JSON.stringify(item).replace(/"/g, '&quot;')}, null, null, null, null, true)">ملاحظات</span>` : ''}
                         </div>
-                    </span>
-
-                    <div class="cartItemAmountHandlers">
-                      <button class="decrease">-</button>
-                      <span class="itemAmount">${item.amount}</span>
-                      <button class="increase">+</button>
                     </div>
-                    <span class="itemPrice">${item.price.toFixed(2)} ${texts.Currency}</span>
-                    <span class="itemTotal">${itemTotal.toFixed(2)} ${texts.Currency}</span>
+                    <span class="totalItemPrice">${itemOnlyTotal.toFixed(2)} ${texts.Currency}</span>
                     <span class="removeItem"><i class="fa-solid fa-trash"></i></span>
                 `;
 
@@ -884,7 +906,7 @@ function renderCheckoutArticles(items, summary) {
                             <span></span>
                             <span class="itemPrice">${ex.price} ${texts.Currency}</span>
                             <span class="itemTotal">${(ex.price).toFixed(2)} ${texts.Currency}</span>
-                            <span></span>
+                            <span class="removeItem" onclick="cart.removeAddon('${item.id}', '${ex.id}', 'extras', '${item.shopId}')"><i class="fa-solid fa-trash"></i></span>
                         `;
                         itemGroupWrapper.appendChild(exRow);
                     });
@@ -909,6 +931,16 @@ function renderCheckoutArticles(items, summary) {
                             itemGroupWrapper.appendChild(upRow);
                         });
                     }
+
+
+                    // Total Row for Checkout Group
+                    const groupTotalDiv = document.createElement("div");
+                    groupTotalDiv.classList.add("checkout-group-total");
+                    groupTotalDiv.innerHTML = `
+                        <span class="group-total-label">${texts.TotalGroupCost || 'إجمالي التكلفة'}:</span>
+                        <span class="group-total-amount">${groupTotalPrice.toFixed(2)} ${texts.Currency}</span>
+                    `;
+                    itemGroupWrapper.appendChild(groupTotalDiv);
                 }
 
                 // Handlers
