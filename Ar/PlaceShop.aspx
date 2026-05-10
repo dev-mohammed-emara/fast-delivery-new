@@ -257,7 +257,7 @@
                 will-change: auto;
                 overflow-y: auto;
                 -webkit-overflow-scrolling: touch;
-                overscroll-behavior: contain;
+                /* overscroll-behavior: contain; */
                 touch-action: pan-y;
                 top: 100px;
                 line-height: 1.2;
@@ -836,10 +836,9 @@
             .orderedItemName {
                 font-weight: 700;
                 color: #2c3e50;
-                font-size: 0.9rem;
+                font-size: 0.8rem;
                 line-height: 1.4;
                 text-align: initial !important;
-                white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 max-width: 250px;
@@ -1079,7 +1078,7 @@
                 display: flex;
                 overflow-x: auto;
                 -webkit-overflow-scrolling: touch;
-                overscroll-behavior: contain;
+                /* overscroll-behavior: contain; */
                 touch-action: pan-x pan-y;
                 gap: 20px;
                 /* &#1605;&#1587;&#1575;&#1601;&#1577; &#1571;&#1603;&#1576;&#1585; &#1576;&#1610;&#1606; &#1575;&#1604;&#1603;&#1604;&#1605;&#1575;&#1578; */
@@ -1128,7 +1127,6 @@
                 border-radius: 20px;
                 font-size: 0.85rem;
                 font-weight: 700;
-                margin-inline-start: 12px;
                 display: inline-flex;
                 align-items: center;
                 vertical-align: middle;
@@ -2221,7 +2219,7 @@
             border: none !important;
             background: transparent !important;
             margin-bottom: 0 !important;
-            padding-bottom: 0.75rem !important;
+            padding: 0.75rem !important;
         }
         .cart-item-customizations {
             padding: 8px 12px 8px 45px;
@@ -3375,6 +3373,11 @@ padding-inline: 1rem !important;
             overflow-x: hidden;
             padding: 20px;
             padding-bottom: 0px;
+        }
+
+        html[dir="ltr"] .modal-content-body {
+            text-align: left;
+            direction: ltr !important;
         }
 
         .modal-main-info h1 {

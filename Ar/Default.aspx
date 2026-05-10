@@ -77,7 +77,7 @@ document.getElementById('location-btn').addEventListener('click', function() {
     }
     .search-box select {
         flex: 1;
-        font-size: 19px;
+        font-size: 20px;
         background: transparent;
         border: none;
         outline: none;
@@ -86,6 +86,12 @@ document.getElementById('location-btn').addEventListener('click', function() {
         appearance: none;
         -webkit-appearance: none;
         -moz-appearance: none;
+    }
+    @media(max-width:480px){
+      .search-box select {
+        font-size: 16px !important;
+      }
+
     }
 
     .search-box select option:first-child {

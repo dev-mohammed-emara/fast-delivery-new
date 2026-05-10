@@ -35,7 +35,7 @@
   padding: 0;
   font-family: "Cairo", "Arial", "Helvetica Neue", Helvetica, sans-serif;
   scroll-behavior: smooth;
-  overscroll-behavior: contain;
+  /* overscroll-behavior: contain; */
 }
 
 body {
@@ -1624,6 +1624,7 @@ overflow: initial;
   overflow-x: hidden;
   overflow-y: auto;
   max-height: 280px;
+  padding-bottom: 1rem;
 }
 
 
@@ -2463,14 +2464,14 @@ body:has(#openedShopFoods) #cartShower {
   }
 
   .orderName {
-    grid-column: span 1 !important;
+    grid-column: span 2 !important;
     justify-content: center;
     text-align: center !important;
   }
 
   .orderLabels,
   .orderStats {
-    grid-template-columns: repeat(5, 1fr) !important;
+    grid-template-columns: repeat(6, 1fr) !important;
   }
 }
 
@@ -2536,6 +2537,8 @@ body:has(#openedShopFoods) #cartShower {
     align-items: center;
     /* flex-wrap: wrap; */
     justify-content: center;
+        position: relative;
+    padding-bottom: 4rem;
     /* padding-top: 0; */
     /* padding-inline: 0; */
     .shopFoods,.shopDelivery{
@@ -2544,7 +2547,7 @@ body:has(#openedShopFoods) #cartShower {
 
   }
 .status-badge{
-  font-size: 0.6rem;
+  font-size: 0.5rem;
 }
 
 .availableShopDesc{
@@ -2557,6 +2560,10 @@ body:has(#openedShopFoods) #cartShower {
   .shopPayMethods {
     font-size: 0.6rem;
     white-space: nowrap;
+        position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+}
   }
 
 

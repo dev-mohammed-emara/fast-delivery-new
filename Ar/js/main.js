@@ -271,6 +271,31 @@ document.addEventListener("DOMContentLoaded", () => {
     setActiveNavItem();
 });
 
+// ✅ تحديث العناصر التي تحمل خاصية data-text بناءً على ملف الترجمة
+function updateUIWithTexts() {
+    if (typeof texts === 'undefined') return;
+    
+    document.querySelectorAll('[data-text]').forEach(el => {
+        const key = el.getAttribute('data-text');
+        if (texts[key]) {
+            if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                el.placeholder = texts[key];
+            } else if (el.classList.contains('whatsapp-float') || el.hasAttribute('title')) {
+                el.title = texts[key];
+            } else {
+                el.innerText = texts[key];
+            }
+        }
+    });
+
+    // تحديث العناوين في مودال تعديل البيانات
+    const emailEditorTitle = document.querySelector('.editorContainer[data-form="emailEditor"] h3');
+    if (emailEditorTitle && texts.EditEmail) emailEditorTitle.innerText = texts.EditEmail;
+
+    const passwordEditorTitle = document.querySelector('.editorContainer[data-form="passwordEditor"] h3');
+    if (passwordEditorTitle && texts.EditPassword) passwordEditorTitle.innerText = texts.EditPassword;
+}
+
 // user profile settings
 const profileHead = document.querySelector(".profile-head");
 const dropDownBtn = document.querySelector("#dropDownBtn");

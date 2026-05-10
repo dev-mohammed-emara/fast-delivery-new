@@ -13,7 +13,7 @@
     /* Premium Checkout Styling */
     .checkoutDetails {
         padding-top: 130px;
-        padding-bottom: 80px;
+        padding-bottom: 50px;
         padding-inline: 1rem;
         display: flex;
         justify-content: center;
@@ -57,7 +57,7 @@
         display: flex;
         flex-direction: column;
         overflow: hidden;
-        margin-bottom: 0.5rem;
+        margin-bottom: 1.25rem;
     }
 
     .checkoutBoxTitle {
@@ -70,6 +70,11 @@
         justify-content: space-between;
         padding: 1.25rem 1.75rem;
         background-color: #fafafa;
+        h2{
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
     }
 
     .checkoutBoxTitle h2 {
@@ -158,6 +163,7 @@
         background-color: #fff5f5 !important;
         color: #ff4d4d !important;
         display: inline-flex !important;
+        padding: 0 !important;
         justify-content: center !important;
         align-items: center !important;
         cursor: pointer !important;
@@ -171,9 +177,7 @@
     }
 
     .removeItem:hover {
-        background-color: #ff4d4d !important;
-        color: white !important;
-        transform: rotate(8deg) scale(1.1);
+        transform: rotate(2deg) scale(1.1);
         box-shadow: 0 4px 12px rgba(255, 77, 77, 0.25);
     }
 
@@ -181,7 +185,7 @@
     .orderLabels,
     .orderStats {
         display: grid;
-        grid-template-columns: 2.5fr 120px 1fr 1fr 0.5fr; /* Fixed width for handlers */
+        grid-template-columns: 3fr 120px 1fr 1fr 0.5fr; /* Name, Quantity, Price, Total, Remove */
         padding-inline: 0.5rem;
         text-align: center;
         gap: 1rem;
@@ -258,9 +262,6 @@
         color: #000;
     }
 
-    .totalAmountBox .checkoutBoxTitle h2 {
-        color: var(--fd-blue);
-    }
 
     /* Location Section */
     .checkoutLocation {
@@ -326,7 +327,7 @@
             display: grid;
         }
         .orderStats {
-            grid-template-columns: 2.5fr 120px 1fr 1fr 0.5fr;
+            grid-template-columns: 3fr 120px 1fr 1fr 0.5fr;
             text-align: center;
             gap: 1rem;
             padding: 1rem 0.5rem;
@@ -342,6 +343,20 @@
             height: 42px !important;
             margin-top: 0 !important;
         }
+    }
+
+    .green-success-box {
+        width: 100%;
+        margin-bottom: 16px;
+        padding: 10px 12px;
+        background-color: #f6fff9;
+        border: 1px solid #c3e6cb;
+        border-radius: 8px;
+        color: #155724;
+        font-size: 0.82rem;
+        line-height: 1.5;
+        font-weight: 500;
+        text-align: right;
     }
     </style>
 
@@ -365,10 +380,10 @@
                     <h3>هارت أتاك</h3>
                     <div class="orderLabels">
                         <span class="orderName"><asp:Literal ID="ltItem" runat="server" Text="<%$ Resources:texts, Item %>" /></span>
-                        <span class="specialOrder"><asp:Literal ID="ltSpecialOrder" runat="server" Text="<%$ Resources:texts, SpecialOrder %>" /></span>
                         <span><asp:Literal ID="ltQuantity" runat="server" Text="<%$ Resources:texts, Quantity %>" /></span>
                         <span><asp:Literal ID="ltPrice" runat="server" Text="<%$ Resources:texts, Price %>" /></span>
                         <span><asp:Literal ID="ltTotal" runat="server" Text="<%$ Resources:texts, Total %>" /></span>
+                        <span></span>
                     </div>
                     <div class="orderStats">
                         <span class="orderName">عرض كينج اتاك <span class="specialOrder">حار</span></span>
@@ -383,7 +398,7 @@
 
             <article class="checkoutBox">
             <div class="checkoutBoxTitle">
-                <h2><asp:Literal ID="ltDeliveryAddress" runat="server" Text="<%$ Resources:texts, DeliveryAddress %>" /></h2>
+                <h2><i class="fa-solid fa-map-location-dot"></i> <asp:Literal ID="ltDeliveryAddress" runat="server" Text="<%$ Resources:texts, DeliveryAddress %>" /></h2>
                 <div class="checkoutLocationBtns">
                     <button id="locbtn" class="submit" type="button">
                         <asp:Literal ID="ltAddEditAddress" runat="server" Text="<%$ Resources:texts, AddEditAddress %>" />
@@ -413,7 +428,7 @@
         </article>
               <article class="checkoutBox" id="payForOrder">
             <div class="checkoutBoxTitle">
-                <h2><asp:Literal ID="ltPaymentDetailsTitle" runat="server" Text="<%$ Resources:texts, PaymentDetailsTitle %>" /></h2>
+                <h2><i class="fa-solid fa-comment-dollar"></i> <asp:Literal ID="ltPaymentDetailsTitle" runat="server" Text="<%$ Resources:texts, PaymentDetailsTitle %>" /></h2>
             </div>
             <div class="paymentSection">
                 <span id="discountWaring">
@@ -437,7 +452,7 @@
     /* Premium Checkout Styling */
     .checkoutDetails {
         padding-top: 130px;
-        padding-bottom: 80px;
+        padding-bottom: 50px;
         padding-inline: 1rem;
         display: flex;
         justify-content: center;
@@ -481,7 +496,7 @@
         display: flex;
         flex-direction: column;
         overflow: hidden;
-        margin-bottom: 0.5rem;
+        margin-bottom: 1.25rem;
     }
 
     .checkoutBoxTitle {
@@ -594,12 +609,7 @@
         margin: 0 !important;
     }
 
-    .removeItem:hover {
-        background-color: #ff4d4d !important;
-        color: white !important;
-        transform: rotate(8deg) scale(1.1);
-        box-shadow: 0 4px 12px rgba(255, 77, 77, 0.25);
-    }
+
 
     /* Grid for order items */
     .orderLabels,
@@ -682,9 +692,6 @@
         color: #000;
     }
 
-    .totalAmountBox .checkoutBoxTitle h2 {
-        color: var(--fd-blue);
-    }
 
     /* Location Section */
     .checkoutLocation {
@@ -750,7 +757,7 @@
             display: grid;
         }
         .orderStats {
-            grid-template-columns: 2.5fr 120px 1fr 1fr 0.5fr;
+            grid-template-columns: 3fr 120px 1fr 1fr 0.5fr;
             text-align: center;
             gap: 1rem;
             padding: 1rem 0.5rem;
@@ -767,7 +774,257 @@
             margin-top: 0 !important;
         }
     }
-    </style>
+        /* Promo & Payment Sections */
+
+    .promo-header-wrap {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    .promo-modes {
+        display: flex;
+        background: #f8f9fa;
+        padding: 4px;
+        border-radius: 12px;
+        border: 1px solid #eee;
+    }
+    .promo-mode-btn {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: none;
+        background: transparent;
+        color: #666;
+    }
+    .promo-mode-btn.active {
+        background: white;
+        color: var(--fd-blue);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .promo-input-wrap {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+    }
+    .promo-input-wrap input {
+        flex: 1;
+        padding: 0.85rem 1.25rem;
+        border: 1.5px solid #eee;
+        border-radius: 12px;
+        font-size: 0.95rem;
+        outline: none;
+        transition: border-color 0.2s;
+    }
+    .promo-input-wrap input:focus {
+        border-color: var(--fd-blue);
+    }
+    .promo-input-wrap .apply-btn {
+        padding: 0 20px;
+        border-radius: 12px;
+        background: var(--fd-blue);
+        color: white;
+        font-weight: 700;
+        border: none;
+        cursor: pointer;
+    }
+    .promo-msg {
+        margin-top: 8px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        min-height: 1.2rem;
+        color: #666;
+        display: block;
+    }
+    .promo-msg.success { color: #28a745; background: rgba(40, 167, 69, 0.05); padding: 5px 10px; border-radius: 5px; }
+    .promo-msg.error { color: #dc3545; background: rgba(220, 53, 69, 0.05); padding: 5px 10px; border-radius: 5px; }
+
+    .pay-options-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 10px;
+        margin-top: 5px;
+    }
+    .pay-option {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 1.25rem 0.5rem;
+        border-radius: 15px;
+        border: 2px solid #f0f0f0;
+        cursor: pointer;
+        transition: all 0.2s;
+        background: white;
+        text-align: center;
+        position: relative;
+    }
+    .pay-option input {
+        position: absolute;
+        opacity: 0;
+    }
+    .pay-option i, .pay-option svg, .pay-option img {
+        font-size: 1.5rem;
+        transition: all 0.2s;
+    }
+    .pay-option .fa-hand-holding-dollar { color: #28a745; } /* Cash Green */
+    .pay-option .fa-credit-card { color: #0056b3; }       /* Visa Blue */
+    .pay-option .fa-mobile-screen-button { color: #e91e63; } /* InstaPay Pink */
+    .pay-option .fa-wallet { color: #fd7e14; }             /* Wallet Orange */
+
+    .pay-option:not(.selected) i,
+    .pay-option:not(.selected) svg {
+        opacity: 0.8;
+    }
+    .pay-option span {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #444;
+    }
+    .pay-option:hover {
+        border-color: var(--fd-blue);
+        background: rgba(255, 193, 25, 0.03);
+    }
+    .pay-option.selected {
+        border-color: var(--fd-blue);
+        background: rgba(255, 193, 25, 0.08);
+    }
+    .pay-option.selected i, .pay-option.selected svg {
+        color: var(--fd-blue);
+    }
+    .pay-option.selected span {
+        color: var(--fd-blue);
+    }
+
+    #paymentProofWrap {
+        margin-top: 1.25rem;
+        padding: 1.25rem;
+        background: #fff9eb;
+        border: 1.5px dashed var(--fd-blue);
+        border-radius: 15px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    .proof-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #5d4037;
+    }
+    .proof-input {
+        padding: 0.75rem 1rem;
+        border: 1.5px solid #e0e0e0;
+        border-radius: 10px;
+        width: 100%;
+        font-size: 0.9rem;
+        background: white;
+    }
+    .proof-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 0.85rem;
+        background: white;
+        border: 2px solid var(--fd-blue);
+        color: var(--fd-blue);
+        border-radius: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+        width: 100%;
+    }
+    .proof-btn:hover {
+        background: var(--fd-blue);
+        color: white;
+    }
+    #paymentProofPreview {
+        width: 100%;
+        max-height: 200px;
+        object-fit: contain;
+        border-radius: 10px;
+        background: #eee;
+        margin-top: 5px;
+        border: 1px solid #ddd;
+    }
+
+    @media (max-width: 480px) {
+        .pay-options-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    /* Vendor Order Types (Delivery/Pickup) */
+    .vendor-group-types {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 12px;
+        padding: 0 1rem;
+    }
+    .order-type-opt {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 16px 10px;
+        border-radius: 12px;
+        border: 2px solid #eee;
+        background: white;
+        color: #666;
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 0.85rem;
+        transition: all 0.2s;
+    }
+    .order-type-opt i {
+        font-size: 1rem;
+    }
+    .order-type-opt.active {
+        background: var(--fd-blue);
+        color: white;
+        border-color: var(--fd-blue);
+    }
+    .pickup-warning {
+        margin: 5px 1rem 15px;
+        padding: 10px 15px;
+        background: #fff5f5;
+        border-right: 4px solid #ff4d4d;
+        border-radius: 8px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #c53030;
+        display: none;
+    }
+    .vendor-group-footer {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 1rem;
+        background: #fafafa;
+        border-top: 1px dashed #eee;
+        border-radius: 0 0 16px 16px;
+    }
+    .vendor-group-footer span {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.9rem;
+        color: #555;
+    }
+    .vendor-group-footer span strong {
+        color: #000;
+        font-weight: 800;
+    }
+</style>
 
 
 
@@ -842,6 +1099,194 @@
             });
         });
 
+        // --- Payment & Promo Functions ---
+        window.selectedPromoMode = 'order';
+
+        window.setPromoMode = function(mode, btn) {
+            window.selectedPromoMode = mode;
+            document.querySelectorAll('.promo-mode-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const input = document.getElementById('promoInput');
+            if (mode === 'shipping') {
+                input.placeholder = texts.ShippingDiscountPlaceholder;
+            } else {
+                input.placeholder = texts.OrderDiscountPlaceholder;
+            }
+        };
+
+        window.currentDiscount = 0;
+        window.currentDiscountType = 'order'; // 'order' or 'shipping'
+
+        window.applyPromo = function() {
+            const codeInput = document.getElementById('promoInput');
+            const msgEl = document.getElementById('promoMsg');
+            const summaryMsgEl = document.getElementById('promoSummaryMsg');
+
+            if (!msgEl) return;
+
+            const code = codeInput.value.trim();
+            if (!code) {
+                msgEl.textContent = texts.EnterPromoCodeError;
+                msgEl.className = "promo-msg error";
+                msgEl.style.display = 'block';
+                return;
+            }
+
+            // Simulated "Database"
+            const validCodes = [
+                { code: '123456', type: 'order', percentage: 20 },
+                { code: '7890', type: 'shipping', percentage: 20 }
+            ];
+
+            const modeLabel = window.selectedPromoMode === 'shipping' ? texts.ShippingDiscount : texts.OrderDiscount;
+            msgEl.textContent = `${texts.CheckingPromo} ${modeLabel}...`;
+            msgEl.className = "promo-msg";
+            msgEl.style.display = 'block';
+
+            setTimeout(() => {
+                const found = validCodes.find(c => c.code === code && c.type === window.selectedPromoMode);
+
+                if (found) {
+                    const subtotalEl = document.querySelector(".totalAmountBox .subtotal-row span:last-child");
+                    const subtotal = parseFloat(subtotalEl?.innerText.replace(/[^\d.]/g, '')) || 0;
+                    const deliveryEl = document.getElementById("Deliverycost");
+                    const delivery = parseFloat(deliveryEl?.innerText.replace(/[^\d.]/g, '')) || 0;
+
+                    let discountAmount = 0;
+                    if (found.type === 'shipping') {
+                        discountAmount = delivery * (found.percentage / 100);
+                        window.currentDiscountType = 'shipping';
+                    } else {
+                        discountAmount = subtotal * (found.percentage / 100);
+                        window.currentDiscountType = 'order';
+                    }
+
+                    window.currentDiscount = discountAmount;
+
+                    const successTitle = texts.PromoAppliedSuccess.replace('{0}', modeLabel);
+                    const savedText = texts.PromoSavedAmount.replace('{0}', discountAmount.toFixed(2)).replace('{1}', texts.Currency).replace('{2}', found.percentage);
+                    
+                    msgEl.innerHTML = `✅ <strong>${successTitle}</strong><br><small>${savedText}</small>`;
+                    msgEl.className = "promo-msg success";
+
+                    if (summaryMsgEl) {
+                        const summaryText = texts.PromoSummaryApplied
+                            .replace('{0}', discountAmount.toFixed(2))
+                            .replace('{1}', texts.Currency)
+                            .replace('{2}', found.percentage)
+                            .replace('{3}', found.type === 'shipping' ? texts.ShippingDiscount : texts.OrderDiscount);
+                        summaryMsgEl.innerHTML = `<i class="fa-solid fa-tag"></i> ${summaryText}`;
+                        summaryMsgEl.style.display = 'block';
+                    }
+
+                    if (typeof updateGlobalDeliveryCost === 'function') updateGlobalDeliveryCost();
+                } else {
+                    msgEl.textContent = texts.PromoErrorInvalid;
+                    msgEl.className = "promo-msg error";
+                    window.currentDiscount = 0;
+                    if (summaryMsgEl) summaryMsgEl.style.display = 'none';
+                    if (typeof updateGlobalDeliveryCost === 'function') updateGlobalDeliveryCost();
+                }
+            }, 800);
+        };
+
+        window.selectPayment = function(el, method) {
+            document.querySelectorAll('.pay-option').forEach(opt => opt.classList.remove('selected'));
+            el.classList.add('selected');
+            el.querySelector('input').checked = true;
+
+            const proofWrap = document.getElementById('paymentProofWrap');
+            if (method === 'cash' || method === 'visa') {
+                proofWrap.style.display = 'none';
+            } else {
+                proofWrap.style.display = 'flex';
+            }
+        };
+
+        window.previewPaymentProof = function(input) {
+            const preview = document.getElementById('paymentProofPreview');
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        };
+
+        window.setVendorOrderType = function(vendorId, type) {
+            const container = document.querySelector(`.vendor-group-types[data-vendor="${vendorId}"]`);
+            if(!container) return;
+            const btns = container.querySelectorAll('.order-type-opt');
+            btns.forEach(btn => {
+                if (btn.getAttribute('data-type') === type) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            const msg = document.getElementById(`pickupMsg-${vendorId}`);
+            const shopDeliveryEl = document.getElementById(`shopDelivery-${vendorId}`);
+            const footer = document.querySelector(`.vendor-group-footer[data-vendor="${vendorId}"]`);
+
+            if (msg) {
+                if (type === 'pickup') {
+                    msg.style.display = 'block';
+                    if(shopDeliveryEl) shopDeliveryEl.innerHTML = `<strong>0 ${texts.Currency || 'ج.م'}</strong>`;
+                } else {
+                    msg.style.display = 'none';
+                    const originalFee = footer ? footer.getAttribute('data-delivery-fee') : '0';
+                    if(shopDeliveryEl) shopDeliveryEl.innerHTML = `<strong>${originalFee} ${texts.Currency || 'ج.م'}</strong>`;
+                }
+            }
+
+            // Sync with global delivery cost
+            updateGlobalDeliveryCost();
+        };
+
+        function updateGlobalDeliveryCost() {
+            let totalDelivery = 0;
+            let anyPickup = false;
+
+            document.querySelectorAll('.vendor-group-types').forEach(group => {
+                const activeBtn = group.querySelector('.order-type-opt.active');
+                if (activeBtn && activeBtn.getAttribute('data-type') === 'pickup') {
+                    anyPickup = true;
+                }
+            });
+
+            document.querySelectorAll('.vendor-group-footer').forEach(footer => {
+                const amountSpan = footer.querySelector('.shop-delivery-fee strong');
+                if (amountSpan) {
+                    const price = parseFloat(amountSpan.innerText.replace(/[^\d.]/g, '')) || 0;
+                    totalDelivery += price;
+                }
+            });
+
+            const globalDeliveryEl = document.getElementById("Deliverycost");
+            if (globalDeliveryEl) {
+                globalDeliveryEl.innerText = `${totalDelivery} ${texts.Currency || 'ج.م'}`;
+            }
+
+            // Update Final Total
+            const subtotalEl = document.querySelector(".totalAmountBox .subtotal-row span:last-child");
+            const finalTotalEl = document.querySelector(".totalAmountBox .final-total-row span:last-child");
+
+            if (subtotalEl && finalTotalEl) {
+                const subtotal = parseFloat(subtotalEl.innerText.replace(/[^\d.]/g, '')) || 0;
+                const discount = window.currentDiscount || 0;
+                const newTotal = (subtotal + totalDelivery) - discount;
+                finalTotalEl.innerText = `${newTotal.toLocaleString()} ${texts.Currency || 'ج.م'}`;
+            }
+
+            // Show/Hide Pickup Message
+            const pickupMsg = document.getElementById("pickupSummaryMsg");
+            if (pickupMsg) {
+                pickupMsg.style.display = anyPickup ? "block" : "none";
+            }
+        }
 </script>
     <script>
         document.getElementById('locbtn').addEventListener('click', function () {
@@ -855,7 +1300,7 @@
   <div class="modal-dialog modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">اختر موقعك</h5>
+        <h5 class="modal-title" data-text="ChooseLocation">اختر موقعك</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body p-2">

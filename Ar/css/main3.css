@@ -35,7 +35,7 @@
   padding: 0;
   font-family: "Cairo", "Arial", "Helvetica Neue", Helvetica, sans-serif;
   scroll-behavior: smooth;
-  overscroll-behavior: contain;
+  /* overscroll-behavior: contain; */
 }
 
 body {
@@ -210,6 +210,19 @@ a {
 }
 
 @media (max-width: 480px) {
+      .logo-container {
+        background-color: #ffffff;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        z-index: 100;
+    }
+
   .header {
     padding: 6px 15px;
     grid-template-columns: auto 1fr auto; /* Adjust header grid for mobile */
@@ -2145,6 +2158,8 @@ input[type="radio"] {
   overflow-x: hidden;
   overflow-y: auto;
   max-height: 280px;
+  padding-bottom: 1rem;
+
 }
 
 
@@ -3054,14 +3069,14 @@ html[dir="rtl"] .cartShopLabel {
   }
 
   .orderName {
-    grid-column: span 1 !important;
+    grid-column: span 2 !important;
     justify-content: center;
     text-align: center !important;
   }
 
   .orderLabels,
   .orderStats {
-    grid-template-columns: repeat(5, 1fr) !important;
+    grid-template-columns: repeat(6, 1fr) !important;
   }
 }
 

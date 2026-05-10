@@ -132,7 +132,7 @@
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
         /* smooth scroll on iOS */
-        overscroll-behavior: contain;
+        /* overscroll-behavior: contain; */
         /* prevent scroll chaining */
         touch-action: pan-y;
 
@@ -206,7 +206,7 @@
         gap: 1.5rem;
         border-bottom: 1px solid rgba(0, 0, 0, 0.1);
         padding: 1rem;
-        
+
         transition: var(--transition);
 
         img {
