@@ -246,7 +246,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function setActiveNavItem() {
         const navItems = document.querySelectorAll('.mobile-nav-item');
         const currentPath = window.location.pathname.toLowerCase();
-        
+
         navItems.forEach(item => {
             const href = item.getAttribute('href');
             if (href) {
@@ -274,7 +274,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // ✅ تحديث العناصر التي تحمل خاصية data-text بناءً على ملف الترجمة
 function updateUIWithTexts() {
     if (typeof texts === 'undefined') return;
-    
+
     document.querySelectorAll('[data-text]').forEach(el => {
         const key = el.getAttribute('data-text');
         if (texts[key]) {

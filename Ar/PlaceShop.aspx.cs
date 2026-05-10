@@ -29,7 +29,7 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
             Ssetting set = new Ssetting();
             set.LoadAll();
             ltPercentage.Text = set.DeliveryP.ToString("G29");
-            
+
             Places place = new Places();
             place.LoadByPrimaryKey(Convert.ToInt32(Request.QueryString["id"].ToString()));
             var lang = System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName;
@@ -37,19 +37,19 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
             ltlocation.Text = lang == "en" ? "<a href='Places.aspx?id=" + place.Categories_id + "&addid=" + addr.ID + "'>" + gov.NameEn + "-" + area.NameEn + "</a>" :
                           lang == "ru" ? "<a href='Places.aspx?id=" + place.Categories_id + "&addid=" + addr.ID + "'>" + gov.NameRu + "-" + area.NameRu + "</a>" :
                           "<a href='Places.aspx?id=" + place.Categories_id + "&addid=" + addr.ID + "'>" + gov.Name + "-" + area.Name + "</a>";
-            
+
             DeliveryZones dzone = new DeliveryZones();
             dzone.Where.PlacesID.Operator = WhereParameter.Operand.Equal;
             dzone.Where.PlacesID.Value = place.Id;
             dzone.Where.Areas_id.Operator = WhereParameter.Operand.Equal;
             dzone.Where.Areas_id.Value = addr.Area_id;
             dzone.Query.Load();
-            
+
             vw_Users usr = new vw_Users();
             usr.Where.Id.Operator = WhereParameter.Operand.Equal;
             usr.Where.Id.Value = addr.UserID;
             usr.Query.Load();
-            
+
             ltDeliveryCost.Text = dzone.DeliveryCost.ToString("F2");
             if (usr.Ocounts == 0)
             {
@@ -59,7 +59,7 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
             {
                 ltdeliveryFee.Text = dzone.s_DeliveryCost;
             }
-            
+
             ltshopId.Text = place.s_Id;
             ltshopName.Text = lang == "en" ? place.NameEn: lang == "ru" ? place.NameRu : place.Name;
             ltshopAreaId.Text = place.s_Areas_id;
@@ -73,7 +73,7 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
             // Rating Stars logic
             int rating = 0;
             try { rating = place.Rate; } catch { }
-            
+
             string starsHtml = "";
             for (int i = 1; i <= 5; i++)
             {
@@ -89,14 +89,14 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
             using (SqlConnection con = new SqlConnection(connStr))
             {
                 string sqlStatus = @"
-                    SELECT CASE 
-                        WHEN s.StartTime IS NOT NULL 
-                             AND CAST(DATEADD(HOUR, 10, GETDATE()) AS TIME) BETWEEN s.StartTime AND s.EndTime 
-                        THEN 1 ELSE 0 
+                    SELECT CASE
+                        WHEN s.StartTime IS NOT NULL
+                             AND CAST(DATEADD(HOUR, 10, GETDATE()) AS TIME) BETWEEN s.StartTime AND s.EndTime
+                        THEN 1 ELSE 0
                     END AS IsOpened
                     FROM dbo.Places p
-                    LEFT JOIN dbo.PlacesDeliverySchedule s ON p.id = s.PlacesId 
-                         AND s.IsActive = 1 
+                    LEFT JOIN dbo.PlacesDeliverySchedule s ON p.id = s.PlacesId
+                         AND s.IsActive = 1
                          AND s.DayId = (SELECT Id FROM dbo.DaysOfWeek WHERE DayOrder = DATEPART(WEEKDAY, DATEADD(HOUR, 10, GETDATE())))
                     WHERE p.id = @pid";
                 SqlCommand cmdStatus = new SqlCommand(sqlStatus, con);
@@ -112,7 +112,7 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
             shopStatusBadge.InnerText = isOpened == 1 ? (string)GetGlobalResourceObject("texts", "Open") : (string)GetGlobalResourceObject("texts", "Closed");
         }
     }
-  
+
     private void BindMenu()
     {
         using (SqlConnection conn = new SqlConnection(connStr))
@@ -145,7 +145,7 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
 
             using (SqlConnection con = new SqlConnection(connStr))
             {
-                string query = "SELECT dbo.MenuItems.id,dbo.MenuItems.PlaceID,PrepearMin,dbo.MenuItems.MenuID, dbo.MenuItems.Name,dbo.MenuItems.NameEn,dbo.MenuItems.NameRu, dbo.MenuItems.Description,dbo.MenuItems.DescriptionEn,dbo.MenuItems.DescriptionRu, dbo.MenuItems.Price AS OldPrice," + 
+                string query = "SELECT dbo.MenuItems.id,dbo.MenuItems.PlaceID,PrepearMin,dbo.MenuItems.MenuID, dbo.MenuItems.Name,dbo.MenuItems.NameEn,dbo.MenuItems.NameRu, dbo.MenuItems.Description,dbo.MenuItems.DescriptionEn,dbo.MenuItems.DescriptionRu, dbo.MenuItems.Price AS OldPrice," +
                " dbo.MenuItems.Price - dbo.MenuItems.DiscountValue AS NewPrice , dbo.MenuItems.PhotoUrl, 0 AS isCustom "+
 " FROM dbo.Menus INNER JOIN "+
                " dbo.MenuItems ON dbo.Menus.id = dbo.MenuItems.MenuID INNER JOIN "+

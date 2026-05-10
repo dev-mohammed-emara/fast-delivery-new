@@ -61,5 +61,7 @@ const texts = {
     ChooseLocation: "اختر موقعك",
     WhatsAppTitle: "تواصل معنا عبر واتساب",
     EditEmail: "تعديل البريد الالكتروني",
-    EditPassword: "تعديل كلمة المرور"
+    EditPassword: "تعديل كلمة المرور",
+    OnlyOnePromoClarification: "ℹ️ يمكن تطبيق كود خصم واحد فقط لكل طلب.",
+    RemoveCoupon: "إزالة الكود"
 };

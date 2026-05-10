@@ -88,5 +88,7 @@ const texts = {
     ChooseLocation: "Choose your location",
     WhatsAppTitle: "Contact us via WhatsApp",
     EditEmail: "Edit Email",
-    EditPassword: "Edit Password"
+    EditPassword: "Edit Password",
+    OnlyOnePromoClarification: "ℹ️ Only one promo code can be applied per order.",
+    RemoveCoupon: "Remove Coupon"
 };

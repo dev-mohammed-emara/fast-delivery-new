@@ -2,12 +2,12 @@
 <asp:Content ID="Content3" ContentPlaceHolderID="head" Runat="Server">
 <asp:Literal ID="ltPageTitle" runat="server" Text="<%$ Resources:texts, CheckoutTitle %>" ></asp:Literal></asp:Content>
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
-<div id="loader" class="loader-overlay">
+<!-- <div id="loader" class="loader-overlay">
        <div class="loader-box">
         <div class="spinner"></div>
         <asp:Literal ID="ltLoaderText" runat="server" Text="<%$ Resources:texts, LoaderText %>" />
     </div>
-</div>
+</div> -->
 
                     <style>
     /* Premium Checkout Styling */
@@ -802,9 +802,10 @@
         background: transparent;
         color: #666;
     }
+   
     .promo-mode-btn.active {
-        background: white;
-        color: var(--fd-blue);
+        background: var(--fd-blue);
+        color:  white;
         box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
     .promo-input-wrap {
@@ -827,22 +828,43 @@
     .promo-input-wrap .apply-btn {
         padding: 0 20px;
         border-radius: 12px;
-        background: var(--fd-blue);
+        background: #28a745;
         color: white;
         font-weight: 700;
         border: none;
         cursor: pointer;
+        transition: all 0.2s;
+    }
+    .promo-input-wrap .apply-btn.remove {
+        background: #dc3545;
+    }
+    .promo-clarification {
+        font-size: 0.8rem;
+        color: #888;
+        margin-top: 8px;
+        display: block;
+        width: 100%;
+        font-weight: 500;
+        padding-inline: 4px;
     }
     .promo-msg {
-        margin-top: 8px;
+        margin: 12px 0 0;
+        padding: 10px 15px;
         font-size: 0.85rem;
         font-weight: 600;
-        min-height: 1.2rem;
-        color: #666;
-        display: block;
+        border-radius: 8px;
+        display: none;
     }
-    .promo-msg.success { color: #28a745; background: rgba(40, 167, 69, 0.05); padding: 5px 10px; border-radius: 5px; }
-    .promo-msg.error { color: #dc3545; background: rgba(220, 53, 69, 0.05); padding: 5px 10px; border-radius: 5px; }
+    .promo-msg.success {
+        color: #2f855a;
+        background: #f0fff4;
+        border-inline-start: 4px solid #48bb78;
+    }
+    .promo-msg.error {
+        color: #c53030;
+        background: #fff5f5;
+        border-inline-start: 4px solid #f56565;
+    }
 
     .pay-options-grid {
         display: grid;
@@ -998,12 +1020,23 @@
         margin: 5px 1rem 15px;
         padding: 10px 15px;
         background: #fff5f5;
-        border-right: 4px solid #ff4d4d;
+        border-inline-start: 4px solid #ff4d4d;
         border-radius: 8px;
         font-size: 0.8rem;
         font-weight: 600;
         color: #c53030;
         display: none;
+    }
+    .promo-info-box {
+        margin: 12px 0;
+        padding: 10px 15px;
+        background: #ebf8ff;
+        border-inline-start: 4px solid #4299e1;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #2b6cb0;
+        display: block;
     }
     .vendor-group-footer {
         display: flex;
@@ -1119,10 +1152,25 @@
 
         window.applyPromo = function() {
             const codeInput = document.getElementById('promoInput');
+            const applyBtn = document.querySelector('.promo-input-wrap .apply-btn');
             const msgEl = document.getElementById('promoMsg');
             const summaryMsgEl = document.getElementById('promoSummaryMsg');
 
-            if (!msgEl) return;
+            if (!msgEl || !applyBtn) return;
+
+            // If a coupon is already applied, clicking should remove it
+            if (window.currentDiscount > 0) {
+                window.currentDiscount = 0;
+                window.currentDiscountType = 'order';
+                codeInput.value = '';
+                applyBtn.textContent = texts.Apply;
+                applyBtn.classList.remove('remove');
+                msgEl.style.display = 'none';
+                if (summaryMsgEl) summaryMsgEl.style.display = 'none';
+
+                if (typeof updateGlobalDeliveryCost === 'function') updateGlobalDeliveryCost();
+                return;
+            }
 
             const code = codeInput.value.trim();
             if (!code) {
@@ -1165,9 +1213,14 @@
 
                     const successTitle = texts.PromoAppliedSuccess.replace('{0}', modeLabel);
                     const savedText = texts.PromoSavedAmount.replace('{0}', discountAmount.toFixed(2)).replace('{1}', texts.Currency).replace('{2}', found.percentage);
-                    
+
                     msgEl.innerHTML = `✅ <strong>${successTitle}</strong><br><small>${savedText}</small>`;
                     msgEl.className = "promo-msg success";
+                    msgEl.style.display = 'block';
+
+                    // Update Button State
+                    applyBtn.textContent = texts.RemoveCoupon;
+                    applyBtn.classList.add('remove');
 
                     if (summaryMsgEl) {
                         const summaryText = texts.PromoSummaryApplied
@@ -1181,8 +1234,9 @@
 
                     if (typeof updateGlobalDeliveryCost === 'function') updateGlobalDeliveryCost();
                 } else {
-                    msgEl.textContent = texts.PromoErrorInvalid;
+                    msgEl.innerHTML = `❌ ${texts.PromoErrorInvalid}`;
                     msgEl.className = "promo-msg error";
+                    msgEl.style.display = 'block';
                     window.currentDiscount = 0;
                     if (summaryMsgEl) summaryMsgEl.style.display = 'none';
                     if (typeof updateGlobalDeliveryCost === 'function') updateGlobalDeliveryCost();

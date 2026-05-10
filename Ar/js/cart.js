@@ -1099,10 +1099,16 @@ function renderCheckoutArticles(items, summary) {
         </div>
         <div class="paymentSection">
             <div class="promo-input-wrap">
-                <input type="text" id="promoInput" placeholder="${texts.PromoPlaceholder}" class="auth-input">
-                <button type="button" onclick="applyPromo()" class="apply-btn">${texts.Apply}</button>
+                <input type="text" id="promoInput" placeholder="${texts.PromoPlaceholder}" class="auth-input" 
+                    onkeydown="if(event.key === 'Enter') { applyPromo(); event.preventDefault(); }">
+                <button type="button" onclick="applyPromo()" class="apply-btn ${(window.currentDiscount || 0) > 0 ? 'remove' : ''}">${(window.currentDiscount || 0) > 0 ? texts.RemoveCoupon : texts.Apply}</button>
             </div>
-            <p class="promo-msg" id="promoMsg" style="display:none;"></p>
+            <div class="promo-info-box">
+                ${texts.OnlyOnePromoClarification}
+            </div>
+            <p class="promo-msg success" id="promoMsg" style="${(window.currentDiscount || 0) > 0 ? 'display:block;' : 'display:none;'}">
+                ${(window.currentDiscount || 0) > 0 ? `✅ <strong>${((window.currentDiscountType || 'order') === 'shipping' ? texts.ShippingDiscount : texts.OrderDiscount)} ${texts.PromoAppliedSuccess.replace('{0}', '')}</strong>` : ''}
+            </p>
         </div>
     `;
     checkoutCart.appendChild(promoArticle);

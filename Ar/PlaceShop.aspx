@@ -847,7 +847,7 @@
             .totalItemPrice {
                 font-weight: 800;
                 color: var(--fd-blue);
-                font-size: 0.95rem;
+                font-size: 0.8rem !important;
                 white-space: nowrap;
                 text-align: center;
             }

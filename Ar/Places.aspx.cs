@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -81,7 +81,7 @@ public partial class Ar_Places : System.Web.UI.Page
             // 1. حساب إجمالي "الكل" بشرط العنوان والقسم
             // لازم نربط بجدول DeliveryZones و Addresses زي الـ Repeater بالظبط
             string sqlTotal = @"
-            SELECT COUNT(DISTINCT p.id) 
+            SELECT COUNT(DISTINCT p.id)
             FROM Places p
             INNER JOIN DeliveryZones dz ON p.id = dz.PlacesID
             INNER JOIN Addresses a ON dz.Areas_id = a.Area_id
@@ -95,16 +95,16 @@ public partial class Ar_Places : System.Web.UI.Page
 
             // 2. استعلام الفئات مع العد بشرط العنوان والقسم
             string sql = @"
-            SELECT pt.id, pt.TypeNameAr, pt.TypeNameEn, pt.TypeNameRu, pt.TypeImage, 
+            SELECT pt.id, pt.TypeNameAr, pt.TypeNameEn, pt.TypeNameRu, pt.TypeImage,
                    COUNT(DISTINCT p.id) AS TotalCount
             FROM PlaceTypes pt
             INNER JOIN Place_Type_Map map ON pt.id = map.TypeID
             INNER JOIN Places p ON map.PlaceID = p.id
             INNER JOIN DeliveryZones dz ON p.id = dz.PlacesID
             INNER JOIN Addresses a ON dz.Areas_id = a.Area_id
-            WHERE p.Categories_id = @catId 
-              AND p.Active = 1 
-              AND pt.Active = 1 
+            WHERE p.Categories_id = @catId
+              AND p.Active = 1
+              AND pt.Active = 1
               AND a.ID = @addr
             GROUP BY pt.id, pt.TypeNameAr, pt.TypeNameEn, pt.TypeNameRu, pt.TypeImage";
 
@@ -128,7 +128,7 @@ public partial class Ar_Places : System.Web.UI.Page
         cat.Where.Active.Operator = WhereParameter.Operand.Equal;
         cat.Where.Active.Value = true;
         cat.Query.Load();
-       
+
         CategoryRepeater.DataSource = cat.DefaultView.Table;
         CategoryRepeater.DataBind();
     }
@@ -165,17 +165,17 @@ public partial class Ar_Places : System.Web.UI.Page
             string sql = @"
                 SELECT p.id, p.Name, p.NameEn, p.NameRu, p.Address, p.Description, p.DescriptionEn, p.DescriptionRu,
                        (p.DeliveredTime + dz.DeliveredTime) as DeliveredTime, p.MinOrder, p.Rate, p.PhotoPath, dz.DeliveryCost,
-                       CASE 
-                          WHEN s.StartTime IS NOT NULL 
-                               AND CAST(DATEADD(HOUR, 10, GETDATE()) AS TIME) BETWEEN s.StartTime AND s.EndTime 
-                          THEN 1 ELSE 0 
+                       CASE
+                          WHEN s.StartTime IS NOT NULL
+                               AND CAST(DATEADD(HOUR, 10, GETDATE()) AS TIME) BETWEEN s.StartTime AND s.EndTime
+                          THEN 1 ELSE 0
                        END AS IsOpened
-                FROM dbo.Places AS p 
-                INNER JOIN dbo.DeliveryZones dz ON p.id = dz.PlacesID 
-                INNER JOIN dbo.Addresses AS a ON dz.Areas_id = a.Area_id 
+                FROM dbo.Places AS p
+                INNER JOIN dbo.DeliveryZones dz ON p.id = dz.PlacesID
+                INNER JOIN dbo.Addresses AS a ON dz.Areas_id = a.Area_id
                 INNER JOIN dbo.Categories ON p.Categories_id = dbo.Categories.id
-                LEFT JOIN dbo.PlacesDeliverySchedule AS s ON p.id = s.PlacesId 
-                     AND s.IsActive = 1 
+                LEFT JOIN dbo.PlacesDeliverySchedule AS s ON p.id = s.PlacesId
+                     AND s.IsActive = 1
                      AND s.DayId = (SELECT Id FROM dbo.DaysOfWeek WHERE DayOrder = DATEPART(WEEKDAY, DATEADD(HOUR, 10, GETDATE())))
             WHERE (p.Active = 1) AND (a.ID = @addr) AND (p.Categories_id = @catg) " + filterByType + @"
             ORDER BY IsOpened DESC, p.Name ASC";

@@ -2348,7 +2348,7 @@ body:has(#openedShopFoods) #cartShower {
 }
 
 .totalItemPrice {
-  font-size: 0.89rem;
+  font-size: 1rem;
   font-weight: 700;
   color: #333;
   white-space: nowrap;
@@ -3673,6 +3673,7 @@ html[dir="ltr"] {
     bottom: 0;
     left: 0;
     width: 100%;
+    padding-inline: 0.5rem;
     height: 65px;
     background-color: #fff;
     border-radius: 20px 20px 0 0;
