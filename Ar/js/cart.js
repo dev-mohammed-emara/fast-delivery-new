@@ -11,6 +11,8 @@ if (totalItems > 0) {
 // ✅ Global Cart System — Runs on All Pages
 
 document.addEventListener("DOMContentLoaded", () => {
+    // Ensure texts object exists
+    const texts = window.texts || {};
 
 
 
@@ -154,8 +156,11 @@ document.addEventListener("DOMContentLoaded", () => {
         },
 
 
-        addItem(item, count = 1) {
-            const differentAreaExists = this.items.some(i => i.areaId !== GLOBAL_AREA_ID);
+        addItem(item, count = 1, isUpdate = false) {
+            const targetShopId = item.shopId || GLOBAL_shop_ID;
+            const targetAreaId = item.areaId || GLOBAL_AREA_ID;
+
+            const differentAreaExists = this.items.some(i => i.areaId !== targetAreaId);
 
             if (differentAreaExists) {
                 Swal.fire({
@@ -164,22 +169,29 @@ document.addEventListener("DOMContentLoaded", () => {
                     icon: "error",
                     confirmButtonText:texts.Ok,
                 });
-                return;
+                return false;
             }
 
-            const shopExists = this.items.some(i => i.shopId === GLOBAL_shop_ID);
+            const existing = this.items.find(i => i.id === item.id && String(i.shopId) === String(targetShopId));
+            if (existing) {
+                existing.amount += count;
+                this.save();
+                return true;
+            }
 
-            if (!shopExists && this.items.length > 0) {
+            const shopExists = this.items.some(i => String(i.shopId) === String(targetShopId));
+
+            if (!isUpdate && !shopExists && this.items.length > 0) {
                 const newItem = {
                     ...item,
                     amount: count,
-                    placeId: GLOBAL_PLACE_ID,
-                    areaId: GLOBAL_AREA_ID,
-                    deliveryFee: GLOBAL_DELIVERY_FEE,
-                    shopId: GLOBAL_shop_ID,
-                    shopName: GLOBAL_shopName,
-                    shopAreaId: GLOBAL_shopArea_ID,
-                    addId: GLOBAL_addid_ID
+                    placeId: item.placeId || GLOBAL_PLACE_ID,
+                    areaId: targetAreaId,
+                    deliveryFee: item.deliveryFee || GLOBAL_DELIVERY_FEE,
+                    shopId: targetShopId,
+                    shopName: item.shopName || GLOBAL_shopName,
+                    shopAreaId: item.shopAreaId || GLOBAL_shopArea_ID,
+                    addId: item.addId || GLOBAL_addid_ID
                 };
 
                 Swal.fire({
@@ -197,27 +209,23 @@ document.addEventListener("DOMContentLoaded", () => {
                         showCartToast(texts.AddedFromDifferentShop);
                     }
                 });
-                return;
+                return false;
             }
 
-            const existing = this.items.find(i => i.id === item.id && i.shopId === GLOBAL_shop_ID);
-            if (existing) {
-                existing.amount += count;
-            } else {
-                this.items.push({
-                    ...item,
-                    amount: count,
-                    placeId: GLOBAL_PLACE_ID,
-                    areaId: GLOBAL_AREA_ID,
-                    deliveryFee: GLOBAL_DELIVERY_FEE,
-                    shopId: GLOBAL_shop_ID,
-                    shopName: GLOBAL_shopName,
-                    shopAreaId: GLOBAL_shopArea_ID,
-                    addId: GLOBAL_addid_ID,
-                });
-            }
+            this.items.push({
+                ...item,
+                amount: count,
+                placeId: item.placeId || GLOBAL_PLACE_ID,
+                areaId: targetAreaId,
+                deliveryFee: item.deliveryFee || GLOBAL_DELIVERY_FEE,
+                shopId: targetShopId,
+                shopName: item.shopName || GLOBAL_shopName,
+                shopAreaId: item.shopAreaId || GLOBAL_shopArea_ID,
+                addId: item.addId || GLOBAL_addid_ID,
+            });
 
             this.save();
+            return true;
         },
 
         removeItem(id, shopId) {
@@ -273,11 +281,24 @@ let GLOBAL_AREA_DISCOUNT = areaDiscountEl
     ? parseFloat(areaDiscountEl.textContent.trim().replace("%", "")) || 0
     : parseFloat(localStorage.getItem("GLOBAL_AREA_DISCOUNT")) || 0;
 
+if (areaDiscountEl) {
+    localStorage.setItem("GLOBAL_AREA_DISCOUNT", GLOBAL_AREA_DISCOUNT);
+}
+
+// Expose these to window for access in CheckOut.aspx
+window.GLOBAL_AREA_DISCOUNT = GLOBAL_AREA_DISCOUNT;
+
 let GLOBAL_PLACE_ID = placeIdEl ? placeIdEl.textContent.trim() : null;
 let GLOBAL_AREA_ID = areaIdEl ? areaIdEl.textContent.trim() : null;
 let GLOBAL_shop_ID = shopIdEl ? shopIdEl.textContent.trim() : null;
 let GLOBAL_addid_ID = addidEl ? addidEl.textContent.trim() : null;
 let GLOBAL_shopArea_ID = shopAreaIdEl ? shopAreaIdEl.textContent.trim() : null;
+
+// Expose these to window for access in CheckOut.aspx
+window.GLOBAL_AREA_DISCOUNT = GLOBAL_AREA_DISCOUNT;
+window.GLOBAL_AREA_ID = GLOBAL_AREA_ID;
+window.GLOBAL_shopArea_ID = GLOBAL_shopArea_ID;
+window.GLOBAL_shop_ID = GLOBAL_shop_ID;
 
 let GLOBAL_DELIVERY_FEE =
     parseFloat(localStorage.getItem("GLOBAL_DELIVERY_FEE")) || 0;
@@ -324,9 +345,9 @@ if (deliveryFeeEl || deliveryCostValueEl) {
     }
 }
 
-let GLOBAL_shopName= shopNameEl.textContent.trim();
+let GLOBAL_shopName = shopNameEl ? shopNameEl.textContent.trim() : (localStorage.getItem("currentShopName") || "");
 
-function showCartToast(message = texts.AddedToCartDefault, options = {}) {
+function showCartToast(message = (window.texts ? window.texts.AddedToCartDefault : "تمت الإضافة"), options = {}) {
     const {
         background = "#ffc119", // toast background
           color = "#fff", // text color
@@ -1033,27 +1054,6 @@ function renderCheckoutArticles(items, summary) {
 
         article.appendChild(orderInfo);
 
-        // Add Order Type Section (Delivery/Pickup)
-        const orderTypeDiv = document.createElement("div");
-        orderTypeDiv.className = "vendor-group-types";
-        orderTypeDiv.setAttribute('data-vendor', shopId);
-        orderTypeDiv.innerHTML = `
-            <button type="button" class="order-type-opt active" data-vendor="${shopId}" data-type="delivery" onclick="setVendorOrderType('${shopId}', 'delivery')">
-                <i class="fa-solid fa-motorcycle"></i> ${texts.Delivery}
-            </button>
-            <button type="button" class="order-type-opt" data-vendor="${shopId}" data-type="pickup" onclick="setVendorOrderType('${shopId}', 'pickup')">
-                <i class="fa-solid fa-store"></i> ${texts.Pickup}
-            </button>
-        `;
-        article.appendChild(orderTypeDiv);
-
-        const pickupMsg = document.createElement("div");
-        pickupMsg.id = `pickupMsg-${shopId}`;
-        pickupMsg.className = "pickup-warning";
-        pickupMsg.innerHTML = `
-            ${texts.PickupWarning}
-        `;
-        article.appendChild(pickupMsg);
         // Calculate shop subtotal
         let shopSubtotal = 0;
         shopGroup.items.forEach(item => {
@@ -1083,6 +1083,40 @@ function renderCheckoutArticles(items, summary) {
         if(typeof updateGlobalDeliveryCost === 'function') updateGlobalDeliveryCost();
     });
 
+    // Global Order Type Section (Delivery/Pickup) - MOVED TO BOTTOM
+    const globalOrderTypeDiv = document.createElement("article");
+    globalOrderTypeDiv.className = "checkoutBox global-delivery-section";
+    globalOrderTypeDiv.innerHTML = `
+        <div class="checkoutBoxTitle">
+            <h2><i class="fa-solid fa-truck-fast"></i> ${texts.DeliveryMethodTitle || 'طريقة الاستلام'}</h2>
+        </div>
+        <div class="vendor-group-types global-types">
+            <button type="button" class="order-type-opt active" data-type="delivery" onclick="setGlobalOrderType('delivery')">
+                <i class="fa-solid fa-motorcycle"></i> ${texts.Delivery}
+            </button>
+            <button type="button" class="order-type-opt" data-type="pickup" onclick="setGlobalOrderType('pickup')">
+                <i class="fa-solid fa-store"></i> ${texts.Pickup}
+            </button>
+        </div>
+        <div id="globalAreaDiscountMsg" class="promo-msg success" style="display:none; margin: 10px 1rem;">
+            <!-- Same Area Discount Message Injected via JS -->
+        </div>
+        <div class="global-delivery-summary" style="padding: 1.5rem 1rem; border-top: 1px dashed #eee; display: flex; flex-direction: column; gap: 10px;">
+            <div class="summary-line" style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-weight: 600; color: #666;">${texts.DeliveryFee}:</span>
+                <strong id="globalTotalDelivery" style="font-size: 1.1rem; color: #000;">${Number(summary.delivery || 0).toFixed(2)} ${texts.Currency}</strong>
+            </div>
+            <div class="summary-line" style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-weight: 600; color: #666;">${texts.Subtotal}:</span>
+                <strong style="font-size: 1.1rem; color: #000;">${Number(summary.subtotal || 0).toLocaleString()} ${texts.Currency}</strong>
+            </div>
+        </div>
+        <div id="globalPickupMsg" class="pickup-warning" style="margin: 10px 1rem 15px;">
+            ${texts.PickupWarning}
+        </div>
+    `;
+    checkoutCart.appendChild(globalOrderTypeDiv);
+
     // TOTAL AMOUNT article
     // --- Promo Section ---
     const promoArticle = document.createElement("article");
@@ -1093,7 +1127,7 @@ function renderCheckoutArticles(items, summary) {
                 <h2><i class="fa-solid fa-ticket"></i> ${texts.PromoCodeTitle}</h2>
                 <div class="promo-modes">
                     <button type="button" class="promo-mode-btn active" onclick="setPromoMode('order', this)">${texts.OrderDiscount}</button>
-                    <button type="button" class="promo-mode-btn" onclick="setPromoMode('shipping', this)">${texts.ShippingDiscount}</button>
+                    <button type="button" id="btnPromoShipping" class="promo-mode-btn" onclick="setPromoMode('shipping', this)">${texts.ShippingDiscount}</button>
                 </div>
             </div>
         </div>

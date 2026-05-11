@@ -2371,6 +2371,92 @@ html[dir="ltr"] .showPassword {
     color: #fff !important;
   }
 
+  /* Mobile Profile Menu Tooltip */
+  .mobile-profile-menu {
+    position: absolute;
+    bottom: 70px; /* Elevated above the nav bar */
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    width: max-content;
+    display: none;
+    flex-direction: column;
+    overflow: visible;
+    z-index: 2000;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    opacity: 0;
+    pointer-events: none;
+    border: 1px solid #f0f0f0;
+  }
+
+  .mobile-profile-menu.show {
+    display: flex;
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .mobile-profile-menu-item {
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #333 !important;
+    text-decoration: none;
+    transition: background 0.2s;
+    text-align: right;
+  }
+
+  .mobile-profile-menu-item i {
+    font-size: 18px;
+    color: var(--fd-blue);
+    min-width: 20px;
+    text-align: center;
+  }
+
+  .mobile-profile-menu-item.logout {
+    color: #ff4d4d !important;
+    cursor: pointer;
+  }
+
+  .mobile-profile-menu-item.logout i {
+    color: #ff4d4d;
+  }
+
+  .mobile-profile-menu-divider {
+    height: 1px;
+    background: #f0f0f0;
+    margin: 0;
+  }
+
+  /* Tooltip Arrow */
+  .mobile-profile-menu::after {
+    content: "";
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 8px 8px 0 8px;
+    border-style: solid;
+    border-color: white transparent transparent transparent;
+  }
+
+  .mobile-profile-menu::before {
+    content: "";
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 9px 9px 0 9px;
+    border-style: solid;
+    border-color: #f0f0f0 transparent transparent transparent;
+    z-index: -1;
+  }
+
   /* Specific Nav Item Colors */
   .mobile-nav-item.nav-cart { color: #ff5722 !important; } /* Unique Orange-Red */
   .mobile-nav-item.nav-fav  { color: #e91e63 !important; } /* Pink */
@@ -2474,6 +2560,11 @@ html[dir="ltr"] .showPassword {
   body.not-logged-in .back-to-top {
     bottom: 90px !important;
   }
+}
+
+#Deliverycost{
+  color: black;
+  font-weight: bold;
 }
 
 /* Grouping Styles */
@@ -2697,7 +2788,7 @@ html[dir="ltr"] .showPassword {
 .totalItemPrice {
     font-weight: 700 !important;
     color: #222 !important;
-    font-size: 1rem !important;
+    font-size: 1rem ;
     white-space: nowrap !important;
 }
 

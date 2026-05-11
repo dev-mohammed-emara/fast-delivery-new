@@ -802,7 +802,7 @@
         background: transparent;
         color: #666;
     }
-   
+
     .promo-mode-btn.active {
         background: var(--fd-blue);
         color:  white;
@@ -989,8 +989,7 @@
     .vendor-group-types {
         display: flex;
         gap: 10px;
-        margin-bottom: 12px;
-        padding: 0 1rem;
+        padding:  1rem;
     }
     .order-type-opt {
         flex: 1;
@@ -1158,11 +1157,23 @@
 
             if (!msgEl || !applyBtn) return;
 
+            // Extra safety: block shipping promo if in pickup mode
+            if (window.selectedPromoMode === 'shipping') {
+                const activeBtn = document.querySelector('.global-types .order-type-opt.active');
+                if (activeBtn && activeBtn.getAttribute('data-type') === 'pickup') {
+                    msgEl.textContent = texts.ShippingPromoNotValidForPickup || "لا يمكن إضافة كوبون توصيل عند الاستلام من الفرع";
+                    msgEl.className = "promo-msg error";
+                    msgEl.style.display = 'block';
+                    return;
+                }
+            }
+
             // If a coupon is already applied, clicking should remove it
             if (window.currentDiscount > 0) {
                 window.currentDiscount = 0;
                 window.currentDiscountType = 'order';
                 codeInput.value = '';
+                codeInput.disabled = false;
                 applyBtn.textContent = texts.Apply;
                 applyBtn.classList.remove('remove');
                 msgEl.style.display = 'none';
@@ -1221,6 +1232,7 @@
                     // Update Button State
                     applyBtn.textContent = texts.RemoveCoupon;
                     applyBtn.classList.add('remove');
+                    codeInput.disabled = true;
 
                     if (summaryMsgEl) {
                         const summaryText = texts.PromoSummaryApplied
@@ -1269,8 +1281,8 @@
             }
         };
 
-        window.setVendorOrderType = function(vendorId, type) {
-            const container = document.querySelector(`.vendor-group-types[data-vendor="${vendorId}"]`);
+        window.setGlobalOrderType = function(type) {
+            const container = document.querySelector('.global-types');
             if(!container) return;
             const btns = container.querySelectorAll('.order-type-opt');
             btns.forEach(btn => {
@@ -1281,47 +1293,79 @@
                 }
             });
 
-            const msg = document.getElementById(`pickupMsg-${vendorId}`);
-            const shopDeliveryEl = document.getElementById(`shopDelivery-${vendorId}`);
-            const footer = document.querySelector(`.vendor-group-footer[data-vendor="${vendorId}"]`);
+            const globalMsg = document.getElementById('globalPickupMsg');
+            if (globalMsg) {
+                globalMsg.style.display = (type === 'pickup') ? 'block' : 'none';
+            }
 
-            if (msg) {
+            // Hide Shipping Promo Button if Pickup is selected
+            const btnPromoShipping = document.getElementById('btnPromoShipping');
+            if (btnPromoShipping) {
                 if (type === 'pickup') {
-                    msg.style.display = 'block';
-                    if(shopDeliveryEl) shopDeliveryEl.innerHTML = `<strong>0 ${texts.Currency || 'ج.م'}</strong>`;
+                    btnPromoShipping.style.display = 'none';
+                    // If we were in shipping mode, switch back to order mode
+                    if (window.selectedPromoMode === 'shipping') {
+                        const orderBtn = document.querySelector('.promo-mode-btn[onclick*="order"]');
+                        if (orderBtn) setPromoMode('order', orderBtn);
+                    }
                 } else {
-                    msg.style.display = 'none';
-                    const originalFee = footer ? footer.getAttribute('data-delivery-fee') : '0';
-                    if(shopDeliveryEl) shopDeliveryEl.innerHTML = `<strong>${originalFee} ${texts.Currency || 'ج.م'}</strong>`;
+                    btnPromoShipping.style.display = 'block';
                 }
             }
+
+            // Update all individual shop delivery fees in UI
+            document.querySelectorAll('.vendor-group-footer').forEach(footer => {
+                const shopId = footer.getAttribute('data-vendor');
+                const shopDeliveryEl = document.getElementById(`shopDelivery-${shopId}`);
+                const originalFee = footer.getAttribute('data-delivery-fee') || '0';
+                
+                // Keep the original fee visible for feedback even if in pickup mode
+                if(shopDeliveryEl) shopDeliveryEl.innerHTML = `<strong>${originalFee} ${texts.Currency || 'ج.م'}</strong>`;
+            });
 
             // Sync with global delivery cost
             updateGlobalDeliveryCost();
         };
 
+        window.setVendorOrderType = function(vendorId, type) {
+            // Deprecated but kept for compatibility if needed elsewhere
+            setGlobalOrderType(type);
+        };
+
         function updateGlobalDeliveryCost() {
-            let totalDelivery = 0;
-            let anyPickup = false;
+            const texts = window.texts || {};
+            const activeBtn = document.querySelector('.global-types .order-type-opt.active');
+            const isPickup = activeBtn && activeBtn.getAttribute('data-type') === 'pickup';
+            let anyPickup = isPickup;
 
-            document.querySelectorAll('.vendor-group-types').forEach(group => {
-                const activeBtn = group.querySelector('.order-type-opt.active');
-                if (activeBtn && activeBtn.getAttribute('data-type') === 'pickup') {
-                    anyPickup = true;
-                }
-            });
+            const summary = JSON.parse(localStorage.getItem("cartSummary") || "{}");
+            let globalOrderTotalDelivery = isPickup ? 0 : (parseFloat(summary.delivery) || 0);
+            let totalDiscountAmount = isPickup ? 0 : (parseFloat(summary.discount) || 0);
 
-            document.querySelectorAll('.vendor-group-footer').forEach(footer => {
-                const amountSpan = footer.querySelector('.shop-delivery-fee strong');
-                if (amountSpan) {
-                    const price = parseFloat(amountSpan.innerText.replace(/[^\d.]/g, '')) || 0;
-                    totalDelivery += price;
+            const discountMsgEl = document.getElementById('globalAreaDiscountMsg');
+            // Display message only if there is an actual discount and we are in delivery mode
+            if (totalDiscountAmount > 0 && !isPickup) {
+                if (discountMsgEl) {
+                    discountMsgEl.innerHTML = `✅ <strong>\u062E\u0635\u0645 \u0627\u0644\u0645\u0646\u0637\u0642\u0629 \u0627\u0644\u0645\u0648\u062D\u062F\u0629:</strong> \u062A\u0645 \u062A\u0637\u0628\u064A\u0642 \u062E\u0635\u0645 \u0627\u0644\u062A\u0648\u0635\u064A\u0644 \u0644\u062A\u0648\u0627\u062C\u062F \u0627\u0644\u0645\u0637\u0627\u0639\u0645 \u0641\u064A \u0646\u0641\u0633 \u0627\u0644\u0645\u0646\u0637\u0642\u0629!`;
+                    discountMsgEl.style.display = 'block';
                 }
-            });
+            } else {
+                if (discountMsgEl) discountMsgEl.style.display = 'none';
+            }
+
+            // Update Global Summary UI
+            const displayDeliveryValue = (window.currentDiscountType === 'shipping' && !isPickup) 
+                ? Math.max(0, globalOrderTotalDelivery - window.currentDiscount) 
+                : globalOrderTotalDelivery;
+
+            const globalTotalDeliveryEl = document.getElementById("globalTotalDelivery");
+            if (globalTotalDeliveryEl) {
+                globalTotalDeliveryEl.innerText = `${displayDeliveryValue.toFixed(2)} ${texts.Currency || 'ج.م'}`;
+            }
 
             const globalDeliveryEl = document.getElementById("Deliverycost");
             if (globalDeliveryEl) {
-                globalDeliveryEl.innerText = `${totalDelivery} ${texts.Currency || 'ج.م'}`;
+                globalDeliveryEl.innerText = `${displayDeliveryValue.toFixed(2)} ${texts.Currency || 'ج.م'}`;
             }
 
             // Update Final Total
@@ -1330,16 +1374,22 @@
 
             if (subtotalEl && finalTotalEl) {
                 const subtotal = parseFloat(subtotalEl.innerText.replace(/[^\d.]/g, '')) || 0;
-                const discount = window.currentDiscount || 0;
-                const newTotal = (subtotal + totalDelivery) - discount;
+                
+                let effectiveDiscount = window.currentDiscount || 0;
+                // If it's a shipping discount but we are in pickup mode, it shouldn't apply to the total
+                if (isPickup && window.currentDiscountType === 'shipping') {
+                    effectiveDiscount = 0;
+                }
+
+                const newTotal = (subtotal + globalOrderTotalDelivery) - effectiveDiscount;
                 finalTotalEl.innerText = `${newTotal.toLocaleString()} ${texts.Currency || 'ج.م'}`;
             }
 
             // Show/Hide Pickup Message
             const pickupMsg = document.getElementById("pickupSummaryMsg");
-            if (pickupMsg) {
-                pickupMsg.style.display = anyPickup ? "block" : "none";
-            }
+            const globalPickupMsg = document.getElementById("globalPickupMsg");
+            if (pickupMsg) pickupMsg.style.display = anyPickup ? "block" : "none";
+            if (globalPickupMsg) globalPickupMsg.style.display = anyPickup ? "block" : "none";
         }
 </script>
     <script>

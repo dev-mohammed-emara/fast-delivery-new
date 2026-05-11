@@ -1,4 +1,4 @@
-const texts = {
+window.texts = window.texts || {
     CheckoutTitle: "الدفع",
     UpdateOrder: "تعديل الطلب",
     Hot: "حار",
@@ -63,5 +63,6 @@ const texts = {
     EditEmail: "تعديل البريد الالكتروني",
     EditPassword: "تعديل كلمة المرور",
     OnlyOnePromoClarification: "ℹ️ يمكن تطبيق كود خصم واحد فقط لكل طلب.",
-    RemoveCoupon: "إزالة الكود"
+    RemoveCoupon: "إزالة الكود",
+    DeliveryMethodTitle: "طريقة الاستلام"
 };

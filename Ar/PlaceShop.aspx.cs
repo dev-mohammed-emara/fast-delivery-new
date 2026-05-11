@@ -9,6 +9,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.UI.HtmlControls;
 using DMS;
+using System.Web.Services;
 
 public partial class Ar_PlaceShop : System.Web.UI.Page
 {
@@ -32,6 +33,7 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
 
             Places place = new Places();
             place.LoadByPrimaryKey(Convert.ToInt32(Request.QueryString["id"].ToString()));
+            ltBanner.Text = "<img src='" + place.PhotoPath + "'>";
             var lang = System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName;
 
             ltlocation.Text = lang == "en" ? "<a href='Places.aspx?id=" + place.Categories_id + "&addid=" + addr.ID + "'>" + gov.NameEn + "-" + area.NameEn + "</a>" :
@@ -61,7 +63,7 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
             }
 
             ltshopId.Text = place.s_Id;
-            ltshopName.Text = lang == "en" ? place.NameEn: lang == "ru" ? place.NameRu : place.Name;
+            ltshopName.Text = lang == "en" ? place.NameEn : lang == "ru" ? place.NameRu : place.Name;
             ltshopAreaId.Text = place.s_Areas_id;
             ltname.Text = ltname2.Text = ltshopName.Text;
             ltDetails.Text = lang == "en" ? place.DescriptionEn : lang == "ru" ? place.DescriptionRu : place.Description;
@@ -117,12 +119,12 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
     {
         using (SqlConnection conn = new SqlConnection(connStr))
         {
-            string sql = "SELECT distinct dbo.Menus.id, dbo.Menus.Name, dbo.Menus.NameEn,dbo.Menus.PhotoUrl,dbo.Menus.NameRu FROM  dbo.Menus INNER JOIN dbo.MenuItems ON dbo.Menus.id = dbo.MenuItems.MenuID INNER JOIN dbo.Places ON dbo.MenuItems.PlaceID = dbo.Places.id WHERE(dbo.MenuItems.PlaceID = " + Convert.ToInt32(Request.QueryString["id"].ToString())+") ";
+            string sql = "SELECT distinct dbo.Menus.id, dbo.Menus.Name, dbo.Menus.NameEn,dbo.Menus.PhotoUrl,dbo.Menus.NameRu FROM  dbo.Menus INNER JOIN dbo.MenuItems ON dbo.Menus.id = dbo.MenuItems.MenuID INNER JOIN dbo.Places ON dbo.MenuItems.PlaceID = dbo.Places.id WHERE(dbo.MenuItems.PlaceID = " + Convert.ToInt32(Request.QueryString["id"].ToString()) + ") ";
             SqlDataAdapter da = new SqlDataAdapter(sql, conn);
             da.SelectCommand.CommandTimeout = 60; // Increase timeout to handle semaphore issues
             DataTable dt = new DataTable();
             da.Fill(dt);
-            rptMenu.DataSource=FoodCategoryRepeater.DataSource = dt;
+            rptMenu.DataSource = FoodCategoryRepeater.DataSource = dt;
             rptMenu.DataBind();
             FoodCategoryRepeater.DataBind();
             rptCategories.DataSource = dt;
@@ -135,7 +137,108 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
         if (categoryId == currentSelectedId) return " active";
         return "";
     }
+    [WebMethod]
+    public static object GetProductDetails(int itemId)
+    {
+        // استبدل ConnectionString بما يناسب مشروعك
+        string connStr = System.Configuration.ConfigurationManager.ConnectionStrings["Conn"].ConnectionString;
 
+        try
+        {
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                conn.Open();
+
+                // 1. جلب بيانات الصنف الأساسية
+                string itemSql = "SELECT id, Name, Description, PhotoUrl, Price FROM MenuItems WHERE id = @id";
+                SqlCommand itemCmd = new SqlCommand(itemSql, conn);
+                itemCmd.Parameters.AddWithValue("@id", itemId);
+
+                SqlDataReader rdr = itemCmd.ExecuteReader();
+                if (!rdr.Read()) return new { success = false, message = "Item not found" };
+
+                // تخزين البيانات الأساسية
+                var productData = new
+                {
+                    id = Convert.ToInt32(rdr["id"]),
+                    name = rdr["Name"].ToString(),
+                    description = rdr["Description"].ToString(),
+                    photoUrl = rdr["PhotoUrl"].ToString(),
+                    price = Convert.ToDecimal(rdr["Price"])
+                };
+                rdr.Close();
+
+                // 2. جلب الأحجام المرتبطة بهذا الصنف
+                var sizesList = new List<object>();
+
+                // تعديل الاستعلام لجلب ID جدول الربط ومعرف المنتج
+                string sizeSql = @"SELECT
+                        ms.id AS MenuSize_id,
+                        ms.MenuItems_id,
+                        s.Name,
+                        ms.Price
+                   FROM MenuItems_Sizes ms
+                   INNER JOIN Sizes s ON ms.Size_id = s.id
+                   WHERE ms.MenuItems_id = @id";
+
+                SqlCommand sizeCmd = new SqlCommand(sizeSql, conn);
+                sizeCmd.Parameters.AddWithValue("@id", itemId);
+
+                SqlDataReader sRdr = sizeCmd.ExecuteReader();
+                while (sRdr.Read())
+                {
+                    sizesList.Add(new
+                    {
+                        // المعرف الفريد للحجم المرتبط بهذا المنتج (الذي ستحتاجه في السلة)
+                        id = sRdr["MenuSize_id"],
+                        // معرف المنتج الأساسي
+                        menuItemid = sRdr["MenuItems_id"],
+                        name = sRdr["Name"].ToString(),
+                        price = Convert.ToDecimal(sRdr["Price"])
+                    });
+                }
+                sRdr.Close();
+
+                // 3. جلب الإضافات المرتبطة بهذا الصنف
+                var extrasList = new List<object>();
+                string extraSql = @"SELECT ex.id, ex.Name, me.Price,ex.PhotoUrl
+                                FROM MenuItems_Extras me
+                                INNER JOIN Extras ex ON me.Extra_id = ex.id
+                                WHERE me.MenuItem_id = @id";
+                SqlCommand extraCmd = new SqlCommand(extraSql, conn);
+                extraCmd.Parameters.AddWithValue("@id", itemId);
+                SqlDataReader eRdr = extraCmd.ExecuteReader();
+                while (eRdr.Read())
+                {
+                    extrasList.Add(new
+                    {
+                        id = eRdr["id"],
+                        name = eRdr["Name"].ToString(),
+                        photoUrl = eRdr["PhotoUrl"].ToString(),
+                        price = Convert.ToDecimal(eRdr["Price"])
+                    });
+                }
+                eRdr.Close();
+
+                // الرد النهائي بصيغة JSON
+                return new
+                {
+                    success = true,
+                    id = productData.id,
+                    name = productData.name,
+                    description = productData.description,
+                    photoUrl = productData.photoUrl,
+                    price = productData.price,
+                    sizes = sizesList.Count > 1 ? sizesList : new List<object>(),
+                    upsellItems = extrasList
+                };
+            }
+        }
+        catch (Exception ex)
+        {
+            return new { success = false, message = ex.Message };
+        }
+    }
     protected void rptCategories_ItemDataBound(object sender, RepeaterItemEventArgs e)
     {
         if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
@@ -145,11 +248,31 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
 
             using (SqlConnection con = new SqlConnection(connStr))
             {
-                string query = "SELECT dbo.MenuItems.id,dbo.MenuItems.PlaceID,PrepearMin,dbo.MenuItems.MenuID, dbo.MenuItems.Name,dbo.MenuItems.NameEn,dbo.MenuItems.NameRu, dbo.MenuItems.Description,dbo.MenuItems.DescriptionEn,dbo.MenuItems.DescriptionRu, dbo.MenuItems.Price AS OldPrice," +
-               " dbo.MenuItems.Price - dbo.MenuItems.DiscountValue AS NewPrice , dbo.MenuItems.PhotoUrl, 0 AS isCustom "+
-" FROM dbo.Menus INNER JOIN "+
-               " dbo.MenuItems ON dbo.Menus.id = dbo.MenuItems.MenuID INNER JOIN "+
-               " dbo.Places ON dbo.MenuItems.PlaceID = dbo.Places.id where MenuID=@MenuID and PlaceID=@PlaceID";
+                string query = @"
+SELECT
+    mi.id, mi.PlaceID, mi.PrepearMin, mi.MenuID, mi.Name, mi.NameEn, mi.NameRu,
+    mi.Description, mi.DescriptionEn, mi.DescriptionRu,
+    mi.PhotoUrl,
+    -- OldPrice: لو فيه أحجام، هات سعر أول حجم، لو مفيش هات سعر الصنف الأساسي
+    ISNULL((SELECT TOP 1 Price FROM MenuItems_Sizes WHERE MenuItems_id = mi.id), mi.Price) AS OldPrice,
+
+    -- NewPrice: الحسبة بعد الخصم (سواء من جدول الأحجام أو الأساسي)
+    ISNULL(
+        (SELECT TOP 1 Price - DiscountValue FROM MenuItems_Sizes WHERE MenuItems_id = mi.id),
+        mi.Price - mi.DiscountValue
+    ) AS NewPrice,
+
+    -- isCustom: لو عدد سجلاته في جدول الأحجام أكبر من 1 يبقى 1 (يعني مخصص)، غير كده 0
+    CASE
+        WHEN (SELECT COUNT(*) FROM MenuItems_Sizes WHERE MenuItems_id = mi.id) > 1 THEN 1
+        ELSE 0
+    END AS isCustom
+
+FROM dbo.Menus m
+INNER JOIN dbo.MenuItems mi ON m.id = mi.MenuID
+INNER JOIN dbo.Places p ON mi.PlaceID = p.id
+WHERE mi.MenuID = @MenuID AND mi.PlaceID = @PlaceID";
+
                 SqlCommand cmd = new SqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@MenuID", categoryId);
                 cmd.Parameters.AddWithValue("@PlaceID", Convert.ToInt32(Request.QueryString["id"].ToString()));
@@ -161,4 +284,5 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
             }
         }
     }
+
 }

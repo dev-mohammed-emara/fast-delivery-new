@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="AddAddress.aspx.cs" Inherits="Ar_AddAddress" EnableEventValidation="false" %>
+<%@ Page Language="C#" AutoEventWireup="true" CodeFile="AddAddress.aspx.cs" Inherits="Ar_AddAddress" EnableEventValidation="false" %>
 <!DOCTYPE html>
 <html lang="<%= CurrentLang %>" dir="<%= CurrentDir %>">
 <head>
@@ -275,11 +275,16 @@
 
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-   <script>
-       $('#<%= ddlArea.ClientID %>').change(function() {
-           alert("m");
-});
-   </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const ddlArea = document.getElementById('<%= ddlArea.ClientID %>');
+            if (ddlArea) {
+                ddlArea.addEventListener("change", function() {
+                    // alert("m");
+                });
+            }
+        });
+    </script>
 
          <script defer>
     // user profile settings

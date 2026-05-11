@@ -257,7 +257,7 @@
                 will-change: auto;
                 overflow-y: auto;
                 -webkit-overflow-scrolling: touch;
-                /* overscroll-behavior: contain; */
+                overscroll-behavior: contain;
                 touch-action: pan-y;
                 top: 100px;
                 line-height: 1.2;
@@ -836,7 +836,7 @@
             .orderedItemName {
                 font-weight: 700;
                 color: #2c3e50;
-                font-size: 0.8rem;
+                font-size: 0.75rem !important;
                 line-height: 1.4;
                 text-align: initial !important;
                 overflow: hidden;
@@ -1078,7 +1078,7 @@
                 display: flex;
                 overflow-x: auto;
                 -webkit-overflow-scrolling: touch;
-                /* overscroll-behavior: contain; */
+                overscroll-behavior: contain;
                 touch-action: pan-x pan-y;
                 gap: 20px;
                 /* &#1605;&#1587;&#1575;&#1601;&#1577; &#1571;&#1603;&#1576;&#1585; &#1576;&#1610;&#1606; &#1575;&#1604;&#1603;&#1604;&#1605;&#1575;&#1578; */
@@ -1127,6 +1127,7 @@
                 border-radius: 20px;
                 font-size: 0.85rem;
                 font-weight: 700;
+                margin-inline-start: 12px;
                 display: inline-flex;
                 align-items: center;
                 vertical-align: middle;
@@ -1179,7 +1180,9 @@
         <section id="openedShopFoods">
 
 <figure id="shopBanner">
-    <img src="https://static.vecteezy.com/system/resources/thumbnails/006/633/040/small/online-shopping-spring-on-phone-flower-pink-big-sale-banner-marketing-poster-fashion-vector.jpg" alt="">
+
+<asp:Literal ID="ltBanner" runat="server"></asp:Literal>
+
 </figure>
 
             <article id="foodImageModal">
@@ -1319,7 +1322,7 @@
                             <ItemTemplate>
                                 <%-- &#1610;&#1605;&#1603;&#1606;&#1603; &#1575;&#1587;&#1578;&#1582;&#1583;&#1575;&#1605; &#1575;&#1604;&#1605;&#1606;&#1591;&#1602; &#1575;&#1604;&#1588;&#1585;&#1591;&#1610; &#1604;&#1578;&#1591;&#1576;&#1610;&#1602; active class &#1607;&#1606;&#1575; --%>
 
-                                    <a href='#<%# Eval("id")%>' class="category-pill" data-category-id="<%# Eval("ID") %>">
+                                    <a href='#section-<%# Eval("id")%>' class="category-pill" data-category-id="<%# Eval("ID") %>">
 
                                         <%-- &#1607;&#1584;&#1607; &#1607;&#1610; &#1575;&#1604;&#1589;&#1608;&#1585;&#1577; &#1575;&#1604;&#1605;&#1589;&#1594;&#1585;&#1577; &#1604;&#1604;&#1578;&#1589;&#1606;&#1610;&#1601; --%>
                                             <img src='<%# Eval("PhotoUrl") %>' alt='<%# Eval("Name") %>' />
@@ -1353,7 +1356,7 @@
                                 <asp:Repeater ID="rptMenu" runat="server">
 
                                     <ItemTemplate>
-                                        <a href='#<%# Eval("id")%>' title='<%#
+                                        <a href='#section-<%# Eval("id")%>' title='<%#
         System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName == "en"
         ? DataBinder.Eval(Container.DataItem, "NameEn")
         : System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName == "ru"
@@ -1404,13 +1407,31 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="foodItem custom-item" id="custom-half-shawarma-hardcoded" data-price="250" data-product-name="نص كيلو شاورما فراخ" onclick="openHardcodedModal(null, null, null, this)">
+                                        <div class="product-qty-badge">0</div>
+                                        <div class="foodDetailsContainer">
+                                            <div class="foodText">
+                                                <h4 class="foodName">نص كيلو شاورما فراخ</h4>
+                                                <p class="foodContent">شاورما دجاج عائلية مع التومية والمخلل</p>
+                                            </div>
+                                            <div class="foodPricing">
+                                                <span class="foodNewPrice">اختار الحجم</span>
+                                            </div>
+                                        </div>
+                                        <div class="foodImage">
+                                            <img src="images/placeholderImage.webp" alt="product">
+                                            <div class="addToCart">
+                                                <span class="addToCartBtn"><i class="fa-solid fa-angle-left"></i></span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
                             <asp:Repeater ID="rptCategories" runat="server"
                                 OnItemDataBound="rptCategories_ItemDataBound">
                                 <ItemTemplate>
-                                    <div class="foodList" id='<%# Eval("id") %>'>
+                                    <div class="foodList" id='section-<%# Eval("id") %>'>
                                         <h2 class="foodListTitle active">
                                             <%# System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName=="en"
                                                 ? DataBinder.Eval(Container.DataItem, "NameEn" ) :
@@ -2219,7 +2240,7 @@
             border: none !important;
             background: transparent !important;
             margin-bottom: 0 !important;
-            padding: 0.75rem !important;
+            padding-bottom: 0.75rem !important;
         }
         .cart-item-customizations {
             padding: 8px 12px 8px 45px;
@@ -2554,8 +2575,10 @@ padding-inline: 1rem !important;
         document.addEventListener('DOMContentLoaded', checkFavoriteStatus);
 
         let basePrice = 0;
+        let currentProductBasePrice = 130;
         let addonsPrice = 0;
         let quantity = 1;
+        let currentCustomization = { size: null, extras: [], upsells: [] };
 
         function selectModalOption(el, totalSizePrice, sizeId) {
             const rows = el.parentElement.querySelectorAll('.option-row');
@@ -2753,6 +2776,7 @@ padding-inline: 1rem !important;
                 id: uniqueId,
                 name: productName,
                 price: basePrice,
+                productBasePrice: currentProductBasePrice,
                 isCustomized: !!(currentCustomization && ((currentCustomization.upsells && currentCustomization.upsells.length > 0) || (currentCustomization.size && currentCustomization.size.id && currentCustomization.size.id !== 'size-small'))),
                 customization: currentCustomization ? {
                     size: currentCustomization.size,
@@ -2767,14 +2791,19 @@ padding-inline: 1rem !important;
             };
             mainItem.hasAddons = mainItem.isCustomized;
 
+            let addedStatus = false;
             if (window.cart) {
                 // If we are editing, replace the old item
                 if (currentEditItem) {
                     window.cart.removeItem(currentEditItem.id, currentEditItem.shopId);
                 }
 
-                window.cart.addItem(mainItem, quantity);
+                addedStatus = window.cart.addItem(mainItem, quantity, !!currentEditItem);
             }
+
+            // If addItem returned false, it means it opened a confirmation/warning Swal
+            // So we shouldn't show the success toast yet or close the current Swal (which is already replaced)
+            if (addedStatus === false) return;
 
             Swal.close();
             Swal.fire({
@@ -3144,17 +3173,28 @@ padding-inline: 1rem !important;
 
         function openHardcodedModal(editItem = null, prodName = null, prodPrice = null, triggerEl = null, prodDesc = null, focusNotes = false) {
             currentTriggeringProduct = triggerEl;
-            // Reset modal state
             currentEditItem = editItem;
-            basePrice = prodPrice || 130;
+
+            // Determine the base price of the product (the "Small" price)
+            let productBasePrice = 130;
+            if (editItem) {
+                productBasePrice = editItem.productBasePrice || 130;
+            } else if (prodPrice) {
+                productBasePrice = prodPrice;
+            } else if (triggerEl) {
+                productBasePrice = parseFloat(triggerEl.getAttribute('data-price')) || 130;
+            }
+
+            currentProductBasePrice = productBasePrice;
+
+            basePrice = productBasePrice;
             addonsPrice = 0;
             quantity = editItem ? editItem.amount : 1;
             currentCustomization = {
-                size: null,
+                size: editItem ? { ...editItem.customization.size } : null,
                 extras: [],
                 upsells: []
             };
-            basePrice = 0;
 
             const actualName = prodName || (editItem ? editItem.name : '\u0631\u0628\u0639 \u0643\u064A\u0644\u0648 \u0634\u0627\u0648\u0631\u0645\u0627 \u0641\u0631\u0627\u062E');
             const actualImg = (triggerEl ? triggerEl.querySelector('img')?.src : null) || (editItem ? editItem.image : 'images/placeholderImage.webp');
@@ -3162,13 +3202,11 @@ padding-inline: 1rem !important;
 
             // If editing, populate state
             if (editItem && editItem.customization) {
-                currentCustomization.size = { ...editItem.customization.size };
-                currentCustomization.extras = [...editItem.customization.extras];
+                currentCustomization.extras = editItem.customization.extras ? [...editItem.customization.extras] : [];
                 currentCustomization.upsells = editItem.customization.upsells ? [...editItem.customization.upsells] : [];
 
-                basePrice = (prodPrice || 130) + (currentCustomization.size ? (currentCustomization.size.price || 0) : 0);
-                addonsPrice = currentCustomization.extras.reduce((s, x) => s + (x.price || 0), 0) +
-                              currentCustomization.upsells.reduce((s, x) => s + (x.price * x.qty), 0);
+                basePrice = currentCustomization.size ? (currentCustomization.size.price || productBasePrice) : productBasePrice;
+                recalculateAddonsPrice();
             }
 
             Swal.fire({
@@ -3200,6 +3238,19 @@ padding-inline: 1rem !important;
                             notesArea.focus();
                             notesArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         }, 500);
+                    }
+
+                    // DYNAMICALLY UPDATE SIZE PRICES
+                    const sizeRows = popup.querySelectorAll('.option-row');
+                    if (sizeRows.length >= 3) {
+                        const prices = [currentProductBasePrice, currentProductBasePrice + 50, currentProductBasePrice + 100];
+                        sizeRows.forEach((row, idx) => {
+                            const p = prices[idx];
+                            const priceSpan = row.querySelector('.price-radio span');
+                            if (priceSpan) priceSpan.innerText = p + ' ج.م';
+
+                            row.onclick = () => selectModalOption(row, p, row.getAttribute('data-size-id'));
+                        });
                     }
 
                     // Pre-select size
@@ -3373,11 +3424,6 @@ padding-inline: 1rem !important;
             overflow-x: hidden;
             padding: 20px;
             padding-bottom: 0px;
-        }
-
-        html[dir="ltr"] .modal-content-body {
-            text-align: left;
-            direction: ltr !important;
         }
 
         .modal-main-info h1 {
@@ -3956,4 +4002,207 @@ padding-inline: 1rem !important;
             font-size: 0.8rem;
         }
     </style>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <script>
+            let currentCustomization = {
+                baseItemId: null,
+                selectedSizeId: null,
+                extras: [],
+                upsells: [], // أضف هذا السطر هنا
+                quantity: 1,
+                notes: ''
+            };
+            const currentLang = '<%= System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName.ToLower() %>';
+
+    // نصوص المودال واللودر باللغات الثلاث
+    const translations = {
+        ar: {
+            loading: "جاري التحميل...",
+            errorTitle: "خطأ!",
+            connectionError: "حدث خطأ أثناء الاتصال بالسيرفر",
+            errorMessage: "عذراً، لم نتمكن من جلب البيانات"
+        },
+        en: {
+            loading: "Loading...",
+            errorTitle: "Error!",
+            connectionError: "Connection error with the server",
+            errorMessage: "Sorry, we couldn't fetch the data"
+        },
+        ru: {
+            loading: "Загрузка...",
+            errorTitle: "Ошибка!",
+            connectionError: "Ошибка соединения с сервером",
+            errorMessage: "К сожалению, لم نتمكن من الحصول على البيانات"
+        }
+    };
+
+    // اختيار نصوص اللغة الحالية (الافتراضية هي العربية إذا لم تكن إنجليزية أو روسية)
+    const t = translations[currentLang] || translations.ar;
+            function openProductModal(itemId) {
+                let id = (typeof itemId === 'object') ? itemId.getAttribute('id') : itemId;
+                Swal.fire({
+                    title: t.loading,
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    },
+                    customClass: {
+                        container: currentLang === 'ar' ? 'swal2-rtl' : '' // ضبط الاتجاه للعربية
+                    }
+                });
+                $.ajax({
+                    type: "POST",
+                    url: "PlaceShop.aspx/GetProductDetails",
+                    data: JSON.stringify({ itemId: parseInt(id) }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (res) {
+                        var data = res.d; // البيانات الناتجة من الـ WebMethod
+                        if (data.success) {
+                            renderProductModal(data);
+                        } else {
+                            alert(data.message);
+                        }
+                    }
+                });
+
+            }
+
+            function renderProductModal(data) {
+                // 1. تجهيز كود الأحجام (Sizes)
+                currentCustomization = {
+                    baseItemId: data.id,
+                    selectedSizeId: null,
+                    extras: [],
+                    upsells: [], // تأكد من إضافة هذا السطر هنا أيضاً
+                    quantity: 1,
+                    notes: ''
+                };
+                var sizesHtml = '';
+                if (data.sizes && data.sizes.length > 0) {
+                    data.sizes.forEach(function (size, index) {
+                        var activeClass = index === 0 ? 'active' : '';
+                        sizesHtml += `
+                <div class="option-row" data-item-id="${size.menuItemid}" data-size-id="${size.id}" onclick="selectModalOption(this, ${size.price}, '${size.id}')">
+                    <span>${size.name}</span>
+                    <div class="price-radio">
+                        <span>${size.price} ج.م</span>
+                        <div class="radio-circle"></div>
+                    </div>
+                </div>`;
+                    });
+                }
+
+                // 2. تجهيز كود المنتجات الإضافية (Upsell Section)
+                var upsellHtml = '';
+                if (data.upsellItems && data.upsellItems.length > 0) {
+                    var upsellSlides = '';
+                    data.upsellItems.forEach(function (item) {
+                        upsellSlides += `
+                <div class="swiper-slide upsell-card-new" data-item-id="${item.id}" data-upsell-id="${item.id}">
+                    <div class="upsell-img-wrapper">
+                        <div class="upsell-badge" style="display:none;">1</div>
+                        <img src="${item.photoUrl || 'images/placeholderImage.webp'}" alt="${item.name}">
+                        <div class="upsell-add-btn" onclick="addUpsellItem(this, ${item.price}, '${item.id}', '${item.name}')">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                        <div class="qty-control" onclick="event.stopPropagation()">
+                            <button onclick="updateUpsellQty(this, -1, ${item.price}, '${item.id}')"><i class="fa-solid fa-minus"></i></button>
+                            <span class="upsell-qty-val">1</span>
+                            <button onclick="updateUpsellQty(this, 1, ${item.price}, '${item.id}')"><i class="fa-solid fa-plus"></i></button>
+                        </div>
+                    </div>
+                    <div class="upsell-info">
+                        <h5>${item.name}</h5>
+                        <p>EGP ${item.price.toFixed(2)}</p>
+                    </div>
+                </div>`;
+                    });
+
+                    upsellHtml = `
+            <div class="modal-section upsell-section">
+                <div class="section-header">
+                    <h3>غالباً ما يُطلب مع</h3>
+                </div>
+                <div class="swiper related-products-swiper">
+                    <div class="swiper-wrapper">
+                        ${upsellSlides}
+                    </div>
+                </div>
+            </div>`;
+                }
+
+                // 3. بناء الـ HTML الكامل للمودال بناءً على التصميم الجديد
+                var modalHtml = `
+    <div class="full-modal-container">
+        <div class="modal-banner">
+            <img src="${data.photoUrl}" alt="${data.name}">
+            <button class="modal-close-btn" onclick="Swal.close()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div class="modal-content-body">
+            <div class="modal-main-info">
+                <div class="title-price-row">
+                    <h1>${data.name}</h1>
+                    <span class="compact-price" style="display:none;">${data.price} ج.م</span>
+                </div>
+                <p class="modal-desc">${data.description || ''}</p>
+            </div>
+
+            ${sizesHtml !== '' ? `
+            <div class="modal-section">
+                <div class="section-header">
+                    <h3>اختار الحجم</h3>
+                    <span class="required-badge">إجباري</span>
+                </div>
+                <div class="options-list">${sizesHtml}</div>
+            </div>` : ''}
+
+            ${upsellHtml}
+
+            <div class="modal-section">
+                <div class="section-header">
+                    <h3>ملاحظات</h3>
+                    <span class="optional-badge">اختياري</span>
+                </div>
+                <textarea id="product-notes" placeholder="أضف ملاحظاتك هنا..."></textarea>
+            </div>
+        </div>
+
+        <div class="modal-footer-sticky">
+            <div class="qty-control">
+                <button onclick="updateModalQty(-1)"><i class="fa-solid fa-minus"></i></button>
+                <span id="modal-qty">1</span>
+                <button onclick="updateModalQty(1)"><i class="fa-solid fa-plus"></i></button>
+            </div>
+            <button class="add-to-cart-big" onclick="submitModalCart(${data.id})">
+                <span>إضافة للسلة</span>
+                <strong id="modal-total-price">${data.sizes.length > 0 ? 'اختار الحجم' : data.price + ' ج.م'}</strong>
+            </button>
+        </div>
+    </div>`;
+
+                // 4. عرض الـ Modal
+                Swal.fire({
+                    html: modalHtml,
+                    showConfirmButton: false,
+                    width: '500px',
+                    padding: '0',
+                    customClass: { container: 'p-0' },
+                    didOpen: () => {
+                        // تشغيل الـ Swiper إذا وُجدت منتجات Upsell
+                        if (data.upsellItems && data.upsellItems.length > 0) {
+                            new Swiper('.related-products-swiper', {
+                                slidesPerView: 'auto',
+                                spaceBetween: 10,
+                                freeMode: true
+                            });
+                        }
+                    }
+                });
+            }
+
+        </script>
     </asp:Content>

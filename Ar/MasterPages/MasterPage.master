@@ -405,10 +405,20 @@
         <i class="fa-solid fa-cart-shopping"></i>
         <span data-key="nav_cart"><asp:Literal ID="ltBottomCart" runat="server" Text="<%$ Resources:Texts, ViewCart %>" /></span>
     </a>
-    <a href="profile.aspx" class="mobile-nav-item mobile-nav-profile">
+    <div class="mobile-nav-item mobile-nav-profile" id="mobileProfileTrigger" onclick="toggleMobileProfileMenu(event)">
         <i class="fa-solid fa-user"></i>
-        <span data-key="nav_profile"><asp:Literal ID="ltBottomProfile" runat="server" Text="<%$ Resources:Texts, Profile %>" /></span>
-    </a>
+        <div id="mobileProfileMenu" class="mobile-profile-menu">
+            <a href="profile.aspx" class="mobile-profile-menu-item">
+                <i class="fa-solid fa-circle-user"></i>
+                <asp:Literal ID="ltBottomProfileLink" runat="server" Text="<%$ Resources:Texts, Profile %>" />
+            </a>
+            <div class="mobile-profile-menu-divider"></div>
+            <div class="mobile-profile-menu-item logout" onclick="triggerLogout()">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <asp:Literal ID="ltBottomLogoutLink" runat="server" Text="<%$ Resources:Texts, Logout %>" />
+            </div>
+        </div>
+    </div>
     <a href="Favorites.aspx" class="mobile-nav-item nav-fav">
         <i class="fa-solid fa-heart"></i>
         <span data-key="nav_favorites"><asp:Literal ID="ltBottomFavorites" runat="server" Text="<%$ Resources:Texts, nav_favorites %>" /></span>

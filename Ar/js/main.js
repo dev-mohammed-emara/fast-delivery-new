@@ -300,10 +300,12 @@ function updateUIWithTexts() {
 const profileHead = document.querySelector(".profile-head");
 const dropDownBtn = document.querySelector("#dropDownBtn");
 const dropDownMenu = document.querySelector(".profileSettings");
-dropDownBtn.addEventListener("click", () => {
-    profileHead.classList.toggle("active");
-    dropDownMenu.classList.toggle("active");
-});
+if (dropDownBtn && profileHead && dropDownMenu) {
+    dropDownBtn.addEventListener("click", () => {
+        profileHead.classList.toggle("active");
+        dropDownMenu.classList.toggle("active");
+    });
+}
 
 // Function to populate profile fields from localStorage
 function populateUserProfile() {
@@ -530,4 +532,38 @@ if (editorForm) {
             return;
         }
     });
+}
+
+// --- Mobile Profile Menu Logic ---
+function toggleMobileProfileMenu(event) {
+    if (event) event.stopPropagation();
+    const menu = document.getElementById('mobileProfileMenu');
+    if (menu) {
+        menu.classList.toggle('show');
+    }
+}
+
+// Close mobile menu on outside click
+document.addEventListener('click', function(event) {
+    const menu = document.getElementById('mobileProfileMenu');
+    if (menu && menu.classList.contains('show')) {
+        const trigger = document.getElementById('mobileProfileTrigger');
+        if (trigger && !trigger.contains(event.target)) {
+            menu.classList.remove('show');
+        }
+    }
+});
+
+function triggerLogout() {
+    // Find the ASP.NET LinkButton and click it
+    const logoutBtn = document.getElementById('lblogout') || 
+                      document.querySelector('a[id*="lblogout"]') ||
+                      document.getElementById('ContentPlaceHolder1_lblogout');
+    if (logoutBtn) {
+        logoutBtn.click();
+    } else {
+        // Fallback: Clear local storage and redirect if button not found (though it should be there)
+        localStorage.removeItem('cartItems');
+        window.location.href = 'Default.aspx';
+    }
 }
