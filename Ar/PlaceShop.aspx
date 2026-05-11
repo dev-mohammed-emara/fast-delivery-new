@@ -257,7 +257,6 @@
                 will-change: auto;
                 overflow-y: auto;
                 -webkit-overflow-scrolling: touch;
-                overscroll-behavior: contain;
                 touch-action: pan-y;
                 top: 100px;
                 line-height: 1.2;
@@ -1078,7 +1077,6 @@
                 display: flex;
                 overflow-x: auto;
                 -webkit-overflow-scrolling: touch;
-                overscroll-behavior: contain;
                 touch-action: pan-x pan-y;
                 gap: 20px;
                 /* &#1605;&#1587;&#1575;&#1601;&#1577; &#1571;&#1603;&#1576;&#1585; &#1576;&#1610;&#1606; &#1575;&#1604;&#1603;&#1604;&#1605;&#1575;&#1578; */
