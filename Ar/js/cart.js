@@ -191,7 +191,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     shopId: targetShopId,
                     shopName: item.shopName || GLOBAL_shopName,
                     shopAreaId: item.shopAreaId || GLOBAL_shopArea_ID,
-                    addId: item.addId || GLOBAL_addid_ID
+                    addId: item.addId || GLOBAL_addid_ID,
+                    deliveryTime: item.deliveryTime || GLOBAL_DELIVERY_TIME
                 };
 
                 Swal.fire({
@@ -222,6 +223,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 shopName: item.shopName || GLOBAL_shopName,
                 shopAreaId: item.shopAreaId || GLOBAL_shopArea_ID,
                 addId: item.addId || GLOBAL_addid_ID,
+                deliveryTime: item.deliveryTime || getLiveDeliveryTime(),
             });
 
             this.save();
@@ -299,6 +301,13 @@ window.GLOBAL_AREA_DISCOUNT = GLOBAL_AREA_DISCOUNT;
 window.GLOBAL_AREA_ID = GLOBAL_AREA_ID;
 window.GLOBAL_shopArea_ID = GLOBAL_shopArea_ID;
 window.GLOBAL_shop_ID = GLOBAL_shop_ID;
+
+// Global Delivery Time from Shop Page - Function to get fresh value
+function getLiveDeliveryTime() {
+    const timerEl = document.querySelector(".timer");
+    return timerEl ? parseInt(timerEl.textContent.trim()) || 0 : 0;
+}
+window.GLOBAL_DELIVERY_TIME = getLiveDeliveryTime();
 
 let GLOBAL_DELIVERY_FEE =
     parseFloat(localStorage.getItem("GLOBAL_DELIVERY_FEE")) || 0;
@@ -775,6 +784,10 @@ updateCartCounter();
 updateTotalPayAmount();
 loadCheckoutSummary();
 
+if (document.querySelector("#checkoutCart")) {
+    renderCheckoutArticles(cart.items, JSON.parse(localStorage.getItem("cartSummary")) || {});
+}
+
 // Fallback for lazy DOM content
 setTimeout(() => {
     updateCartUI();
@@ -860,26 +873,33 @@ function renderCheckoutArticles(items, summary) {
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",  // مهم جداً
                 success: function(res) {
-
                     var data = res.d;
-                    // تحديث العناصر مباشرة
-                    document.getElementById("AddName").innerText = data.AddName;
-                    document.getElementById("StreetName").innerText = data.StreetName;
-                    document.getElementById("mobile").innerText = data.mobile;
-                    document.getElementById("location").innerText = data.Gov+'-'+data.Area;
-                    document.getElementById("phone").innerText = data.phone;
-                    document.getElementById("Build").innerText = data.Build;
-                    document.getElementById("Floor").innerText = data.Floor;
+                    const dash = "---";
 
-                    document.getElementById("Area").innerText = data.Area;
-                    document.getElementById("Gov").innerText = data.Gov;
-                    document.getElementById("AdepartmentNo").innerText = data.AdepartmentNo;
+                    const setVal = (id, val) => {
+                        const el = document.getElementById(id);
+                        if (el) el.innerText = (val && val.toString().trim()) ? val : dash;
+                    };
 
-                    document.getElementById("Instructions").innerText = data.Instructions;
-                    document.getElementById("AType").innerText = data.AType;
+                    setVal("AddName", data.AddName);
+                    setVal("StreetName", data.StreetName);
+                    setVal("mobile", data.mobile);
+                    setVal("phone", data.phone);
+                    setVal("Build", data.Build);
+                    setVal("Floor", data.Floor);
+                    setVal("Area", data.Area);
+                    setVal("Gov", data.Gov);
+                    setVal("AdepartmentNo", data.AdepartmentNo);
+                    setVal("Instructions", data.Instructions);
+                    setVal("AType", data.AType);
 
-                    // تحديث HiddenField لو عايز تحتفظ بالـ addId
-                    document.getElementById("ContentPlaceHolder1_hfAddId").value = addId;
+                    // Optional location group update
+                    const locEl = document.getElementById("location");
+                    if (locEl) locEl.innerText = (data.Gov || dash) + ' - ' + (data.Area || dash);
+
+                    // Update HiddenField
+                    const hf = document.getElementById("ContentPlaceHolder1_hfAddId");
+                    if (hf) hf.value = addId;
                 },
                 error: function(err) {
                     console.log("AJAX Error:", err);
@@ -889,11 +909,20 @@ function renderCheckoutArticles(items, summary) {
 
 
         sendAddId(addId);
+
+        const isPickup = localStorage.getItem("deliveryMethod") === "pickup";
+        const shopDeliveryTime = isPickup ? 0 : (shopGroup.items[0].deliveryTime || 0);
+
         titleDiv.innerHTML = `
-      <h2 style="display: flex; align-items: center; gap: 10px;">
-        <i class="fa-solid fa-store" style="color: var(--orange-500); font-size: 1.4rem;"></i>
-        ${shopGroup.shopName}
-      </h2>
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <h2 style="display: flex; align-items: center; gap: 10px; margin-bottom: 0;">
+            <i class="fa-solid fa-store" style="color: var(--orange-500); font-size: 1.4rem;"></i>
+            ${shopGroup.shopName}
+        </h2>
+        <small style="color: #666; font-size: 0.85rem; margin-inline: 1rem;">
+            <i class="fa-regular fa-clock"></i> ${texts.DeliveryTimeHint} ${shopDeliveryTime} ${texts.Minutes}
+        </small>
+      </div>
       <a href="PlaceShop.aspx?id=${shopId}&addid=${addId}">${texts.UpdateOrder}</a>
     `;
         article.appendChild(titleDiv);
@@ -1080,161 +1109,157 @@ function renderCheckoutArticles(items, summary) {
         article.appendChild(footerDiv);
 
         checkoutCart.appendChild(article);
-        if(typeof updateGlobalDeliveryCost === 'function') updateGlobalDeliveryCost();
     });
 
-    // Global Order Type Section (Delivery/Pickup) - MOVED TO BOTTOM
-    const globalOrderTypeDiv = document.createElement("article");
-    globalOrderTypeDiv.className = "checkoutBox global-delivery-section";
-    globalOrderTypeDiv.innerHTML = `
-        <div class="checkoutBoxTitle">
-            <h2><i class="fa-solid fa-truck-fast"></i> ${texts.DeliveryMethodTitle || 'طريقة الاستلام'}</h2>
-        </div>
-        <div class="vendor-group-types global-types">
-            <button type="button" class="order-type-opt active" data-type="delivery" onclick="setGlobalOrderType('delivery')">
-                <i class="fa-solid fa-motorcycle"></i> ${texts.Delivery}
-            </button>
-            <button type="button" class="order-type-opt" data-type="pickup" onclick="setGlobalOrderType('pickup')">
-                <i class="fa-solid fa-store"></i> ${texts.Pickup}
-            </button>
-        </div>
-        <div id="globalAreaDiscountMsg" class="promo-msg success" style="display:none; margin: 10px 1rem;">
-            <!-- Same Area Discount Message Injected via JS -->
-        </div>
-        <div class="global-delivery-summary" style="padding: 1.5rem 1rem; border-top: 1px dashed #eee; display: flex; flex-direction: column; gap: 10px;">
-            <div class="summary-line" style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-weight: 600; color: #666;">${texts.DeliveryFee}:</span>
-                <strong id="globalTotalDelivery" style="font-size: 1.1rem; color: #000;">${Number(summary.delivery || 0).toFixed(2)} ${texts.Currency}</strong>
-            </div>
-            <div class="summary-line" style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-weight: 600; color: #666;">${texts.Subtotal}:</span>
-                <strong style="font-size: 1.1rem; color: #000;">${Number(summary.subtotal || 0).toLocaleString()} ${texts.Currency}</strong>
-            </div>
-        </div>
-        <div id="globalPickupMsg" class="pickup-warning" style="margin: 10px 1rem 15px;">
-            ${texts.PickupWarning}
-        </div>
-    `;
-    checkoutCart.appendChild(globalOrderTypeDiv);
+    // Update the hardcoded summary values if they exist
+    const subtotalEl = document.getElementById("globalSubtotal");
+    const finalTotalEl = document.getElementById("globalFinalTotal");
+    const deliveryEl = document.getElementById("globalTotalDelivery");
 
-    // TOTAL AMOUNT article
-    // --- Promo Section ---
-    const promoArticle = document.createElement("article");
-    promoArticle.classList.add("checkoutBox", "promo-section");
-    promoArticle.innerHTML = `
-        <div class="checkoutBoxTitle">
-            <div class="promo-header-wrap">
-                <h2><i class="fa-solid fa-ticket"></i> ${texts.PromoCodeTitle}</h2>
-                <div class="promo-modes">
-                    <button type="button" class="promo-mode-btn active" onclick="setPromoMode('order', this)">${texts.OrderDiscount}</button>
-                    <button type="button" id="btnPromoShipping" class="promo-mode-btn" onclick="setPromoMode('shipping', this)">${texts.ShippingDiscount}</button>
-                </div>
-            </div>
-        </div>
-        <div class="paymentSection">
-            <div class="promo-input-wrap">
-                <input type="text" id="promoInput" placeholder="${texts.PromoPlaceholder}" class="auth-input" 
-                    onkeydown="if(event.key === 'Enter') { applyPromo(); event.preventDefault(); }">
-                <button type="button" onclick="applyPromo()" class="apply-btn ${(window.currentDiscount || 0) > 0 ? 'remove' : ''}">${(window.currentDiscount || 0) > 0 ? texts.RemoveCoupon : texts.Apply}</button>
-            </div>
-            <div class="promo-info-box">
-                ${texts.OnlyOnePromoClarification}
-            </div>
-            <p class="promo-msg success" id="promoMsg" style="${(window.currentDiscount || 0) > 0 ? 'display:block;' : 'display:none;'}">
-                ${(window.currentDiscount || 0) > 0 ? `✅ <strong>${((window.currentDiscountType || 'order') === 'shipping' ? texts.ShippingDiscount : texts.OrderDiscount)} ${texts.PromoAppliedSuccess.replace('{0}', '')}</strong>` : ''}
-            </p>
-        </div>
-    `;
-    checkoutCart.appendChild(promoArticle);
+    if (subtotalEl) {
+        subtotalEl.innerText = `${Number(summary.subtotal || 0).toLocaleString()} ${texts.Currency || 'ج.م'}`;
+    }
+    if (deliveryEl) {
+        deliveryEl.innerText = `${Number(summary.delivery || 0).toFixed(2)} ${texts.Currency || 'ج.م'}`;
+    }
+    if (finalTotalEl) {
+        finalTotalEl.innerText = `${Number(summary.total || 0).toLocaleString()} ${texts.Currency || 'ج.م'}`;
+    }
 
-    // --- Payment Method Section ---
-    const paymentMethodArticle = document.createElement("article");
-    paymentMethodArticle.classList.add("checkoutBox", "payment-method-section");
-    paymentMethodArticle.innerHTML = `
-        <div class="checkoutBoxTitle">
-            <h2><i class="fa-solid fa-hand-holding-dollar"></i> ${texts.PaymentMethodTitle}</h2>
-        </div>
-        <div class="paymentSection">
-            <div class="pay-options-grid">
-                <label class="pay-option selected" onclick="selectPayment(this, 'cash')">
-                    <input type="radio" name="payMethod" value="cash" checked>
-                    <i class="fa-solid fa-money-bill-1-wave"></i>
-                    <span>${texts.Cash}</span>
-                </label>
-                <label class="pay-option" onclick="selectPayment(this, 'visa')">
-                    <input type="radio" name="payMethod" value="visa">
-                    <i class="fa-solid fa-credit-card"></i>
-                    <span>${texts.Visa}</span>
-                </label>
-                <label class="pay-option" onclick="selectPayment(this, 'instapay')">
-                    <input type="radio" name="payMethod" value="instapay">
-                    <img src="images/instapay.webp" alt="InstaPay" style="width: 35px; height: 35px; object-fit: contain; margin-bottom: 5px;">
-                    <span>InstaPay</span>
-                </label>
-                <label class="pay-option" onclick="selectPayment(this, 'wallet')">
-                    <input type="radio" name="payMethod" value="wallet">
-                    <i class="fa-solid fa-wallet"></i>
-                    <span>${texts.EWallet}</span>
-                </label>
-                <label class="pay-option" onclick="selectPayment(this, 'vodafone_cash')">
-                    <input type="radio" name="payMethod" value="vodafone_cash">
-                    <img src="images/vodafon.png" alt="Vodafone Cash" style="width: 35px; height: 35px; object-fit: contain; margin-bottom: 5px;">
-                    <span>${texts.VodafoneCash}</span>
-                </label>
-            </div>
-            <div id="paymentProofWrap" style="display:none;">
-                <label class="proof-label"><i class="fa-solid fa-phone"></i> ${texts.WalletNumber}</label>
-                <input type="tel" id="payerPhone" class="proof-input" placeholder="01xxxxxxxxx" dir="ltr">
+    // Update Total Delivery Time in summary
+    const totalDeliveryTimeEl = document.getElementById("globalTotalDeliveryTime");
+    if (totalDeliveryTimeEl) {
+        const isPickup = localStorage.getItem("deliveryMethod") === "pickup";
+        if (isPickup) {
+            totalDeliveryTimeEl.innerText = `0 ${texts.Minutes}`;
+        } else {
+            const maxTime = items.reduce((max, item) => Math.max(max, parseInt(item.deliveryTime) || 0), 0);
+            totalDeliveryTimeEl.innerText = `${maxTime} ${texts.Minutes}`;
+        }
+    }
 
-                <label class="proof-label"><i class="fa-solid fa-image"></i> ${texts.PaymentProof}</label>
-                <button type="button" class="proof-btn" onclick="document.getElementById('paymentProofFile').click()">
-                    <i class="fa-solid fa-cloud-arrow-up"></i> ${texts.AttachProof}
-                </button>
-                <input type="file" id="paymentProofFile" accept="image/*" onchange="previewPaymentProof(this)" style="display:none;">
-                <img id="paymentProofPreview" style="display:none;">
-            </div>
-        </div>
-    `;
-    checkoutCart.appendChild(paymentMethodArticle);
-
-    const totalArticle = document.createElement("article");
-    totalArticle.classList.add("checkoutBox", "totalAmountBox");
-    totalArticle.innerHTML = `
-    <div class="checkoutBoxTitle">
-      <h2><i class="fa-solid fa-cash-register"></i> ${texts.Total}</h2>
-    </div>
-
-    <div class="orderInfo">
-      <div class="orderStats subtotal-row">
-        <span>${texts.Subtotal}:</span>
-        <span>${Number(summary.subtotal || 0).toLocaleString()} ${texts.Currency}</span>
-      </div>
-      <div class="orderStats delivery-row" style="flex-wrap: wrap;">
-        <span>${texts.DeliveryFee}:</span>
-        <span id="Deliverycost">
-    ${(() => {
-        let value = Number(summary.delivery || 0);
-        return (value % 1 === 0 ? value : value.toFixed(2)) + ` ${texts.Currency}`;
-    })()}
-</span>
-        <div id="pickupSummaryMsg" class="green-success-box" style="display:none;">
-           <i class="fa-solid fa-store"></i> ${texts.PickupSummaryMsg}
-        </div>
-      </div>
-      <div id="promoSummaryMsg" class="green-success-box" style="display:none;">
-          <!-- Content injected via JS -->
-      </div>
-      <div class="orderStats final-total-row" style="font-weight: bold;">
-        <span>${texts.FinalTotal}:</span>
-        <span>${Number(summary.total || 0).toLocaleString()} ${texts.Currency}</span>
-      </div>
-    </div>
-  `;
-    checkoutCart.appendChild(totalArticle);
+    if(typeof updateGlobalDeliveryCost === 'function') updateGlobalDeliveryCost();
 
     // Clear min-height after content is loaded
     requestAnimationFrame(() => {
         checkoutCart.style.minHeight = '';
     });
+
+    // Initialize delivery time scheduling
+    if (typeof initDeliveryTimeScheduling === 'function') {
+        initDeliveryTimeScheduling();
+    }
 }
+
+function initDeliveryTimeScheduling() {
+    const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+    if (cartItems.length === 0) return;
+
+    const scheduledTimeEl = document.getElementById("scheduledTime");
+    const deliveryTimeHintEl = document.getElementById("deliveryTimeHint");
+    const rescheduleBtn = document.getElementById("rescheduleBtn");
+    const resetBtn = document.getElementById("resetScheduledBtn");
+    const deliveryTimePicker = document.getElementById("deliveryTimePicker");
+
+    if (!scheduledTimeEl || !rescheduleBtn) return;
+
+    // 1. Calculate Max Delivery Time from all items in cart
+    const maxDeliveryTime = cartItems.reduce((max, item) => {
+        const time = parseInt(item.deliveryTime) || 0;
+        return Math.max(max, time);
+    }, 0) || 30; // Default to 30 mins if none found
+
+    // 2. Set Default Time (Current + Max Delivery)
+    const now = new Date();
+    const isPickup = localStorage.getItem("deliveryMethod") === "pickup";
+    const minAllowedDate = isPickup ? now : new Date(now.getTime() + maxDeliveryTime * 60000);
+
+    const formatTime = (date) => {
+        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+    };
+
+    const setHintText = (text) => {
+        if (deliveryTimeHintEl) {
+            deliveryTimeHintEl.innerHTML = `<i class="fa-regular fa-clock"></i> ${text}`;
+        }
+    };
+
+    const setDefaultTime = () => {
+        if (isPickup) {
+            scheduledTimeEl.innerText = formatTime(now);
+            setHintText(`${texts.PrepTimeHint || "سيتم التحضير خلال"} ${maxDeliveryTime} ${texts.Minutes}`);
+        } else {
+            scheduledTimeEl.innerText = formatTime(minAllowedDate);
+            setHintText(`${texts.DeliveryTimeHint} ${maxDeliveryTime} ${texts.Minutes}`);
+        }
+        delete scheduledTimeEl.dataset.customSet;
+        if (resetBtn) resetBtn.style.display = "none";
+    };
+
+    if (!scheduledTimeEl.dataset.customSet) {
+        setDefaultTime();
+    } else {
+        if (resetBtn) resetBtn.style.display = "block";
+    }
+
+    // 3. Initialize Flatpickr for "Cool Calendar"
+    if (typeof flatpickr !== 'undefined' && deliveryTimePicker) {
+        const fp = flatpickr(deliveryTimePicker, {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "h:i K",
+            time_24hr: false,
+            minDate: minAllowedDate,
+            locale: getCookie("lang") || "ar",
+            position: "above center",
+            positionElement: rescheduleBtn,
+            allowInput: false,
+            disableMobile: "true", // Force custom picker on mobile for better control
+            onOpen: function(selectedDates, dateStr, instance) {
+                const inputs = instance.calendarContainer.querySelectorAll('.flatpickr-time input');
+                inputs.forEach(input => {
+                    input.setAttribute('maxlength', '2');
+                    input.oninput = function() {
+                        if (this.value.length > 2) this.value = this.value.slice(0, 2);
+                    };
+                });
+            },
+            onClose: function(selectedDates) {
+                if (selectedDates.length > 0) {
+                    const selected = selectedDates[0];
+
+                    // Show confirmation
+                    Swal.fire({
+                        title: texts.ConfirmRescheduleTitle || "\u062A\u0623\u0643\u064A\u062F \u0627\u0644\u062A\u0648\u0642\u064A\u062A",
+                        text: (texts.ConfirmRescheduleText || "\u0647\u0644 \u0623\u0646\u062A \u0645\u062A\u0623\u0643\u062F \u0645\u0646 \u062A\u063A\u064A\u064A\u0631 \u0645\u0648\u0639\u062F \u0627\u0644\u0627\u0633\u062A\u0644\u0627\u0645 \u0625\u0644\u0649 {0}\u061F").replace('{0}', formatTime(selected)),
+                        icon: "question",
+                        showCancelButton: true,
+                        confirmButtonText: texts.Confirm || "\u062A\u0623\u0643\u064A\u062F",
+                        cancelButtonText: texts.Cancel || "\u0625\u0644\u063A\u0627\u0621",
+                        confirmButtonColor: "var(--fd-blue)",
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            const timeStr = formatTime(selected);
+                            scheduledTimeEl.innerText = timeStr;
+                            scheduledTimeEl.dataset.customSet = "true";
+                            setHintText(`${texts.ScheduledAt || "مجدول في"}: ${timeStr}`);
+                            if (resetBtn) resetBtn.style.display = "block";
+                            if (typeof updateLiveSummary === 'function') updateLiveSummary();
+                        }
+                    });
+                }
+            }
+        });
+
+        rescheduleBtn.onclick = () => fp.open();
+    }
+
+    if (resetBtn) {
+        resetBtn.onclick = () => {
+            setDefaultTime();
+            if (typeof updateLiveSummary === 'function') updateLiveSummary();
+        };
+    }
+}
+
 });

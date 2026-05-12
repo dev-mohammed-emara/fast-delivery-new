@@ -294,6 +294,11 @@ function updateUIWithTexts() {
 
     const passwordEditorTitle = document.querySelector('.editorContainer[data-form="passwordEditor"] h3');
     if (passwordEditorTitle && texts.EditPassword) passwordEditorTitle.innerText = texts.EditPassword;
+
+    // Trigger scheduling init to ensure texts are updated (CheckOut page)
+    if (typeof initDeliveryTimeScheduling === 'function') {
+        initDeliveryTimeScheduling();
+    }
 }
 
 // user profile settings

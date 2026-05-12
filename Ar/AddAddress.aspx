@@ -1070,8 +1070,6 @@
     display: flex;
     justify-content: space-around;
     align-items: center;
-    padding: 1rem;
-    border: 1px solid rgba(0, 0, 0, 0.1);
     border-bottom-left-radius: 0.5rem;
     border-bottom-right-radius: 0.5rem;
     width: 100%;

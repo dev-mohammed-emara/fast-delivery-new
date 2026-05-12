@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="Ar_Default" %>
+<%@ Page Title="" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="Ar_Default" %>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="head" Runat="Server">
  <asp:Literal ID="litPageTitle" runat="server" Text="<%$ Resources:Texts, Default_PageTitle %>" />
@@ -10,7 +10,84 @@
         .header {
             background:none !important;
         }
+
+        /* --- New Premium Loader --- */
+        #loader-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            z-index: 999999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.6s;
+        }
+        .loader-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+        .logo-circle {
+            width: 140px;
+            height: 140px;
+            background: #fff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            position: relative;
+            animation: pulse-logo 2s infinite ease-in-out;
+        }
+        .preloader-logo {
+            width: 85px;
+            height: auto;
+            object-fit: contain;
+        }
+        .loading-dots {
+            display: flex;
+            gap: 10px;
+        }
+        .loading-dots span {
+            width: 12px;
+            height: 12px;
+            background: #ffc107; /* Standard branding color */
+            border-radius: 50%;
+            animation: bounce-dots 1.4s infinite ease-in-out both;
+        }
+        .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes pulse-logo {
+            0%, 100% { transform: scale(1); box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
+            50% { transform: scale(1.08); box-shadow: 0 20px 45px rgba(0,0,0,0.15); }
+        }
+        @keyframes bounce-dots {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+        .loader-hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
     </style>
+
+    <div id="loader-wrapper">
+        <div class="loader-container">
+            <div class="logo-circle">
+                <img src="images/logo.png" alt="Fast Delivery" class="preloader-logo">
+            </div>
+            <div class="loading-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </div>
 
     <section class="hero-section" role="region">
         <div class="container">
@@ -398,6 +475,16 @@ locationModal.addEventListener('hidden.bs.modal', function () {
     </style>
 
 
+    <script>
+        window.addEventListener('load', function() {
+            const loader = document.getElementById('loader-wrapper');
+            if (loader) {
+                setTimeout(() => {
+                    loader.classList.add('loader-hidden');
+                }, 1200);
+            }
+        });
+    </script>
 </asp:Content>
 
 

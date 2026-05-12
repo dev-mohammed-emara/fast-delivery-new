@@ -146,6 +146,47 @@
                 }
             }
 
+            .favorite-heart, .share-shop {
+                position: absolute;
+                top: 10px;
+                width: 35px;
+                height: 35px;
+                background: rgba(255, 255, 255, 0.9);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+                transition: all 0.3s ease;
+                z-index: 10;
+            }
+
+            .favorite-heart {
+                inset-inline-end: 10px;
+            }
+
+            .share-shop {
+                inset-inline-end: 55px; /* Next to heart */
+                color: var(--fd-blue);
+            }
+
+            .favorite-heart:hover, .share-shop:hover {
+                transform: scale(1.1);
+                background: #fff;
+            }
+
+            .favorite-heart i {
+                font-size: 1.2rem;
+                color: #ccc;
+                transition: color 0.3s;
+            }
+
+            .favorite-heart.active i {
+                color: #ff4d4f;
+                font-weight: 900;
+            }
+
 
 
             #shopListsOptions {
@@ -2470,6 +2511,22 @@ padding-inline: 1rem !important;
     <script>
         let currentTriggeringProduct = null;
 
+        function shareShop(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            if (navigator.share) {
+                navigator.share({
+                    title: document.querySelector('.availableShopName').innerText,
+                    url: window.location.href
+                }).catch(() => {});
+            } else {
+                // Clipboard fallback
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'تم نسخ الرابط', showConfirmButton: false, timer: 1500 });
+                });
+            }
+        }
+
         function openProductModal(triggerEl, productName, description = "طعم لا يقاوم محضر من أجود المكونات", isCustom = false, price = 100) {
             currentTriggeringProduct = triggerEl;
             if (isCustom) {
@@ -4202,5 +4259,55 @@ padding-inline: 1rem !important;
                 });
             }
 
+            function shareShop(e) {
+                if (e) e.stopPropagation();
+                const shopName = document.getElementById('shopName').innerText;
+                const shopUrl = window.location.href;
+                const template = texts.ShareMessage || "Order now from {0} via Fast Delivery! {1}";
+                const text = template.replace('{0}', shopName).replace('{1}', shopUrl);
+
+                if (navigator.share) {
+                    navigator.share({
+                        title: texts.ShareTitle || 'Fast Delivery',
+                        text: text,
+                        url: shopUrl,
+                    }).catch(console.error);
+                } else {
+                    const modalHtml = `
+                        <div class="share-modal" style="padding: 1rem; text-align: center;">
+                            <h3 style="margin-bottom: 1.5rem;">${texts.ShareTitle || 'مشاركة المتجر'}</h3>
+                            <div style="display: flex; justify-content: center; gap: 1.5rem; font-size: 2rem;">
+                                <a href="https://wa.me/?text=${encodeURIComponent(text)}" target="_blank" style="color: #25D366;"><i class="fa-brands fa-whatsapp"></i></a>
+                                <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shopUrl)}" target="_blank" style="color: #1877F2;"><i class="fa-brands fa-facebook"></i></a>
+                                <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}" target="_blank" style="color: #1DA1F2;"><i class="fa-brands fa-twitter"></i></a>
+                            </div>
+                            <div style="margin-top: 1.5rem;">
+                                <input type="text" value="${shopUrl}" id="shareUrlInput" readonly style="width: 100%; padding: 10px; border: 1px solid #eee; border-radius: 10px; text-align: center; margin-bottom: 10px;">
+                                <button onclick="copyToClipboard('${shopUrl}')" style="background: var(--fd-blue); color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; width: 100%; font-weight: 700;">Copy Link</button>
+                            </div>
+                        </div>
+                    `;
+                    Swal.fire({
+                        html: modalHtml,
+                        showConfirmButton: false,
+                        width: '320px',
+                        padding: '10px'
+                    });
+                }
+            }
+
+            window.copyToClipboard = function(url) {
+                navigator.clipboard.writeText(url).then(() => {
+                    Swal.fire({ icon: 'success', title: 'Copied!', timer: 1500, showConfirmButton: false });
+                });
+            };
+
+            document.addEventListener('DOMContentLoaded', function() {
+                // Show Global Share buttons on PlaceShop page
+                const desktopBtn = document.getElementById('navShareBtn');
+                const mobileBtn = document.getElementById('mobileNavShare');
+                if (desktopBtn) desktopBtn.style.display = 'inline-block';
+                if (mobileBtn) mobileBtn.style.display = 'flex';
+            });
         </script>
     </asp:Content>

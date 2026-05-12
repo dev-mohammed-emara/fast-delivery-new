@@ -22,57 +22,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="icon" type="image/png" href="images/logo.png">
     <style>
-       /* --- 1. الحاوية الرئيسية والخلفية --- */
-#loader-wrapper {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(180deg, #fceabb 0%, #fccd4d 40%, #ffffff 100%);
-    z-index: 99999999999999999;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    transition: opacity 0.6s ease, transform 0.6s ease;
-    margin: 0;
-    padding: 0;
-    pointer-events: all;
-}
 
-.preloader-logo {
-    width: 120px;
-    animation: logo-pulse 1.2s ease-in-out infinite;
-    position: relative;
-    transition: transform 0.8s ease;
-}
-
-@keyframes logo-pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
-}
-
-.preloader-logo.shine {
-    transform: scale(1.15);
-    animation: none;
-}
-
-/* Using pseudo element on a wrapper or using css filter since img doesn't have ::after well */
-.preloader-logo-container {
-    position: relative;
-    display: inline-block;
-}
-
-.preloader-logo.shine {
-    filter: brightness(1.3) drop-shadow(0 0 10px rgba(255,255,255,0.8));
-}
-
-.preloader-exit {
-    opacity: 0;
-    transform: scale(1.1);
-}
    </style>
     <style>
         /* زر العودة للأعلى - منضبط حسب منطق الرؤية */
@@ -186,9 +136,7 @@
     </style>
 </head>
 <body class="<%= !HttpContext.Current.User.Identity.IsAuthenticated ? "not-logged-in" : "" %>">
-    <div id="loader-wrapper">
-        <img src="images/logo.png" alt="Fast Delivery" class="preloader-logo" id="preloaderLogo">
-    </div>
+
     <form id="form1" runat="server">
         <asp:Literal ID="ltscript" runat="server"></asp:Literal>
     <script>
@@ -300,6 +248,9 @@
             </button>
              <button class="icon-btn fav-nav-icon" id="favIconNav" role="button" style="display:none;" onclick="handleNavFavorite(event, this)">
                 <i class="fa-regular fa-heart"></i>
+            </button>
+            <button class="icon-btn" id="navShareBtn"  onclick="shareShopGlobal(event)">
+                <i class="fa-solid fa-share"></i>
             </button>
              <button class="icon-btn" id="cartIcon"  role="button" onclick="window.location.href='checkout.aspx';return false;">
                 <i class="fa fa-shopping-basket"></i>
@@ -423,6 +374,7 @@
         <i class="fa-solid fa-heart"></i>
         <span data-key="nav_favorites"><asp:Literal ID="ltBottomFavorites" runat="server" Text="<%$ Resources:Texts, nav_favorites %>" /></span>
     </a>
+  
     <a href="Addresses.aspx" class="mobile-nav-item nav-map">
         <i class="fa-solid fa-map-location-dot"></i>
         <span data-key="nav_addresses"><asp:Literal ID="ltBottomAddresses" runat="server" Text="<%$ Resources:Texts, Addresses %>" /></span>
@@ -432,11 +384,11 @@
     </form>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ar.js"></script>
     <script src="js/main.js" charset="utf-8"></script>
     <script src="js/Cart.js" charset="utf-8"></script>
     <script src="js/shopPage.js" charset="utf-8" defer></script>
-    <%--<script src="js/shops.js"></script>--%>
-   <%-- <script src="js/selectedLocation.js"></script>--%>
       <link rel="stylesheet" href="css/main.css">
    <%-- <link href="css/css_web.css" rel="stylesheet" />--%>
    <script type="text/javascript">
@@ -448,15 +400,60 @@
                btnUp.style.display = "none";
            }
        };
-       btnUp.onclick = function() {
-           window.scrollTo({ top: 0, behavior: 'smooth' });
-       };
-        function setLang(lang) {
-            var expireDate = new Date();
-            expireDate.setFullYear(expireDate.getFullYear() + 1); // الكوكي لمدة سنة
-            document.cookie = "lang=" + lang + "; expires=" + expireDate.toUTCString() + "; path=/";
-            location.reload();
-        }
+        btnUp.onclick = function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+         function setLang(lang) {
+             var expireDate = new Date();
+             expireDate.setFullYear(expireDate.getFullYear() + 1); // الكوكي لمدة سنة
+             document.cookie = "lang=" + lang + "; expires=" + expireDate.toUTCString() + "; path=/";
+             location.reload();
+         }
+
+         window.shareShopGlobal = function(e) {
+             if (e) e.preventDefault();
+             const texts = window.texts || {};
+             const shopNameEl = document.getElementById('shopName') || document.querySelector('.availableShopName');
+             const shopName = shopNameEl ? shopNameEl.innerText : 'Fast Delivery';
+             const shopUrl = window.location.href;
+             const template = texts.ShareMessage || "Order now from {0} via Fast Delivery! {1}";
+             const text = template.replace('{0}', shopName).replace('{1}', shopUrl);
+
+             if (navigator.share) {
+                 navigator.share({
+                     title: texts.ShareTitle || 'Fast Delivery',
+                     text: text,
+                     url: shopUrl,
+                 }).catch(console.error);
+             } else {
+                 const modalHtml = `
+                     <div class="share-modal" style="padding: 1rem; text-align: center;">
+                         <h3 style="margin-bottom: 1.5rem;">${texts.ShareTitle || 'مشاركة المتجر'}</h3>
+                         <div style="display: flex; justify-content: center; gap: 1.5rem; font-size: 2rem;">
+                             <a href="https://wa.me/?text=${encodeURIComponent(text)}" target="_blank" style="color: #25D366;"><i class="fa-brands fa-whatsapp"></i></a>
+                             <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shopUrl)}" target="_blank" style="color: #1877F2;"><i class="fa-brands fa-facebook"></i></a>
+                             <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}" target="_blank" style="color: #1DA1F2;"><i class="fa-brands fa-twitter"></i></a>
+                         </div>
+                         <div style="margin-top: 1.5rem;">
+                             <input type="text" value="${shopUrl}" id="shareUrlInputGlobal" readonly style="width: 100%; padding: 10px; border: 1px solid #eee; border-radius: 10px; text-align: center; margin-bottom: 10px;">
+                             <button onclick="copyToClipboardGlobal('${shopUrl}')" style="background: #ffc107; color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; width: 100%; font-weight: 700;">Copy Link</button>
+                         </div>
+                     </div>
+                 `;
+                 Swal.fire({
+                     html: modalHtml,
+                     showConfirmButton: false,
+                     width: '320px',
+                     padding: '10px'
+                 });
+             }
+         };
+
+         window.copyToClipboardGlobal = function(url) {
+             navigator.clipboard.writeText(url).then(() => {
+                 Swal.fire({ icon: 'success', title: 'Copied!', timer: 1500, showConfirmButton: false });
+             });
+         };
     </script>
 
      <script>
@@ -507,32 +504,7 @@ document.addEventListener("DOMContentLoaded", loadTextsOnStart);
     <script type="text/javascript">
     var isInternalRouting = document.referrer.indexOf(window.location.host) !== -1;
     var isReload = false;
-    if (window.performance) {
-        var navEntries = window.performance.getEntriesByType("navigation");
-        if (navEntries.length > 0 && navEntries[0].type === "reload") {
-            isReload = true;
-        } else if (window.performance.navigation && window.performance.navigation.type === 1) {
-            isReload = true;
-        }
-    }
 
-    // Hide if it IS internal routing AND NOT a reload
-    if (isInternalRouting && !isReload) {
-        var wrapper = document.getElementById('loader-wrapper');
-        if (wrapper) wrapper.style.display = 'none';
-    } else {
-        window.addEventListener('load', function() {
-            var logo = document.getElementById('preloaderLogo');
-            if (logo) logo.classList.add('shine');
-            setTimeout(function() {
-                var wrapper = document.getElementById('loader-wrapper');
-                if (wrapper) wrapper.classList.add('preloader-exit');
-                setTimeout(function() {
-                    if (wrapper) wrapper.style.display = 'none';
-                }, 600);
-            }, 800);
-        });
-    }
 
     document.getElementById('searchIconNav').addEventListener('click', function() {
         const shopSearcher = document.getElementById('selectedShopSearcher');
