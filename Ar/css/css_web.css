@@ -2562,7 +2562,7 @@ body:has(#openedShopFoods) #cartShower {
     bottom: 1rem;
     right: 1rem;
 }
-  
+
 
 
   .addToCart {
@@ -2581,6 +2581,15 @@ body:has(#openedShopFoods) #cartShower {
     font-size: 0.9rem;
   }
 
+
+
+}
+
+
+@media (max-width:360px){
+     .pay-badge {
+      font-size: 0.5rem !important;
+     }
 
 
 }

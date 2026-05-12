@@ -554,6 +554,18 @@
                     pointer-events: none;
                 }
 
+                .icon-btn{
+                    width: 36px !important;
+                    height: 36px !important;
+                    font-size: 16px !important;
+                }
+                .lang-btn{
+                    font-size: 14px !important;
+                    padding: 10px !important;
+                }
+
+
+
 
                 .foodDrowdown {
                     display: grid !important;
@@ -1211,6 +1223,13 @@
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
+            }
+            @media (max-width: 480px){
+                .logo-container{
+display: none !important;
+
+    }
+
             }
         </style>
         <script>

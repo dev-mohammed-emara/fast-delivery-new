@@ -213,8 +213,8 @@ a {
       .logo-container {
         background-color: #ffffff;
         border-radius: 50%;
-        width: 60px;
-        height: 60px;
+        width: 50px;
+        height: 50px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -3148,6 +3148,9 @@ html[dir="rtl"] .cartShopLabel {
   .trustBadge,
   .shopPayMethods {
     justify-content: center !important;
+  }
+  .shopPayMethods{
+    flex-wrap: nowrap !important;
   }
 
   .foodItem,
