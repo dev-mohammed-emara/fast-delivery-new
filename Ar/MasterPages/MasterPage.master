@@ -226,6 +226,9 @@
 
 
 <style>
+#navShareBtn{
+    display: none ;
+}
     .dropdown-menu a.dropdown-item {
         font-weight: 500;
         padding: 8px 15px;
@@ -256,6 +259,7 @@
                 <i class="fa fa-shopping-basket"></i>
                 <span id="cartItemsNumber">0</span>
             </button>
+            <% if (HttpContext.Current.User.Identity.IsAuthenticated) { %>
             <button class="icon-btn"  data-key="login_btn" id="login-modal-btn" onclick="showModal(); return false;"><i class="fa fa-user"></i></button>
             <ul id="userDropDown"
       aria-modal="true"
@@ -274,6 +278,7 @@
     <asp:Literal ID="litLogout" runat="server" Text="<%$ Resources:Texts, Logout %>" />
 </asp:LinkButton>  </li>
     </ul>
+            <% } %>
 
 
         </div>
@@ -374,7 +379,7 @@
         <i class="fa-solid fa-heart"></i>
         <span data-key="nav_favorites"><asp:Literal ID="ltBottomFavorites" runat="server" Text="<%$ Resources:Texts, nav_favorites %>" /></span>
     </a>
-  
+
     <a href="Addresses.aspx" class="mobile-nav-item nav-map">
         <i class="fa-solid fa-map-location-dot"></i>
         <span data-key="nav_addresses"><asp:Literal ID="ltBottomAddresses" runat="server" Text="<%$ Resources:Texts, Addresses %>" /></span>

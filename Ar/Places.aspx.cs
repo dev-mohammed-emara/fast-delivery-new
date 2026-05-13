@@ -194,16 +194,22 @@ public partial class Ar_Places : System.Web.UI.Page
         if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
         {
             var dataObj = DataBinder.Eval(e.Item.DataItem, "Rate");
-            int rating = (dataObj != null && dataObj.ToString() != "") ? Convert.ToInt32(dataObj) : 0;
+            double rating = (dataObj != null && dataObj.ToString() != "") ? Convert.ToDouble(dataObj) : 0;
 
             string starsHtml = "";
             for (int i = 1; i <= 5; i++)
             {
-                starsHtml += (i <= rating) ? "<i class='fa-solid fa-star' style='color:#FFD700;'></i>" : "<i class='fa-regular fa-star' style='color:#FFD700;'></i>";
+                if (i <= rating)
+                    starsHtml += "<i class='fa-solid fa-star' style='color:#FFD700;'></i>";
+                else if (i - 0.5 <= rating)
+                    starsHtml += "<i class='fa-solid fa-star-half-stroke' style='color:#FFD700;'></i>";
+                else
+                    starsHtml += "<i class='fa-regular fa-star' style='color:#FFD700;'></i>";
             }
 
             var shopRating = (HtmlGenericControl)e.Item.FindControl("shopRating");
-            if (shopRating != null) shopRating.InnerHtml = starsHtml;
+            if (shopRating != null) 
+                shopRating.InnerHtml = starsHtml + " <span class='rating-number' style='margin-inline-start:4px; font-weight:700; color:#444;'>(" + rating.ToString("0.0") + ")</span>";
         }
     }
 }

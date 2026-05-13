@@ -9,10 +9,10 @@
         display: flex;
         gap: 0.25rem;
         font-size: 0.9rem;
-        align-items: baseline;
+        align-items: center;
 
         i {
-          color: var(--fd-blue);
+          color: #FFD700;
         }
       }
 
@@ -252,10 +252,10 @@
         display: flex;
         gap: 0.25rem;
         font-size: 0.9rem;
-        align-items: baseline;
+        align-items: center;
 
         i {
-          color: var(--fd-blue);
+          color: #FFD700;
         }
       }
 

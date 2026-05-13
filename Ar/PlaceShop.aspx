@@ -10,6 +10,10 @@
            <style>
             .swal2-html-container{
                 padding: 0;
+                overflow-x: hidden;
+            }
+            #navShareBtn{
+                display: flex !important;
             }
             .header {
                 display: grid;
@@ -137,12 +141,21 @@
 
             .shopRating {
                 display: flex;
-                gap: 0.5rem !important;
+                gap: 0.25rem !important;
                 font-size: 0.9rem;
-                align-items: baseline;
+                align-items: center;
+                justify-content: center;
 
                 i {
-                    color: var(--fd-blue);
+                    color: #FFD700;
+                    font-size: 0.85rem;
+                }
+
+                .rating-number {
+                    margin-inline-start: 4px;
+                    font-weight: 700;
+                    color: #444;
+                    font-size: 0.95rem;
                 }
             }
 
@@ -553,6 +566,10 @@
                 .foodText{
                     pointer-events: none;
                 }
+                .shopRating {
+    .rating-number {
+        font-size:0.8rem;
+    }}
 
                 .icon-btn{
                     width: 36px !important;
@@ -1280,7 +1297,8 @@ display: none !important;
             </div>
 
 
-            <a href="#" class="availableShop">
+            <article class="availableShop">
+
                 <div style="position: relative;">
                     <div class="shop-img-wrapper" style="position: relative; width: 130px; height: 130px;">
                         <asp:Image ID="imgplace" runat="server" style="width:100%; height:100%; border-radius:1rem; object-fit:cover;" />
@@ -1353,7 +1371,7 @@ display: none !important;
                     </div>
 
                 </div>
-            </a>
+            </article>
 
 
             <div id="shopLists">
@@ -1946,11 +1964,24 @@ display: none !important;
 
         .upsell-add-btn:active { transform: scale(0.9); }
 
+        .upsell-info{
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            height: 100%;
+            max-height: 60px;
+        }
         .upsell-info h5 {
             font-size: 0.9rem;
             margin: 0;
             font-weight: 600;
             color: #333;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            min-height: fit-content;
+            text-overflow: ellipsis;
         }
 
         .upsell-info p {
@@ -1958,6 +1989,7 @@ display: none !important;
             color: #666;
             margin: 2px 0 0;
             font-weight: 500;
+            margin-top: auto;
         }
 
         .related-products-swiper {
@@ -2037,6 +2069,13 @@ display: none !important;
             background: #fff4e5;
             color: #ff9800;
             border: 1px solid #ffe8cc;
+        }
+
+        .addons-badge.suggestion-badge {
+            background: #fffdf0;
+            color: #d4a017;
+            border: 1px dashed #ffc119;
+            opacity: 0.9;
         }
 
         .addons-badge:hover, .notes-badge:hover {
@@ -2846,12 +2885,21 @@ padding-inline: 1rem !important;
             const sizeSuffix = (currentCustomization && currentCustomization.size) ? `-size-${currentCustomization.size.id}` : '';
             const uniqueId = baseId + sizeSuffix;
 
+            const isCustomProduct = !!(currentTriggeringProduct?.classList.contains('custom-item') || currentEditItem?.isCustomProduct);
+            const hasActualCustomizations = !!(currentCustomization && (
+                (currentCustomization.extras && currentCustomization.extras.length > 0) ||
+                (currentCustomization.upsells && currentCustomization.upsells.length > 0) ||
+                (currentCustomization.size && currentCustomization.size.id && currentCustomization.size.id !== 'size-small')
+            ));
+
             const mainItem = {
                 id: uniqueId,
                 name: productName,
                 price: basePrice,
                 productBasePrice: currentProductBasePrice,
-                isCustomized: !!(currentCustomization && ((currentCustomization.upsells && currentCustomization.upsells.length > 0) || (currentCustomization.size && currentCustomization.size.id && currentCustomization.size.id !== 'size-small'))),
+                isCustomProduct: isCustomProduct,
+                isCustomized: isCustomProduct || hasActualCustomizations,
+                hasActualCustomizations: hasActualCustomizations,
                 customization: currentCustomization ? {
                     size: currentCustomization.size,
                     extras: [...currentCustomization.extras],
@@ -3969,14 +4017,14 @@ padding-inline: 1rem !important;
             .swal2-popup.product-modal-popup {
                 width: 100vw !important;
                 max-width: 100vw !important;
-                height: 100vh !important;
-                max-height: 100vh !important;
+                height: 100dvh !important;
+                max-height: 100dvh !important;
                 border-radius: 0 !important;
                 margin: 0 !important;
             }
             .full-modal-container {
-                height: 100vh !important;
-                max-height: 100vh !important;
+                height: 100dvh !important;
+                max-height: 100dvh !important;
             }
         }
 
@@ -4060,6 +4108,8 @@ padding-inline: 1rem !important;
             color: #ffc119;
             font-weight: 700;
             margin: 0;
+                        margin-top: auto;
+
         }
         .qty-control.card-qty {
             background: #f8f9fa;

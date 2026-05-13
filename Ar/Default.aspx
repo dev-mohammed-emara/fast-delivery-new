@@ -18,7 +18,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: #fff;
+            background: radial-gradient(circle at center, #1a1c2c 0%, #0d0e17 100%);
             z-index: 999999;
             display: flex;
             justify-content: center;

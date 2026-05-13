@@ -73,18 +73,24 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
             imgplace.ImageUrl = place.PhotoPath;
 
             // Rating Stars logic
-            int rating = 0;
-            try { rating = place.Rate; } catch { }
+            double rating = 0;
+            try { 
+                object rateObj = place.GetColumn("Rate");
+                if (rateObj != null && rateObj != DBNull.Value)
+                    rating = Convert.ToDouble(rateObj);
+            } catch { }
 
             string starsHtml = "";
             for (int i = 1; i <= 5; i++)
             {
                 if (i <= rating)
                     starsHtml += "<i class='fa-solid fa-star' style='color:#FFD700;'></i>";
+                else if (i - 0.5 <= rating)
+                    starsHtml += "<i class='fa-solid fa-star-half-stroke' style='color:#FFD700;'></i>";
                 else
                     starsHtml += "<i class='fa-regular fa-star' style='color:#FFD700;'></i>";
             }
-            shopRating.InnerHtml = starsHtml;
+            shopRating.InnerHtml = starsHtml + " <span class='rating-number'>(" + rating.ToString("0.0") + ")</span>";
 
             // Fetch IsOpened status via SQL since it's a calculated value
             int isOpened = 0;

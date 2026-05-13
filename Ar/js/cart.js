@@ -541,7 +541,7 @@ function showCartToast(message = (window.texts ? window.texts.AddedToCartDefault
                     <div class="orderedItemMain">
                       <span class="orderedItemName">${item.name} ${item.customization?.size ? `<small class="cart-item-size">(${item.customization.size.name})</small>` : ''} <small class="unit-price">(${item.price} ${texts.Currency})</small></span>
                       <div class="cart-item-badges">
-                        ${item.isCustomized ? `<span class="addons-badge" onclick="event.stopPropagation(); openHardcodedModal(${JSON.stringify(item).replace(/"/g, '&quot;')})">${texts.Extras}</span>` : ''}
+                        ${item.isCustomized ? `<span class="addons-badge ${item.isCustomProduct && (item.hasActualCustomizations === false || (!item.customization?.extras?.length && !item.customization?.upsells?.length && (!item.customization?.size || item.customization?.size?.id === 'size-small'))) ? 'suggestion-badge' : ''}" onclick="event.stopPropagation(); openHardcodedModal(${JSON.stringify(item).replace(/"/g, '&quot;')})">${item.isCustomProduct && (item.hasActualCustomizations === false || (!item.customization?.extras?.length && !item.customization?.upsells?.length && (!item.customization?.size || item.customization?.size?.id === 'size-small'))) ? '<i class="fa-solid fa-wand-magic-sparkles"></i> ' + texts.Extras : texts.Extras}</span>` : ''}
                         ${(item.customization?.notes || item.notes) ? `<span class="notes-badge" onclick="event.stopPropagation(); if(typeof openSimpleNotesModal==='function') openSimpleNotesModal(null, '${item.name.replace(/'/g, "\\'")}', ${item.price}, '${(item.desc || '').replace(/'/g, "\\'")}', '${item.id}'); else openHardcodedModal(${JSON.stringify(item).replace(/"/g, '&quot;')}, null, null, null, null, true)">${texts.Notes}</span>` : ''}
                       </div>
                     </div>
@@ -968,7 +968,7 @@ function renderCheckoutArticles(items, summary) {
                             <small class="unit-price">(${item.price.toFixed(2)} ${texts.Currency})</small>
                         </span>
                         <div class="cart-item-badges">
-                            ${item.isCustomized ? `<span class="addons-badge" onclick="if(typeof openHardcodedModal==='function') openHardcodedModal(${JSON.stringify(item).replace(/"/g, '&quot;')})">${texts.Extras}</span>` : ''}
+                            ${item.isCustomized ? `<span class="addons-badge ${item.isCustomProduct && (item.hasActualCustomizations === false || (!item.customization?.extras?.length && !item.customization?.upsells?.length && (!item.customization?.size || item.customization?.size?.id === 'size-small'))) ? 'suggestion-badge' : ''}" onclick="if(typeof openHardcodedModal==='function') openHardcodedModal(${JSON.stringify(item).replace(/"/g, '&quot;')})">${item.isCustomProduct && (item.hasActualCustomizations === false || (!item.customization?.extras?.length && !item.customization?.upsells?.length && (!item.customization?.size || item.customization?.size?.id === 'size-small'))) ? '<i class="fa-solid fa-wand-magic-sparkles"></i> ' + texts.Extras : texts.Extras}</span>` : ''}
                         </div>
                     </div>
                     <div class="cartItemAmountHandlers">

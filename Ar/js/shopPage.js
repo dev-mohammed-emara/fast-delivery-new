@@ -155,7 +155,16 @@ if (shopDataStr) {
         if (shopDescEl) shopDescEl.textContent = shopData.desc;
         
         const shopRatingEl = shopEl.querySelector(".shopRating");
-        if (shopRatingEl) shopRatingEl.innerHTML = `<i class="fa-solid fa-face-smile"></i> ${shopData.rating}`;
+        if (shopRatingEl) {
+            let rating = parseFloat(shopData.rating) || 0;
+            let starsHtml = "";
+            for (let i = 1; i <= 5; i++) {
+                if (i <= rating) starsHtml += "<i class='fa-solid fa-star' style='color:#FFD700;'></i>";
+                else if (i - 0.5 <= rating) starsHtml += "<i class='fa-solid fa-star-half-stroke' style='color:#FFD700;'></i>";
+                else starsHtml += "<i class='fa-regular fa-star' style='color:#FFD700;'></i>";
+            }
+            shopRatingEl.innerHTML = starsHtml + ` <span class='rating-number'>(${rating.toFixed(1)})</span>`;
+        }
         
         const shopTimerEl = shopEl.querySelector(".timer");
         if (shopTimerEl) shopTimerEl.textContent = shopData.deliveryTime;

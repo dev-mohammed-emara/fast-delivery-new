@@ -1595,7 +1595,7 @@ overflow: initial;
   text-decoration: line-through;
 }
 .swiper-wrapper:has(.upsell-card-new){
-  max-height: 180px;
+  max-height: 190px;
 }
 
 .addToCart {
@@ -1882,7 +1882,19 @@ body:has(#openedShopFoods) #cartShower {
   font-weight: bold;
   text-align: center;
   font-size: 1.125rem;
+}
 
+#shopFloatingRating{
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: white;
+  border-radius: 0.25rem;
+  padding: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  width: 20px;
+  text-align: center;
 }
 
 .preDeliveryFeeAmount,
