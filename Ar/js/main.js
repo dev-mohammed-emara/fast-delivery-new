@@ -437,8 +437,8 @@ function closeEditPopup() {
 }
 
 // ✅ Close button
-closeEditorBtn.addEventListener("click", closeEditPopup);
-removeFormChange.addEventListener("click", closeEditPopup);
+if (closeEditorBtn) closeEditorBtn.addEventListener("click", closeEditPopup);
+if (removeFormChange) removeFormChange.addEventListener("click", closeEditPopup);
 
 // ✅ Close if click outside container
 const dataEditContainer = document.querySelector(".dataEditContainer");

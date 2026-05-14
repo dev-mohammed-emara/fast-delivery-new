@@ -1701,7 +1701,7 @@ z-index: 1001;
     padding-bottom: 0px;
 }
 #emptyCart{
-  margin-top: 5rem !important;
+  margin-block: auto !important;
   padding: 1.5rem;
 
 }
@@ -1802,6 +1802,7 @@ z-index: 1001;
                 color: #dc3545;
                 border: 1px solid #fecaca;
                 cursor: pointer;
+                font-size: 1.5rem;
                 transition: var(--transition);
 
                 &:hover {

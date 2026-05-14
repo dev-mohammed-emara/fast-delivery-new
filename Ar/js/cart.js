@@ -466,13 +466,33 @@ function showCartToast(message = (window.texts ? window.texts.AddedToCartDefault
 
             // Show empty message if cart is empty
             if (cart.items.length === 0) {
-                empty.style.display = "flex";
-                inCart.style.display = "none";
+                if (empty) empty.style.setProperty('display', 'flex', 'important');
+                if (inCart) inCart.style.setProperty('display', 'none', 'important');
+                
+                // Clear any residual items to prevent them from staying alongside empty state
+                const oldWrapper = inCart.querySelector(".orderedItemsWrapper");
+                if (oldWrapper) oldWrapper.remove();
+                
+                // Also handle the footer explicitly if it's a child of inCartItems
+                const sideFooter = inCart.querySelector(".side-cart-footer-container");
+                if (sideFooter) {
+                    sideFooter.style.setProperty('display', 'none', 'important');
+                }
+
+                // Update summary even when empty to ensure localStorage is in sync
+                cart.saveSummary();
+                
                 return;
             }
 
-            empty.style.display = "none";
-            inCart.style.display = "flex";
+            if (empty) empty.style.setProperty('display', 'none', 'important');
+            if (inCart) inCart.style.setProperty('display', 'flex', 'important');
+
+            // Ensure footer is visible if it was hidden
+            const sideFooter = inCart.querySelector(".side-cart-footer-container");
+            if (sideFooter) {
+                sideFooter.style.setProperty('display', 'block', 'important');
+            }
 
             // Remove old wrapper and insert new one in the correct position
             const oldWrapper = inCart.querySelector(".orderedItemsWrapper");
@@ -484,7 +504,6 @@ function showCartToast(message = (window.texts ? window.texts.AddedToCartDefault
             if (oldWrapper) {
                 oldWrapper.parentNode.replaceChild(wrapper, oldWrapper);
             } else if (footerEl) {
-                // Use parentNode.insertBefore to handle cases where footerEl is not a direct child
                 footerEl.parentNode.insertBefore(wrapper, footerEl);
             } else {
                 inCart.appendChild(wrapper);

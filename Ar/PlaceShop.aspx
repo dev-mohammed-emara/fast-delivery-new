@@ -1864,6 +1864,13 @@ display: none !important;
             }
         }
 
+        @media(max-width:480px){
+            .action-buttons{
+                 width: calc(100% - 88px);
+        justify-content: end;
+            }
+        }
+
         .bottom-sheet-modal {
             border-top-left-radius: 20px !important;
             border-top-right-radius: 20px !important;
@@ -4149,7 +4156,7 @@ padding-inline: 1rem !important;
     </style>
         <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
         <script>
-            let currentCustomization = {
+            currentCustomization = {
                 baseItemId: null,
                 selectedSizeId: null,
                 extras: [],
