@@ -52,7 +52,9 @@ function loadFavorites() {
     const container = document.getElementById('favoritesContainer');
     const isEn = document.documentElement.lang === 'en';
 
-    if (favorites.length === 0) {
+    const filtered = favorites.filter(shop => shop.name || shop.nameEn);
+
+    if (filtered.length === 0) {
         const emptyMsg = isEn ? 'No favorite shops found.' : '\u0644\u0645 \u064A\u062A\u0645 \u0627\u0644\u0639\u062B\u0648\u0631 \u0639\u0644\u0649 \u0645\u062D\u0644\u0627\u062A \u0645\u0641\u0636\u0644\u0629.';
         container.innerHTML = `<h3 style="text-align:center; padding: 20px;">${emptyMsg}</h3>`;
         return;
@@ -61,7 +63,7 @@ function loadFavorites() {
     container.innerHTML = '<div class="allAvailableShops" style="width:100%;"></div>';
     const list = container.querySelector('.allAvailableShops');
 
-    favorites.forEach(shop => {
+    filtered.forEach(shop => {
         // Sanitize data: remove any characters outside common ASCII and Arabic ranges
         const sanitize = (str) => {
             if (typeof str !== 'string') return str || '';
@@ -73,7 +75,7 @@ function loadFavorites() {
             return isNaN(p) ? (price || '0.00') : p.toFixed(2);
         };
 
-        const name = sanitize((isEn && shop.nameEn) ? shop.nameEn : shop.name) || (isEn ? 'Unnamed Shop' : '\u0645\u062D\u0644 \u0628\u062F\u0648\u0646 \u0627\u0633\u0645');
+        const name = sanitize((isEn && shop.nameEn) ? shop.nameEn : shop.name);
         const desc = sanitize((isEn && shop.descEn) ? shop.descEn : shop.desc) || '';
         const statusClass = shop.isOpened == "1" ? "status-badge open" : "status-badge closed";
 
@@ -102,8 +104,9 @@ function loadFavorites() {
                         <h3 class="availableShopName">${name}</h3>
                         <span class="${statusClass}">${statusText}</span>
                     </div>
-                    <div class="shopRating" style="margin-block: 10px;">
+                    <div class="shopRating" style="margin-block: 10px; display: flex; align-items: center; gap: 5px;">
                         ${generateStars(shop.rate)}
+                        <span class="rating-number">(${parseFloat(shop.rate || 0).toFixed(1)})</span>
                     </div>
                     <p class="shopFoods">${desc}</p>
                     <div class="shopDelivery">
@@ -117,22 +120,7 @@ function loadFavorites() {
     });
 }
 
-function toggleFavorite(event, element) {
-    event.preventDefault();
-    event.stopPropagation();
 
-    const shopId = element.getAttribute('data-id');
-    let favorites = JSON.parse(localStorage.getItem('favoriteShops') || '[]');
-    const index = favorites.findIndex(f => f.id === shopId);
-
-    if (index !== -1) {
-        // Remove from favorites
-        favorites.splice(index, 1);
-        localStorage.setItem('favoriteShops', JSON.stringify(favorites));
-        // Refresh the list
-        loadFavorites();
-    }
-}
 
 document.addEventListener('DOMContentLoaded', loadFavorites);
 </script>
@@ -143,7 +131,7 @@ document.addEventListener('DOMContentLoaded', loadFavorites);
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    padding: 20px;
+    padding: 10px;
 }
 .availableShop {
     display: flex !important;

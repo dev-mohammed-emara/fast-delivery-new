@@ -759,7 +759,9 @@
                          data-desc-en='<%# Eval("DescriptionEn") %>'
                          data-delivery-time='<%# Eval("DeliveredTime") %>'
                          data-delivery-cost='<%# Eval("DeliveryCost", "{0:F2}") %>'
-                         data-rate='<%# Eval("Rate") %>'>
+                         data-rate='<%# Eval("Rate") %>'
+                         data-is-opened='<%# Eval("IsOpened") %>'
+                         data-url='<%# Request.Url.PathAndQuery %>'>
                         <i class="fa-regular fa-heart"></i>
                     </div>
                   </div>
@@ -899,66 +901,6 @@ function filterByJS(typeId, btn) {
     }
 }
 
-// Favorite Functions
-function toggleFavorite(event, element) {
-    event.preventDefault();
-    event.stopPropagation();
-
-    const shopId = element.getAttribute('data-id');
-    const favorites = JSON.parse(localStorage.getItem('favoriteShops') || '[]');
-    const index = favorites.findIndex(f => f.id === shopId);
-    const icon = element.querySelector('i');
-
-    if (index === -1) {
-        // Add to favorites
-        const shopData = {
-            id: shopId,
-            name: element.getAttribute('data-name'),
-            nameEn: element.getAttribute('data-name-en'),
-            img: element.getAttribute('data-img'),
-            desc: element.getAttribute('data-desc'),
-            descEn: element.getAttribute('data-desc-en'),
-            deliveryTime: element.getAttribute('data-delivery-time'),
-            deliveryCost: element.getAttribute('data-delivery-cost'),
-            rate: element.getAttribute('data-rate'),
-            isOpened: element.getAttribute('data-is-opened'),
-            url: element.closest('a').href
-        };
-        favorites.push(shopData);
-        element.classList.add('is-favorite');
-        icon.classList.remove('fa-regular');
-        icon.classList.add('fa-solid');
-        element.classList.add('animate-twirl');
-        setTimeout(() => element.classList.remove('animate-twirl'), 800);
-    } else {
-        // Remove from favorites
-        favorites.splice(index, 1);
-        element.classList.remove('is-favorite');
-        icon.classList.remove('fa-solid');
-        icon.classList.add('fa-regular');
-    }
-
-    localStorage.setItem('favoriteShops', JSON.stringify(favorites));
-}
-
-function initFavorites() {
-    const favorites = JSON.parse(localStorage.getItem('favoriteShops') || '[]');
-    document.querySelectorAll('.favorite-heart').forEach(el => {
-        const shopId = el.getAttribute('data-id');
-        const icon = el.querySelector('i');
-        if (favorites.some(f => f.id === shopId)) {
-            el.classList.add('is-favorite');
-            icon.classList.remove('fa-regular');
-            icon.classList.add('fa-solid');
-        } else {
-            el.classList.remove('is-favorite');
-            icon.classList.remove('fa-solid');
-            icon.classList.add('fa-regular');
-        }
-    });
-}
-
-document.addEventListener('DOMContentLoaded', initFavorites);
 </script>
         <style>
           .select2-container--default .select2-selection--single {

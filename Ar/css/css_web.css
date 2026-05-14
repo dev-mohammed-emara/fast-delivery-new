@@ -2347,7 +2347,7 @@ body:has(#openedShopFoods) #cartShower {
   }
 
   .userProfileField form {
-    padding-right: 0px !important;
+    padding-inline: 0px !important;
   }
 
   .profileContainer {

@@ -3553,7 +3553,7 @@ html[dir="ltr"] {
 
 #userDropDown {
   position: fixed;
-  top: 100px;
+  top: 85px;
   left: 20px;
   background-color: white;
   box-shadow: var(--shadow);
@@ -3663,6 +3663,7 @@ html[dir="ltr"] {
     padding: 0 !important;
     overflow: visible !important;
     pointer-events: none;
+    z-index: 0;
   }
 
  .nav-links, #userDropDown, #login-modal-btn {

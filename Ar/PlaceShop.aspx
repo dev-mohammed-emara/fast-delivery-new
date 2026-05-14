@@ -1306,7 +1306,8 @@ display: none !important;
                         <asp:Image ID="imgplace" runat="server" CssClass="shop-profile-img" style="width:100%; height:100%; border-radius:1rem; object-fit:cover;" />
                         <div class="favorite-heart"
                              onclick="toggleFavorite(event, this)"
-                             id="shopHeartIcon">
+                             id="shopHeartIcon"
+                             runat="server">
                             <i class="fa-regular fa-heart"></i>
                         </div>
                     </div>

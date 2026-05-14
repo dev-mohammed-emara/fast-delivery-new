@@ -232,11 +232,11 @@
             <button class="icon-btn" id="navShareBtn"  onclick="shareShopGlobal(event)">
                 <i class="fa-solid fa-share"></i>
             </button>
-             <button class="icon-btn" id="cartIcon" type="button" onclick="openSideCart();return false;">
+            <button class="icon-btn" id="cartIcon" type="button" onclick="openSideCart();return false;">
                 <i class="fa fa-shopping-basket"></i>
                 <span id="cartItemsNumber">0</span>
             </button>
-            <button class="icon-btn" data-key="login_btn" id="login-modal-btn" onclick="<%= HttpContext.Current.User.Identity.IsAuthenticated ? "toggleProfileMenu(event); return false;" : "showModal(); return false;" %>">
+            <button class="icon-btn" data-key="login_btn" id="login-modal-btn" onclick="handleProfileClick(event)">
                 <i class="fa fa-user"></i>
             </button>
             <% if (HttpContext.Current.User.Identity.IsAuthenticated) { %>
@@ -341,8 +341,8 @@
         <i class="fa-solid fa-cart-shopping"></i>
         <span data-key="nav_cart"><asp:Literal ID="ltBottomCart" runat="server" Text="<%$ Resources:Texts, ViewCart %>" /></span>
     </a>
-    <div class="mobile-nav-item mobile-nav-profile" id="mobileProfileTrigger" onclick="<%= HttpContext.Current.User.Identity.IsAuthenticated ? "toggleMobileProfileMenu(event)" : "showModal()" %>">
-        <i class="fa-solid fa-user"></i>
+    <div class="mobile-nav-item mobile-nav-profile" id="mobileProfileTrigger" onclick="handleProfileClick(event)">
+        <i class="fa fa-user"></i>
         <div id="mobileProfileMenu" class="mobile-profile-menu">
             <a href="profile.aspx" class="mobile-profile-menu-item">
                 <i class="fa-solid fa-circle-user"></i>
@@ -363,16 +363,39 @@
     <a href="Addresses.aspx" class="mobile-nav-item nav-map">
         <i class="fa-solid fa-map-location-dot"></i>
         <span data-key="nav_addresses"><asp:Literal ID="ltBottomAddresses" runat="server" Text="<%$ Resources:Texts, Addresses %>" /></span>
-    </nav>
+    </a>
 <% } %>
     </form>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ar.js"></script>
-    <script src="js/main.js" charset="utf-8"></script>
-    <script src="js/Cart.js" charset="utf-8"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/favorites.js"></script>
+    <script src="js/main.js"></script>
     <script src="js/shopPage.js" charset="utf-8" defer></script>
+    <script>
+        function handleProfileClick(event) {
+            if (event) event.preventDefault();
+            
+            // Check if user is logged in via the body class
+            const isLoggedOut = document.body.classList.contains('not-logged-in');
+            
+            if (isLoggedOut) {
+                showModal();
+            } else {
+                // Determine if we should show desktop or mobile menu
+                if (window.innerWidth <= 768) {
+                    if (typeof toggleMobileProfileMenu === 'function') {
+                        toggleMobileProfileMenu(event);
+                    }
+                } else {
+                    if (typeof toggleProfileMenu === 'function') {
+                        toggleProfileMenu(event);
+                    }
+                }
+            }
+        }
+    </script>
       <link rel="stylesheet" href="css/main.css">
    <%-- <link href="css/css_web.css" rel="stylesheet" />--%>
    <script type="text/javascript">

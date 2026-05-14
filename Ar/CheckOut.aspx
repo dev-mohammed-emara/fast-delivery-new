@@ -1439,7 +1439,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script>
 
-        document.getElementById('btnSaveStorage').addEventListener('click', function () {
+        document.getElementById('btnSaveStorage').addEventListener('click', async function () {
 
             let data = localStorage.getItem("cartItems");
             let raw = document.getElementById("Deliverycost").textContent;
@@ -1454,6 +1454,28 @@
             const contactMethodEl = document.querySelector('#contactMethodSection .pay-option.selected');
             const contactMethod = contactMethodEl ? contactMethodEl.getAttribute('data-method') : 'ring_bell';
             const isPickup = document.querySelector('.global-types .order-type-opt.active')?.getAttribute('data-type') === 'pickup';
+
+            let payerPhone = "";
+            let paymentProofBase64 = "";
+
+            if (['instapay', 'wallet', 'vodafone_cash'].includes(paymentMethod)) {
+                payerPhone = document.getElementById('payerPhone').value;
+                const fileInput = document.getElementById('paymentProofFile');
+                
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    // Validate file type again in JS
+                    if (!file.type.startsWith('image/')) {
+                         Swal.fire({
+                            title: "خطأ في الملف",
+                            text: "يرجى اختيار ملف صورة صحيح",
+                            icon: "error"
+                        });
+                        return;
+                    }
+                    paymentProofBase64 = await toBase64(file);
+                }
+            }
 
             if (typeof updateLiveSummary === 'function') updateLiveSummary();
 
@@ -1477,7 +1499,9 @@
                     paymentMethod: paymentMethod,
                     scheduledTime: scheduledTime,
                     contactMethod: isPickup ? 'pickup' : contactMethod,
-                    orderType: isPickup ? 'pickup' : 'delivery'
+                    orderType: isPickup ? 'pickup' : 'delivery',
+                    payerPhone: payerPhone,
+                    paymentProofBase64: paymentProofBase64
                 })
             })
             .then(res => res.json())
@@ -1916,6 +1940,15 @@
             const globalPickupMsg = document.getElementById("globalPickupMsg");
             if (pickupMsg) pickupMsg.style.display = anyPickup ? "block" : "none";
             if (globalPickupMsg) globalPickupMsg.style.display = anyPickup ? "block" : "none";
+        }
+
+        function toBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result.split(',')[1]); // Only send the base64 part
+                reader.onerror = error => reject(error);
+            });
         }
 </script>
     <script>

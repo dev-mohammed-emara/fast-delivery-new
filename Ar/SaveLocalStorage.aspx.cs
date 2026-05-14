@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Web.Services;
 using System.Web.Script.Services;
 using Newtonsoft.Json.Linq;
@@ -41,11 +41,11 @@ public partial class Ar_SaveLocalStorage : System.Web.UI.Page
             // 1. الأماكن المتاحة الآن بناءً على الجدول الزمني
             string sqlAvailable = @"
                 SELECT dbo.PlacesDeliverySchedule.PlacesId
-                FROM dbo.PlacesDeliverySchedule 
+                FROM dbo.PlacesDeliverySchedule
                 INNER JOIN dbo.DaysOfWeek ON dbo.PlacesDeliverySchedule.DayId = dbo.DaysOfWeek.Id
-                WHERE (dbo.DaysOfWeek.Dayorder = DATEPART(WEEKDAY, DATEADD(HOUR, 10, GETDATE())) 
-                AND (dbo.PlacesDeliverySchedule.IsActive = 1) 
-                AND (CAST(DATEADD(HOUR, 10, GETDATE()) AS TIME) BETWEEN 
+                WHERE (dbo.DaysOfWeek.Dayorder = DATEPART(WEEKDAY, DATEADD(HOUR, 10, GETDATE()))
+                AND (dbo.PlacesDeliverySchedule.IsActive = 1)
+                AND (CAST(DATEADD(HOUR, 10, GETDATE()) AS TIME) BETWEEN
                 dbo.PlacesDeliverySchedule.StartTime AND dbo.PlacesDeliverySchedule.EndTime))";
 
             // 2. جلب الاسم والحد الأدنى للطلب (MinOrder)

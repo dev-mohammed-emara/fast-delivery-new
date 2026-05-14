@@ -209,7 +209,7 @@ public partial class Ar_Places : System.Web.UI.Page
 
             var shopRating = (HtmlGenericControl)e.Item.FindControl("shopRating");
             if (shopRating != null) 
-                shopRating.InnerHtml = starsHtml + " <span class='rating-number' style='margin-inline-start:4px; font-weight:700; color:#444;'>(" + rating.ToString("0.0") + ")</span>";
+                shopRating.InnerHtml = starsHtml + " <span class='rating-number'>(" + rating.ToString("0.0") + ")</span>";
         }
     }
 }
