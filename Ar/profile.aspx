@@ -847,6 +847,7 @@ input[type="radio"] {
             display: flex;
             gap: 10px;
         }
+
         .radio-buttons input[type="radio"] {
             display: none;
         }
@@ -880,8 +881,24 @@ input[type="radio"] {
   transition: background-color 0.2s !important;
   margin: 10px 0 5px !important;
 }
-    </style>
+
+@media (max-width: 480px) {
+
+  .radio-buttons{
+  flex-wrap: wrap;
+
+}
+  .radio-buttons label{
+    border-radius: 0.5rem !important;
+    width: 100%;
+    text-align: center;
+  }
+}
+
+  </style>
+
         <style>
+
 
     .validator-error {
         display: flex;

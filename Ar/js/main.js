@@ -7,34 +7,8 @@ function handleScroll() {
 
 // ✅ تحديث روابط الأزرار بالعربية
 function updateLoginBtnBehavior() {
-    const storedUser = localStorage.getItem("fastDeliveryUser");
-    const loginBtn = document.getElementById("login-modal-btn");
-
-    // ✅ stop if button not found
-    if (!loginBtn) return;
-
-    // ✅ safely clone and replace button
-    // ✅ safely clone and replace button
-    const clone = loginBtn.cloneNode(true);
-    loginBtn.parentNode.replaceChild(clone, loginBtn);
-
-    const newLoginBtn = document.getElementById("login-modal-btn"); // ✅ get the new element
-    const userDropDown = document.getElementById("userDropDown");
-
-    if (storedUser) {
-        const userData = JSON.parse(storedUser);
-        console.log(`👋 مرحبًا بعودتك يا ${userData.firstName}`);
-
-        // ✅ apply on new element, not old (deleted one!)
-        newLoginBtn.addEventListener("click", () => {
-            if (userDropDown) userDropDown.classList.toggle("showDropDown");
-        });
-
-        if (userDropDown) userDropDown.style.display = "flex";
-    } else {
-        newLoginBtn.addEventListener("click", openModal);
-        if (userDropDown) userDropDown.style.display = "none";
-    }
+    // This logic is now handled by showModal() in MasterPage.master
+    return;
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -545,6 +519,15 @@ function toggleMobileProfileMenu(event) {
     const menu = document.getElementById('mobileProfileMenu');
     if (menu) {
         menu.classList.toggle('show');
+    }
+}
+
+// ✅ Desktop Profile Menu Logic
+function toggleProfileMenu(event) {
+    if (event) event.stopPropagation();
+    const menu = document.getElementById('userDropDown');
+    if (menu) {
+        menu.classList.toggle('showDropDown');
     }
 }
 

@@ -16,7 +16,9 @@
   height: 6px;
 
 }
-
+p {
+    margin: 0;
+}
 ::-webkit-scrollbar-track {
   background: #f1f1f1;
 }
@@ -1624,7 +1626,67 @@ overflow: initial;
   /* max-height: 280px; */
   padding-bottom: 1rem;
 }
+.addons-badge.suggestion-badge {
+    background: #fffdf0;
+    color: #d4a017;
+    border: 1px dashed #ffc119;
+    opacity: 0.9;
+}
 
+.addons-badge, .notes-badge {
+    font-size: 0.7rem;
+    padding: 3px 10px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    font-weight: 600;
+    cursor: pointer;
+    min-height: 26px;
+    transition: transform 0.2s, background 0.2s;
+}
+.addons-badge {
+    font-size: 0.7rem;
+    color: #ffc119;
+    background: #fff9e6;
+    padding: 1px 6px;
+    border-radius: 4px;
+    margin-top: 3px;
+    display: inline-block;
+    width: fit-content;}
+
+
+    .cartItemAmountHandlers {
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    padding: 2px !important;
+}
+.cartItemAmountHandlers {
+    background-color: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 0.125rem;
+    font-size: 0.8rem;
+    border-radius: 0.25rem;
+    width: fit-content;
+    height: fit-content;
+    margin: 0;
+    overflow: hidden;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+}
+.cartItemAmountHandlers {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f5f6f7;
+    border-radius: 10px;
+    padding: 4px;
+    margin: 0;
+    min-width: 85px;
+    gap: 6px;}
 
 #cartHolder {
   display: flex;

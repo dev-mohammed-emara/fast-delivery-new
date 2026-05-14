@@ -1303,7 +1303,7 @@ display: none !important;
 
                 <div style="position: relative;">
                     <div class="shop-img-wrapper" style="position: relative; width: 130px; height: 130px;">
-                        <asp:Image ID="imgplace" runat="server" style="width:100%; height:100%; border-radius:1rem; object-fit:cover;" />
+                        <asp:Image ID="imgplace" runat="server" CssClass="shop-profile-img" style="width:100%; height:100%; border-radius:1rem; object-fit:cover;" />
                         <div class="favorite-heart"
                              onclick="toggleFavorite(event, this)"
                              id="shopHeartIcon">
@@ -1318,10 +1318,10 @@ display: none !important;
                 </div>
                 <div class="availableShopDesc">
                     <h3 class="availableShopName" style="display: flex; align-items: center;">
-                        <asp:Literal ID="ltname" runat="server"></asp:Literal>
+                        <span id="shopNameContent"><asp:Literal ID="ltname" runat="server"></asp:Literal></span>
                         <span id="shopStatusBadge" runat="server"></span>
                     </h3>
-                    <p class="shopFoods">
+                    <p class="shopFoods" id="shopFoodsContent">
                         <asp:Literal ID="ltDetails" runat="server"></asp:Literal>
                     </p>
 
@@ -3144,9 +3144,10 @@ padding-inline: 1rem !important;
                 // Add to favorites
                 const shopData = {
                     id: shopId,
-                    name: document.querySelector('.shop-header-info h1')?.innerText.trim() || '',
-                    photo: document.querySelector('.shop-header-img img')?.src || '',
-                    desc: document.querySelector('.shopFoods')?.innerText.trim() || '',
+                    name: document.getElementById('shopNameContent')?.innerText.trim() || '',
+                    nameEn: '', // Not easily available on this page without more literals
+                    img: document.querySelector('.shop-profile-img')?.src || '',
+                    desc: document.getElementById('shopFoodsContent')?.innerText.trim() || '',
                     descEn: '',
                     deliveryTime: document.querySelector('.timer')?.innerText.trim() || '',
                     deliveryCost: document.getElementById('deliveryCostValue')?.innerText.trim() || '',

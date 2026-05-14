@@ -142,33 +142,10 @@
     <script>
 
     function showModal() {
-
-          var isAuthenticated = <%=HttpContext.Current.User.Identity.IsAuthenticated.ToString().ToLower() %>;
-        if(isAuthenticated){
-            const userDropDown = document.getElementById("userDropDown");
-            const currentDisplay = userDropDown.style.display;
-            if (currentDisplay === 'flex') {
-                // hide it
-                userDropDown.style.setProperty('display', 'none', 'important');
-                userDropDown.style.setProperty('opacity', '0', 'important');
-                userDropDown.style.setProperty('pointer-events', 'none', 'important');
-                userDropDown.style.setProperty('visibility', 'hidden', 'important');
-            } else {
-                // show it
-                userDropDown.style.setProperty('display', 'flex', 'important');
-                userDropDown.style.setProperty('opacity', '1', 'important');
-                userDropDown.style.setProperty('pointer-events', 'auto', 'important');
-                userDropDown.style.setProperty('visibility', 'visible', 'important');
-                userDropDown.style.setProperty('transform', 'scale(1)', 'important');
-            }
-        }
-        else{
-
-            document.getElementById('popupFrame').src = 'login.aspx';
-            var modal = new bootstrap.Modal(document.getElementById('pageModal'));
-            modal.show();
-        }
-  }
+        document.getElementById('popupFrame').src = 'login.aspx';
+        var modal = new bootstrap.Modal(document.getElementById('pageModal'));
+        modal.show();
+    }
 </script>
         <div id="mainWrapper">
     <header class="header" role="banner">
@@ -259,8 +236,10 @@
                 <i class="fa fa-shopping-basket"></i>
                 <span id="cartItemsNumber">0</span>
             </button>
+            <button class="icon-btn" data-key="login_btn" id="login-modal-btn" onclick="<%= HttpContext.Current.User.Identity.IsAuthenticated ? "toggleProfileMenu(event); return false;" : "showModal(); return false;" %>">
+                <i class="fa fa-user"></i>
+            </button>
             <% if (HttpContext.Current.User.Identity.IsAuthenticated) { %>
-            <button class="icon-btn"  data-key="login_btn" id="login-modal-btn" onclick="showModal(); return false;"><i class="fa fa-user"></i></button>
             <ul id="userDropDown"
       aria-modal="true"
       role="combobox"
@@ -351,6 +330,7 @@
     <i class="fab fa-whatsapp"></i>
 </asp:HyperLink>
 
+
 <% if (HttpContext.Current.User.Identity.IsAuthenticated) { %>
 <nav class="mobile-bottom-nav" id="mobileBottomNav">
     <a href="Default.aspx" class="mobile-nav-item">
@@ -361,7 +341,7 @@
         <i class="fa-solid fa-cart-shopping"></i>
         <span data-key="nav_cart"><asp:Literal ID="ltBottomCart" runat="server" Text="<%$ Resources:Texts, ViewCart %>" /></span>
     </a>
-    <div class="mobile-nav-item mobile-nav-profile" id="mobileProfileTrigger" onclick="toggleMobileProfileMenu(event)">
+    <div class="mobile-nav-item mobile-nav-profile" id="mobileProfileTrigger" onclick="<%= HttpContext.Current.User.Identity.IsAuthenticated ? "toggleMobileProfileMenu(event)" : "showModal()" %>">
         <i class="fa-solid fa-user"></i>
         <div id="mobileProfileMenu" class="mobile-profile-menu">
             <a href="profile.aspx" class="mobile-profile-menu-item">
@@ -383,8 +363,7 @@
     <a href="Addresses.aspx" class="mobile-nav-item nav-map">
         <i class="fa-solid fa-map-location-dot"></i>
         <span data-key="nav_addresses"><asp:Literal ID="ltBottomAddresses" runat="server" Text="<%$ Resources:Texts, Addresses %>" /></span>
-    </a>
-</nav>
+    </nav>
 <% } %>
     </form>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

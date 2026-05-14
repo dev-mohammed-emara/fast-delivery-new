@@ -754,7 +754,7 @@
                          data-id='<%# Eval("id") %>'
                          data-name='<%# Eval("Name") %>'
                          data-name-en='<%# Eval("NameEn") %>'
-                         data-img='<%# Eval("PhotoPath") %>'
+                         data-img='<%# "~/ar/" + Eval("PhotoPath") %>'
                          data-desc='<%# Eval("Description") %>'
                          data-desc-en='<%# Eval("DescriptionEn") %>'
                          data-delivery-time='<%# Eval("DeliveredTime") %>'
@@ -921,7 +921,8 @@ function toggleFavorite(event, element) {
             deliveryTime: element.getAttribute('data-delivery-time'),
             deliveryCost: element.getAttribute('data-delivery-cost'),
             rate: element.getAttribute('data-rate'),
-            url: window.location.href.split('?')[0].replace('Places.aspx', 'PlaceShop.aspx') + '?id=' + shopId + '&addid=' + (new URLSearchParams(window.location.search).get('addid') || '')
+            isOpened: element.getAttribute('data-is-opened'),
+            url: element.closest('a').href
         };
         favorites.push(shopData);
         element.classList.add('is-favorite');

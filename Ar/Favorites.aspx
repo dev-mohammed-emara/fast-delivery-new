@@ -142,36 +142,45 @@ document.addEventListener('DOMContentLoaded', loadFavorites);
 .allAvailableShops {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.5rem;
     padding: 20px;
 }
 .availableShop {
-    display: flex;
-    /* flex-wrap: wrap; */
+    display: flex !important;
     gap: 1rem !important;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    padding-bottom: 1rem;
-    transition: background 0.3s;
+    padding: 1.5rem !important;
+    background: white !important;
+    border-radius: 1.25rem !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    box-shadow: 0px 4px 15px rgba(0,0,0,0.05) !important;
+    transition: all 0.3s ease !important;
+    text-decoration: none !important;
+    color: inherit !important;
 }
 .availableShop:hover {
-    background: #f9f9f9;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+    border-color: var(--fd-blue) !important;
 }
 .availableShopName {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: var(--fd-blue);
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #222;
     margin: 0;
 }
 .shopFoods {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     color: #666;
     margin: 5px 0;
+    line-height: 1.5;
 }
 .shopDelivery {
     display: flex;
-    gap: 1rem;
+    gap: 1.5rem;
     font-size: 0.85rem;
     color: #444;
+    font-weight: 600;
+    margin-top: 10px;
 }
 .status-badge {
     padding: 4px 12px;
@@ -190,13 +199,34 @@ document.addEventListener('DOMContentLoaded', loadFavorites);
     color: #c62828;
     border: 1px solid #ffcdd2;
 }
+
+.favorite-heart {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    color: #ff4d4f;
+    cursor: pointer;
+}
+
 @media (max-width:480px){
     .availableShop{
-        flex-direction: column;
-        gap: 0.3rem !important;
+        flex-direction: column !important;
+        gap: 0.5rem !important;
     }
     .shop-img-wrapper{
-        margin: auto;
+        width: 100% !important;
+        height: 180px !important;
+    }
+    .availableShopName {
+        font-size: 1.1rem;
     }
 }
 </style>
