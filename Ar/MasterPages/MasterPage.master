@@ -376,10 +376,10 @@
     <script>
         function handleProfileClick(event) {
             if (event) event.preventDefault();
-            
+
             // Check if user is logged in via the body class
             const isLoggedOut = document.body.classList.contains('not-logged-in');
-            
+
             if (isLoggedOut) {
                 showModal();
             } else {
@@ -568,7 +568,7 @@ document.addEventListener("DOMContentLoaded", loadTextsOnStart);
             <!-- Cart items -->
             <figure id="inCartItems">
                 <!-- items injected by Cart.js -->
-                
+
                 <div class="side-cart-footer-container">
                     <div class="preDeliveryFeeAmount">
                         <p>

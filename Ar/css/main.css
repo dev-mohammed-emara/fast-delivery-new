@@ -2283,7 +2283,7 @@ html[dir="ltr"] .showPassword {
     overflow: visible !important;
     pointer-events: none;
     position: static !important;
-    z-index: 0;
+    z-index: 10;
   }
 
   .nav-links, #userDropDown {
@@ -2578,7 +2578,7 @@ html[dir="ltr"] .dropdown{
     bottom: 85px !important;
   }
   .back-to-top {
-    bottom: 150px !important;
+    bottom: 85px !important;
   }
 
   /* Adjustments when bottom nav is hidden (not logged in) */

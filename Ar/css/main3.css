@@ -3663,7 +3663,7 @@ html[dir="ltr"] {
     padding: 0 !important;
     overflow: visible !important;
     pointer-events: none;
-    z-index: 0;
+    z-index: 10;
   }
 
  .nav-links, #userDropDown, #login-modal-btn {
@@ -3805,7 +3805,7 @@ html[dir="ltr"] {
     bottom: 85px !important;
   }
   .back-to-top {
-    bottom: 150px !important;
+    bottom: 85px !important;
   }
 }
 

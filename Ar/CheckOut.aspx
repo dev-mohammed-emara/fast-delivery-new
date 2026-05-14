@@ -297,6 +297,13 @@
         gap: 1.5rem;
     }
 
+
+    @media (max-width: 480px) {
+        .paymentSection {
+            padding: 1rem !important;
+        }
+    }
+
     #discountWaring {
         display: flex;
         align-items: center;
@@ -370,7 +377,7 @@
 
     .contact-methods {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         gap: 0.75rem;
     }
 
@@ -1071,6 +1078,7 @@
     .order-live-summary .summary-item strong {
         color: #1f2937;
         font-weight: 700;
+        white-space: nowrap;
     }
 
     .order-live-summary .summary-item .success-text {
@@ -1174,6 +1182,7 @@
         border: 1.5px solid #eee;
         border-radius: 12px;
         font-size: 0.95rem;
+        width: 100%;
         outline: none;
         transition: border-color 0.2s;
     }
@@ -1461,7 +1470,7 @@
             if (['instapay', 'wallet', 'vodafone_cash'].includes(paymentMethod)) {
                 payerPhone = document.getElementById('payerPhone').value;
                 const fileInput = document.getElementById('paymentProofFile');
-                
+
                 if (fileInput.files.length > 0) {
                     const file = fileInput.files[0];
                     // Validate file type again in JS
@@ -1558,7 +1567,7 @@
 
         window.updateLiveSummary = function() {
             const texts = window.texts || {};
-            
+
             // 1. Payment Method
             const payInput = document.querySelector('input[name="payMethod"]:checked');
             const payVal = payInput ? payInput.value : 'cash';
@@ -1809,7 +1818,7 @@
             // Handle Label Change
             const timeLabel = document.getElementById('deliveryTimeLabel');
             const summaryTimeLabel = document.querySelector('.summary-line .summary-label-time');
-            
+
             if (timeLabel) {
                 timeLabel.innerHTML = (type === 'pickup')
                     ? `${texts.PrepTime || "وقت تحضير الطلب"}:`

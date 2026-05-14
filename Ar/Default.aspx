@@ -168,6 +168,9 @@ document.getElementById('location-btn').addEventListener('click', function() {
       .search-box select {
         font-size: 16px !important;
       }
+       .back-to-top {
+        bottom: 150px !important;
+       }
 
     }
 
