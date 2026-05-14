@@ -255,7 +255,7 @@
             <button class="icon-btn" id="navShareBtn"  onclick="shareShopGlobal(event)">
                 <i class="fa-solid fa-share"></i>
             </button>
-             <button class="icon-btn" id="cartIcon"  role="button" onclick="window.location.href='checkout.aspx';return false;">
+             <button class="icon-btn" id="cartIcon" type="button" onclick="openSideCart();return false;">
                 <i class="fa fa-shopping-basket"></i>
                 <span id="cartItemsNumber">0</span>
             </button>
@@ -357,7 +357,7 @@
         <i class="fa-solid fa-house"></i>
         <span data-key="nav_home"><asp:Literal ID="ltBottomHome" runat="server" Text="<%$ Resources:Texts, Home %>" /></span>
     </a>
-    <a href="CheckOut.aspx" class="mobile-nav-item nav-cart">
+    <a href="javascript:void(0)" class="mobile-nav-item nav-cart" onclick="openSideCart();return false;">
         <i class="fa-solid fa-cart-shopping"></i>
         <span data-key="nav_cart"><asp:Literal ID="ltBottomCart" runat="server" Text="<%$ Resources:Texts, ViewCart %>" /></span>
     </a>
@@ -518,6 +518,98 @@ document.addEventListener("DOMContentLoaded", loadTextsOnStart);
             shopSearcher.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     });
+
+    window.openSideCart = function() {
+        const overlay = document.getElementById('sideCartOverlay');
+        if (overlay) {
+            overlay.classList.add('openSideCart');
+            document.body.style.overflow = 'hidden';
+            if (typeof updateCartUI === 'function') {
+                updateCartUI();
+            }
+        }
+    };
+
+    window.closeSideCart = function() {
+        const overlay = document.getElementById('sideCartOverlay');
+        if (overlay) {
+            overlay.classList.remove('openSideCart');
+            document.body.style.overflow = '';
+        }
+    };
+
+    // Close side cart on back navigation
+    window.addEventListener('popstate', function() {
+        closeSideCart();
+    });
 </script>
+<figure id="sideCartOverlay" onclick="if(event.target === this) closeSideCart()">
+    <aside id="sideCart">
+        <div class="side-cart-header">
+            <h1>
+                <asp:Literal ID="ltSideCartTitle" runat="server" Text="<%$ Resources:texts, ShoppingCartTitle %>"></asp:Literal>
+            </h1>
+            <button type="button" class="close-side-cart" onclick="closeSideCart()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div id="sideCartContent">
+             <!-- Empty cart message -->
+            <figure id="emptyCart">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <p>
+                    <asp:Literal ID="ltEmptyCartSide" runat="server"
+                        Text="<%$ Resources:texts, EmptyCartMessage %>"></asp:Literal>
+                </p>
+            </figure>
+
+            <!-- Cart items -->
+            <figure id="inCartItems">
+                <!-- items injected by Cart.js -->
+                
+                <div class="side-cart-footer-container">
+                    <div class="preDeliveryFeeAmount">
+                        <p>
+                            <asp:Literal ID="ltSubtotalSide" runat="server"
+                                Text="<%$ Resources:texts, Subtotal %>"></asp:Literal>
+                        </p>
+                        <span class="subtotalAmount">0.00 <%= Resources.Texts.Currency %></span>
+                    </div>
+
+                    <div class="deliveryAmount">
+                        <p>
+                            <asp:Literal ID="ltDeliveryFeeTextSide" runat="server"
+                                Text="<%$ Resources:texts, DeliveryFee %>"></asp:Literal>
+                            <i class="fa-solid fa-circle-info"></i>
+                        </p>
+                        <span class="deliveryFee">0.00 <%= Resources.Texts.Currency %></span>
+                    </div>
+
+                    <div class="afterDeliveryFeeAmount">
+                        <p>
+                            <asp:Literal ID="ltTotalAmountTextSide" runat="server"
+                                Text="<%$ Resources:texts, TotalAmount %>"></asp:Literal>
+                        </p>
+                        <span class="totalAmount">0.00 <%= Resources.Texts.Currency %></span>
+                    </div>
+
+                    <div class="confirmCartActions">
+                        <button class="submit" type="button">
+                            <a href="checkout.aspx">
+                                <asp:Literal ID="ltCheckoutSide" runat="server"
+                                    Text="<%$ Resources:texts, Checkout %>"></asp:Literal>
+                            </a>
+                        </button>
+                        <button type="button" id="emptyCartBtn"
+                            title='<asp:Literal ID="ltEmptyCartTitleSide" runat="server" Text="<%$ Resources:texts, EmptyCart %>" />'
+                            aria-label='<asp:Literal ID="ltEmptyCartAriaSide" runat="server" Text="<%$ Resources:texts, EmptyCart %>" />'>
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </figure>
+        </div>
+    </aside>
+</figure>
 </body>
 </html>

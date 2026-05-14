@@ -814,6 +814,9 @@
 
             /* --- MODERN CLEAN CART DESIGN --- */
             #shoppingCart {
+                .orderedItemsWrapper{
+                    max-height: 350px;
+                }
                 /* Container overlay is handled in css_web.css, but we can override if needed */
             }
 
@@ -857,11 +860,10 @@
             }
 
             .orderedItemsWrapper {
-                max-height: 450px;
+                /* max-height: 450px; */
                 overflow-y: auto;
                 overflow-x: auto;
                 margin-bottom: 1.5rem;
-                padding-inline: 4px;
                 display: flex;
                 flex-direction: column;
                 gap: 8px;
@@ -1005,11 +1007,11 @@
                 background: #fafbfc;
                 border-radius: 1.25rem;
   margin-bottom: 0px !important;
-                padding: 1.25rem;
+                padding: 1rem !important;
                 padding-top: 0px !important;
                 display: flex;
                 flex-direction: column;
-                gap: 0.8rem;
+                gap: 0 !important;
             }
 
             .preDeliveryFeeAmount, .deliveryAmount, .afterDeliveryFeeAmount {
@@ -1793,6 +1795,12 @@ display: none !important;
                 </section>
             </div>
         </section>
+
+
+
+
+
+
         <div id="cartShower">
             <h3 id="totalPayAmount">
             </h3>
@@ -2321,7 +2329,7 @@ display: none !important;
         /* Nested Upsells in Cart */
         .cart-item-group {
             background: #fff;
-            border: 1px solid #f0f0f0;
+            border: 1px solid rgba(0, 0, 0, 0.1);
             border-radius: 1.25rem;
             margin-bottom: 1rem;
             min-height: fit-content;
@@ -2438,6 +2446,12 @@ padding-inline: 1rem !important;
             display: grid;
             grid-template-columns: repeat(2, 1fr) !important;
         }
+        @media (max-width: 768px) {
+  .custom-grid {
+    display: none !important;
+  }
+}
+
         .cust-handlers button {
             width: 18px;
             height: 18px;
@@ -2873,7 +2887,7 @@ padding-inline: 1rem !important;
                 return;
             }
 
-            const productName = popup.querySelector('h1')?.innerText || 'Product';
+            const productName = popup.querySelector('h1')?.innerText.split(' - ')[0] || 'Product';
             const notesEl = popup.querySelector('#product-notes') || popup.querySelector('textarea');
             const notes = notesEl?.value || '';
 
@@ -2881,7 +2895,7 @@ padding-inline: 1rem !important;
             const shopName = document.querySelector('.shop-header-info h1')?.innerText || '';
 
             // Unique ID based on product ID and size ID
-            const baseId = currentTriggeringProduct?.id || (currentEditItem ? currentEditItem.id.split('-size-')[0] : 'custom');
+            const baseId = currentCustomization?.baseItemId || currentTriggeringProduct?.id || (currentEditItem ? currentEditItem.id.split('-size-')[0] : 'custom');
             const sizeSuffix = (currentCustomization && currentCustomization.size) ? `-size-${currentCustomization.size.id}` : '';
             const uniqueId = baseId + sizeSuffix;
 
@@ -2915,27 +2929,31 @@ padding-inline: 1rem !important;
 
             let addedStatus = false;
             if (window.cart) {
-                // If we are editing, replace the old item
                 if (currentEditItem) {
                     window.cart.removeItem(currentEditItem.id, currentEditItem.shopId);
                 }
-
                 addedStatus = window.cart.addItem(mainItem, quantity, !!currentEditItem);
             }
 
-            // If addItem returned false, it means it opened a confirmation/warning Swal
-            // So we shouldn't show the success toast yet or close the current Swal (which is already replaced)
             if (addedStatus === false) return;
 
-            Swal.close();
-            Swal.fire({
-                icon: 'success',
-                title: '\u062a\u0645\u062a \u0627\u0644\u0625\u0636\u0627\u0641\u0629 \u0628\u0646\u062c\u0627\u062d',
-                timer: 1500,
-                showConfirmButton: false,
-                toast: true,
-                position: 'top-end'
-            });
+            // Force close current modal before showing success
+            if (typeof Swal !== 'undefined') {
+                Swal.close();
+            }
+
+            setTimeout(() => {
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'تمت الإضافة بنجاح',
+                        timer: 1500,
+                        showConfirmButton: false,
+                        toast: true,
+                        position: 'top-end'
+                    });
+                }
+            }, 100);
         }
 
         function addUpsellItem(btn, price, id, name) {
@@ -2988,11 +3006,14 @@ padding-inline: 1rem !important;
             }
         }
 
-        window.onpopstate = function() {
+        window.addEventListener('popstate', function() {
             if (Swal.isVisible()) {
                 Swal.close();
             }
-        };
+            if (typeof closeSideCart === 'function') {
+                closeSideCart();
+            }
+        });
 
         function openSizesModal(el, name) { openProductModal(el, name); }
         function selectSwalSize(el) {
@@ -4162,8 +4183,9 @@ padding-inline: 1rem !important;
 
     // اختيار نصوص اللغة الحالية (الافتراضية هي العربية إذا لم تكن إنجليزية أو روسية)
     const t = translations[currentLang] || translations.ar;
-            function openProductModal(itemId) {
-                let id = (typeof itemId === 'object') ? itemId.getAttribute('id') : itemId;
+            function openProductModal(triggerEl) {
+                let id = (typeof triggerEl === 'object' && triggerEl !== null) ? triggerEl.getAttribute('id') : triggerEl;
+                currentTriggeringProduct = (typeof triggerEl === 'object') ? triggerEl : null;
                 Swal.fire({
                     title: t.loading,
                     allowOutsideClick: false,

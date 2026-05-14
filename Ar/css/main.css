@@ -2695,7 +2695,7 @@ html[dir="ltr"] .dropdown{
 
 /* Side Cart Grouping */
 .cart-item-group {
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     /* padding-bottom: 8px; */
     margin-bottom: 8px;
 }
