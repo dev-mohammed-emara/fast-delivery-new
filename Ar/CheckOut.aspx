@@ -120,20 +120,18 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: #f5f6f7;
         border-radius: 10px;
         padding: 4px;
         margin: 0 auto;
         width: fit-content;
         gap: 8px;
-        border: 1px solid #eee;
         min-width: 100px;
     }
 
     .cartItemAmountHandlers button,
     .cust-handlers button {
         width: 28px;
-        height: 28px;
+        height: 26px;
         border-radius: 8px;
         border: none;
         background: white !important;
@@ -869,20 +867,18 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: #f5f6f7;
         border-radius: 10px;
         padding: 4px;
         margin: 0 auto;
         width: fit-content;
         gap: 8px;
-        border: 1px solid #eee;
         min-width: 100px;
     }
 
     .cartItemAmountHandlers button,
     .cust-handlers button {
         width: 28px;
-        height: 28px;
+        height: 26px;
         border-radius: 8px;
         border: none;
         background: white !important;

@@ -1653,7 +1653,7 @@ overflow: initial;
     padding: 1px 6px;
     border-radius: 4px;
     margin-top: 3px;
-    display: inline-block;
+    display: inline-flex;
     width: fit-content;}
 
 
@@ -1665,7 +1665,6 @@ overflow: initial;
 }
 .cartItemAmountHandlers {
     background-color: white;
-    border: 1px solid rgba(0, 0, 0, 0.1);
     padding: 0.125rem;
     font-size: 0.8rem;
     border-radius: 0.25rem;
@@ -1681,7 +1680,6 @@ overflow: initial;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #f5f6f7;
     border-radius: 10px;
     padding: 4px;
     margin: 0;
@@ -2053,7 +2051,6 @@ body:has(#openedShopFoods) #cartShower {
 
 .cartItemAmountHandlers {
   background-color: white;
-  border: 1px solid rgba(0, 0, 0, 0.1);
   padding: 0.125rem;
   font-size: 0.8rem;
   border-radius: 0.25rem;

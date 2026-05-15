@@ -946,7 +946,7 @@
                 padding: 1px 6px;
                 border-radius: 4px;
                 margin-top: 3px;
-                display: inline-block;
+                display: flex;
                 width: fit-content;
             }
 
@@ -963,13 +963,11 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                background: #f5f6f7;
                 border-radius: 10px;
                 padding: 4px;
                 margin: 0;
                 min-width: 85px;
                 gap: 6px;
-                border: 1px solid #eee;
             }
 
             .increase, .decrease {
@@ -977,10 +975,10 @@
                 justify-content: center;
                 align-items: center;
                 width: 28px;
-                height: 28px;
+                height: 26px;
                 border: none;
-                background: #fff;
-                color: #444;
+                background: var(--fd-blue);
+                color: #fff;
                 cursor: pointer;
                 border-radius: 7px;
                 transition: all 0.2s;
@@ -1985,7 +1983,7 @@ display: none !important;
             flex-direction: column;
             align-items: stretch;
             height: 100%;
-            max-height: 60px;
+            max-height: 45px;
         }
         .upsell-info h5 {
             font-size: 0.9rem;
@@ -2740,9 +2738,19 @@ padding-inline: 1rem !important;
         };
 
 
-        function toggleExtra(el, price, id) {
-            // Section removed but function kept for compatibility if called
+        function toggleExtra(el, price, id, name) {
             el.classList.toggle('active');
+            
+            if (el.classList.contains('active')) {
+                // Add if not already there
+                if (!currentCustomization.extras.some(x => x.id === id)) {
+                    currentCustomization.extras.push({ id: id, name: name, price: price });
+                }
+            } else {
+                // Remove
+                currentCustomization.extras = currentCustomization.extras.filter(x => x.id !== id);
+            }
+
             recalculateAddonsPrice();
             updateModalTotal();
         }
@@ -2911,7 +2919,8 @@ padding-inline: 1rem !important;
             const hasActualCustomizations = !!(currentCustomization && (
                 (currentCustomization.extras && currentCustomization.extras.length > 0) ||
                 (currentCustomization.upsells && currentCustomization.upsells.length > 0) ||
-                (currentCustomization.size && currentCustomization.size.id && currentCustomization.size.id !== 'size-small')
+                (currentCustomization.size && currentCustomization.size.id && currentCustomization.size.id !== 'size-small') ||
+                !!notes
             ));
 
             const mainItem = {
@@ -3029,13 +3038,6 @@ padding-inline: 1rem !important;
             el.classList.add('active');
         }
 
-        function openProductModal(triggerEl, name, desc, isCustom, price) {
-            if (isCustom) {
-                openHardcodedModal(null, name, price, triggerEl, desc);
-            } else {
-                openSimpleNotesModal(triggerEl, name, price, desc);
-            }
-        }
 
         function openSimpleNotesModal(el, name, price, desc = '', idOverride = null) {
             currentTriggeringProduct = el;
@@ -3324,128 +3326,9 @@ padding-inline: 1rem !important;
         }
 
         function openHardcodedModal(editItem = null, prodName = null, prodPrice = null, triggerEl = null, prodDesc = null, focusNotes = false) {
-            currentTriggeringProduct = triggerEl;
-            currentEditItem = editItem;
-
-            // Determine the base price of the product (the "Small" price)
-            let productBasePrice = 130;
-            if (editItem) {
-                productBasePrice = editItem.productBasePrice || 130;
-            } else if (prodPrice) {
-                productBasePrice = prodPrice;
-            } else if (triggerEl) {
-                productBasePrice = parseFloat(triggerEl.getAttribute('data-price')) || 130;
-            }
-
-            currentProductBasePrice = productBasePrice;
-
-            basePrice = productBasePrice;
-            addonsPrice = 0;
-            quantity = editItem ? editItem.amount : 1;
-            currentCustomization = {
-                size: editItem ? { ...editItem.customization.size } : null,
-                extras: [],
-                upsells: []
-            };
-
-            const actualName = prodName || (editItem ? editItem.name : '\u0631\u0628\u0639 \u0643\u064A\u0644\u0648 \u0634\u0627\u0648\u0631\u0645\u0627 \u0641\u0631\u0627\u062E');
-            const actualImg = (triggerEl ? triggerEl.querySelector('img')?.src : null) || (editItem ? editItem.image : 'images/placeholderImage.webp');
-            const actualDesc = prodDesc || (editItem ? editItem.description : '\u0634\u0627\u0648\u0631\u0645\u0627 \u062F\u062C\u0627\u062C \u0645\u0639 \u0627\u0644\u062A\u0648\u0645\u064A\u0629');
-
-            // If editing, populate state
-            if (editItem && editItem.customization) {
-                currentCustomization.extras = editItem.customization.extras ? [...editItem.customization.extras] : [];
-                currentCustomization.upsells = editItem.customization.upsells ? [...editItem.customization.upsells] : [];
-
-                basePrice = currentCustomization.size ? (currentCustomization.size.price || productBasePrice) : productBasePrice;
-                recalculateAddonsPrice();
-            }
-
-            Swal.fire({
-                html: document.getElementById('hardcoded-product-modal-content').innerHTML,
-                showConfirmButton: false,
-                width: '600px',
-                padding: '0',
-                background: '#f8f9fa',
-                customClass: { popup: 'product-modal-popup' },
-                didOpen: () => {
-                    const popup = document.querySelector('.swal2-popup');
-
-                    // Set dynamic content
-                    popup.querySelector('h1').innerHTML = actualName;
-
-                    // Remove compact price from name row as per user request
-                    const compactPriceEl = popup.querySelector('.compact-price');
-                    if (compactPriceEl) compactPriceEl.style.display = 'none';
-
-                    popup.querySelector('.modal-banner img').src = actualImg;
-                    popup.querySelector('.modal-desc').innerHTML = actualDesc;
-                    popup.querySelector('#modal-qty').innerText = quantity;
-
-                    const notesArea = popup.querySelector('#product-notes') || popup.querySelector('textarea');
-                    if (notesArea) notesArea.value = editItem ? (editItem.customization?.notes || editItem.notes || '') : '';
-
-                    if (focusNotes && notesArea) {
-                        setTimeout(() => {
-                            notesArea.focus();
-                            notesArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        }, 500);
-                    }
-
-                    // DYNAMICALLY UPDATE SIZE PRICES
-                    const sizeRows = popup.querySelectorAll('.option-row');
-                    if (sizeRows.length >= 3) {
-                        const prices = [currentProductBasePrice, currentProductBasePrice + 50, currentProductBasePrice + 100];
-                        sizeRows.forEach((row, idx) => {
-                            const p = prices[idx];
-                            const priceSpan = row.querySelector('.price-radio span');
-                            if (priceSpan) priceSpan.innerText = p + ' ج.م';
-
-                            row.onclick = () => selectModalOption(row, p, row.getAttribute('data-size-id'));
-                        });
-                    }
-
-                    // Pre-select size
-                    if (currentCustomization.size) {
-                        const sizeRow = popup.querySelector(`.option-row[data-size-id="${currentCustomization.size.id}"]`);
-                        if (sizeRow) {
-                            popup.querySelectorAll('.option-row').forEach(r => r.classList.remove('active'));
-                            sizeRow.classList.add('active');
-                        }
-                    }
-
-
-                    // Pre-select extras
-                    currentCustomization.extras.forEach(ex => {
-                        const exRow = popup.querySelector(`.extra-item[data-quickOption-id="${ex.id}"]`);
-                        if (exRow) exRow.classList.add('active');
-                    });
-
-                    // Pre-select upsells
-                    currentCustomization.upsells.forEach(up => {
-                        const upCard = popup.querySelector(`.upsell-card-new[data-upsell-id="${up.id}"]`);
-                        if (upCard) {
-                            const addBtn = upCard.querySelector('.upsell-add-btn');
-                            const qtyCtrl = upCard.querySelector('.qty-control');
-                            const badge = upCard.querySelector('.upsell-badge');
-                            const qtyVal = upCard.querySelector('.upsell-qty-val');
-
-                            if (addBtn) addBtn.style.display = 'none';
-                            if (qtyCtrl) qtyCtrl.style.display = 'flex';
-                            if (badge) {
-                                badge.style.display = 'flex';
-                                badge.innerText = up.qty;
-                            }
-                            if (qtyVal) qtyVal.innerText = up.qty;
-                        }
-                    });
-
-                    // Init Swipers
-                    new Swiper('.related-products-swiper', { slidesPerView: 'auto', spaceBetween: 12, freeMode: true });
-
-                    updateModalTotal();
-                }
-            });
+            // This function now delegates to openProductModal to ensure we fetch real data from the database
+            // instead of using the dummy hardcoded template.
+            openProductModal(triggerEl || editItem?.id, editItem, focusNotes);
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -3543,8 +3426,10 @@ padding-inline: 1rem !important;
         .modal-banner {
             position: relative;
             width: 100%;
-            height: 225px;
+            min-height: 225px;
+            max-height: 225px;
             background: #eee;
+            height: 225px;
         }
 
         .modal-banner img {
@@ -3904,7 +3789,7 @@ padding-inline: 1rem !important;
             background: #e88b0e;
             color: white;
             width: 28px;
-            height: 28px;
+            height: 26px;
             border-radius: 50%;
             display: none; /* Hidden by default */
             align-items: center;
@@ -4192,9 +4077,35 @@ padding-inline: 1rem !important;
 
     // اختيار نصوص اللغة الحالية (الافتراضية هي العربية إذا لم تكن إنجليزية أو روسية)
     const t = translations[currentLang] || translations.ar;
-            function openProductModal(triggerEl) {
+            function openProductModal(triggerEl, arg2 = null, arg3 = null, arg4 = null, arg5 = null) {
+                let editItem = null;
+                let focusNotes = false;
+
+                // Handle legacy signature: (triggerEl, name, desc, isCustom, price)
+                if (typeof arg2 === 'string') {
+                    const id = (typeof triggerEl === 'object' && triggerEl !== null) ? triggerEl.getAttribute('id') : triggerEl;
+                    const shopId = String(document.getElementById('shopId')?.innerText.trim() || '');
+                    
+                    if (window.cart) {
+                        editItem = window.cart.items.find(i => i.id === id && String(i.shopId) === shopId);
+                    }
+                    focusNotes = false;
+                } else {
+                    // New signature: (triggerEl, editItem, focusNotes)
+                    editItem = arg2;
+                    focusNotes = !!arg3;
+                }
+
                 let id = (typeof triggerEl === 'object' && triggerEl !== null) ? triggerEl.getAttribute('id') : triggerEl;
+                
+                // If id is not found and we have an editItem, use its ID
+                if (!id && editItem) {
+                    id = editItem.id.split('-size-')[0]; // Remove size suffix for the data fetch
+                }
+
                 currentTriggeringProduct = (typeof triggerEl === 'object') ? triggerEl : null;
+                currentEditItem = editItem;
+
                 Swal.fire({
                     title: t.loading,
                     allowOutsideClick: false,
@@ -4214,7 +4125,7 @@ padding-inline: 1rem !important;
                     success: function (res) {
                         var data = res.d; // البيانات الناتجة من الـ WebMethod
                         if (data.success) {
-                            renderProductModal(data);
+                            renderProductModal(data, editItem, focusNotes);
                         } else {
                             alert(data.message);
                         }
@@ -4223,22 +4134,31 @@ padding-inline: 1rem !important;
 
             }
 
-            function renderProductModal(data) {
-                // 1. تجهيز كود الأحجام (Sizes)
+            function renderProductModal(data, editItem = null, focusNotes = false) {
+                // Initialize customization state
                 currentCustomization = {
                     baseItemId: data.id,
-                    selectedSizeId: null,
-                    extras: [],
-                    upsells: [], // تأكد من إضافة هذا السطر هنا أيضاً
-                    quantity: 1,
-                    notes: ''
+                    selectedSizeId: editItem?.customization?.size?.id || null,
+                    size: editItem?.customization?.size ? { ...editItem.customization.size } : null,
+                    extras: editItem?.customization?.extras ? [...editItem.customization.extras] : [],
+                    upsells: editItem?.customization?.upsells ? [...editItem.customization.upsells] : [],
+                    quantity: editItem?.amount || 1,
+                    notes: editItem?.customization?.notes || editItem?.notes || ''
                 };
+
+                // Initialize prices and quantity
+                quantity = currentCustomization.quantity;
+                currentProductBasePrice = data.price;
+                basePrice = currentCustomization.size ? (currentCustomization.size.price || data.price) : data.price;
+                recalculateAddonsPrice();
+
+                // 1. Prepare Sizes HTML
                 var sizesHtml = '';
                 if (data.sizes && data.sizes.length > 0) {
-                    data.sizes.forEach(function (size, index) {
-                        var activeClass = index === 0 ? 'active' : '';
+                    data.sizes.forEach(function (size) {
+                        var activeClass = (currentCustomization.size && currentCustomization.size.id === size.id) ? 'active' : '';
                         sizesHtml += `
-                <div class="option-row" data-item-id="${size.menuItemid}" data-size-id="${size.id}" onclick="selectModalOption(this, ${size.price}, '${size.id}')">
+                <div class="option-row ${activeClass}" data-item-id="${size.menuItemid}" data-size-id="${size.id}" onclick="selectModalOption(this, ${size.price}, '${size.id}')">
                     <span>${size.name}</span>
                     <div class="price-radio">
                         <span>${size.price} ج.م</span>
@@ -4248,22 +4168,42 @@ padding-inline: 1rem !important;
                     });
                 }
 
-                // 2. تجهيز كود المنتجات الإضافية (Upsell Section)
+                // 2. Prepare Extras HTML (if any in data)
+                var extrasHtml = '';
+                if (data.extras && data.extras.length > 0) {
+                    data.extras.forEach(function (ex) {
+                        var activeClass = currentCustomization.extras.some(e => e.id === ex.id) ? 'active' : '';
+                        extrasHtml += `
+                        <div class="option-row extra-item ${activeClass}" data-extra-id="${ex.id}" data-price="${ex.price}" onclick="toggleExtra(this, ${ex.price}, '${ex.id}', '${ex.name}')">
+                            <span>${ex.name}</span>
+                            <div class="price-radio">
+                                <span>+ ${ex.price} ج.م</span>
+                                <div class="radio-circle"></div>
+                            </div>
+                        </div>`;
+                    });
+                }
+
+                // 3. Prepare Upsells HTML
                 var upsellHtml = '';
                 if (data.upsellItems && data.upsellItems.length > 0) {
                     var upsellSlides = '';
                     data.upsellItems.forEach(function (item) {
+                        const existingUpsell = currentCustomization.upsells.find(u => u.id === item.id);
+                        const isAdded = !!existingUpsell;
+                        const qty = existingUpsell ? existingUpsell.qty : 1;
+
                         upsellSlides += `
                 <div class="swiper-slide upsell-card-new" data-item-id="${item.id}" data-upsell-id="${item.id}">
                     <div class="upsell-img-wrapper">
-                        <div class="upsell-badge" style="display:none;">1</div>
+                        <div class="upsell-badge" style="display: ${isAdded ? 'flex' : 'none'};">${qty}</div>
                         <img src="${item.photoUrl || 'images/placeholderImage.webp'}" alt="${item.name}">
-                        <div class="upsell-add-btn" onclick="addUpsellItem(this, ${item.price}, '${item.id}', '${item.name}')">
+                        <div class="upsell-add-btn" style="display: ${isAdded ? 'none' : 'flex'};" onclick="addUpsellItem(this, ${item.price}, '${item.id}', '${item.name}')">
                             <i class="fa-solid fa-plus"></i>
                         </div>
-                        <div class="qty-control" onclick="event.stopPropagation()">
+                        <div class="qty-control" style="display: ${isAdded ? 'flex' : 'none'};" onclick="event.stopPropagation()">
                             <button onclick="updateUpsellQty(this, -1, ${item.price}, '${item.id}')"><i class="fa-solid fa-minus"></i></button>
-                            <span class="upsell-qty-val">1</span>
+                            <span class="upsell-qty-val">${qty}</span>
                             <button onclick="updateUpsellQty(this, 1, ${item.price}, '${item.id}')"><i class="fa-solid fa-plus"></i></button>
                         </div>
                     </div>
@@ -4287,7 +4227,7 @@ padding-inline: 1rem !important;
             </div>`;
                 }
 
-                // 3. بناء الـ HTML الكامل للمودال بناءً على التصميم الجديد
+                // 4. Build Full Modal HTML
                 var modalHtml = `
     <div class="full-modal-container">
         <div class="modal-banner">
@@ -4315,6 +4255,15 @@ padding-inline: 1rem !important;
                 <div class="options-list">${sizesHtml}</div>
             </div>` : ''}
 
+            ${extrasHtml !== '' ? `
+            <div class="modal-section extras-section">
+                <div class="section-header">
+                    <h3>الإضافات</h3>
+                    <span class="optional-badge">اختياري</span>
+                </div>
+                <div class="options-list">${extrasHtml}</div>
+            </div>` : ''}
+
             ${upsellHtml}
 
             <div class="modal-section">
@@ -4322,32 +4271,35 @@ padding-inline: 1rem !important;
                     <h3>ملاحظات</h3>
                     <span class="optional-badge">اختياري</span>
                 </div>
-                <textarea id="product-notes" placeholder="أضف ملاحظاتك هنا..."></textarea>
+                <textarea id="product-notes" placeholder="أضف ملاحظاتك هنا...">${currentCustomization.notes}</textarea>
             </div>
         </div>
 
         <div class="modal-footer-sticky">
             <div class="qty-control">
                 <button onclick="updateModalQty(-1)"><i class="fa-solid fa-minus"></i></button>
-                <span id="modal-qty">1</span>
+                <span id="modal-qty">${quantity}</span>
                 <button onclick="updateModalQty(1)"><i class="fa-solid fa-plus"></i></button>
             </div>
             <button class="add-to-cart-big" onclick="submitModalCart(${data.id})">
-                <span>إضافة للسلة</span>
-                <strong id="modal-total-price">${data.sizes.length > 0 ? 'اختار الحجم' : data.price + ' ج.م'}</strong>
+                <span>${editItem ? 'تحديث السلة' : 'إضافة للسلة'}</span>
+                <strong id="modal-total-price">...</strong>
             </button>
         </div>
     </div>`;
 
-                // 4. عرض الـ Modal
+                // 5. Display Modal
                 Swal.fire({
                     html: modalHtml,
                     showConfirmButton: false,
                     width: '500px',
                     padding: '0',
-                    customClass: { container: 'p-0' },
+                    customClass: { 
+                        container: 'p-0',
+                        popup: 'product-modal-popup' 
+                    },
                     didOpen: () => {
-                        // تشغيل الـ Swiper إذا وُجدت منتجات Upsell
+                        // Initialize Swipers
                         if (data.upsellItems && data.upsellItems.length > 0) {
                             new Swiper('.related-products-swiper', {
                                 slidesPerView: 'auto',
@@ -4355,6 +4307,19 @@ padding-inline: 1rem !important;
                                 freeMode: true
                             });
                         }
+
+                        // Handle focus notes
+                        if (focusNotes) {
+                            const notesArea = document.querySelector('.swal2-container #product-notes');
+                            if (notesArea) {
+                                setTimeout(() => {
+                                    notesArea.focus();
+                                    notesArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                }, 500);
+                            }
+                        }
+
+                        updateModalTotal();
                     }
                 });
             }

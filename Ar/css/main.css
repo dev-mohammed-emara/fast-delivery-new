@@ -2897,7 +2897,7 @@ html[dir="ltr"] .dropdown{
     padding: 1px 6px;
     border-radius: 4px;
     margin-top: 3px;
-    display: inline-block;
+    display: inline-flex;
     width: fit-content;}
 
 
@@ -2909,7 +2909,6 @@ html[dir="ltr"] .dropdown{
 }
 .cartItemAmountHandlers {
     background-color: white;
-    border: 1px solid rgba(0, 0, 0, 0.1);
     padding: 0.125rem;
     font-size: 0.8rem;
     border-radius: 0.25rem;
@@ -2925,7 +2924,6 @@ html[dir="ltr"] .dropdown{
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #f5f6f7;
     border-radius: 10px;
     padding: 4px;
     margin: 0;
@@ -3152,17 +3150,18 @@ html[dir='ltr'] #sideCart{
     font-size: 0.75rem;
     border-radius: inherit;
     transition: var(--transition);
-    color: var(--fd-blue);
-}
+  background: var(--fd-blue);
+                color: #fff;}
 .increase, .decrease {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 28px;
-    height: 28px;
+    height: 26px;
     border: none;
-    background: #fff;
-    cursor: pointer;
+  background: var(--fd-blue);
+                color: #fff;
+                    cursor: pointer;
     border-radius: 7px;
     transition: all 0.2s;
     font-size: 0.8rem;

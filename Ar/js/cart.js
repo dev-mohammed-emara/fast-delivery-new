@@ -175,6 +175,18 @@ document.addEventListener("DOMContentLoaded", () => {
             const existing = this.items.find(i => i.id === item.id && String(i.shopId) === String(targetShopId));
             if (existing) {
                 existing.amount += count;
+                
+                // Sync notes and customizations
+                if (item.notes) existing.notes = item.notes;
+                if (item.customization) {
+                    if (!existing.customization) existing.customization = {};
+                    if (item.customization.notes) existing.customization.notes = item.customization.notes;
+                    if (item.customization.size) existing.customization.size = item.customization.size;
+                    if (item.customization.extras) existing.customization.extras = [...item.customization.extras];
+                    if (item.customization.upsells) existing.customization.upsells = [...item.customization.upsells];
+                }
+                if (item.isCustomized) existing.isCustomized = true;
+
                 this.save();
                 return true;
             }
@@ -562,8 +574,8 @@ function showCartToast(message = (window.texts ? window.texts.AddedToCartDefault
                         <div class="orderedItemMain">
                           <span class="orderedItemName">${item.name} ${item.customization?.size ? `<small class="cart-item-size">(${item.customization.size.name})</small>` : ''} <small class="unit-price">(${item.price} ${texts.Currency})</small></span>
                           <div class="cart-item-badges">
-                            ${item.isCustomized ? `<span class="addons-badge ${item.isCustomProduct && (item.hasActualCustomizations === false || (!item.customization?.extras?.length && !item.customization?.upsells?.length && (!item.customization?.size || item.customization?.size?.id === 'size-small'))) ? 'suggestion-badge' : ''}" onclick="event.stopPropagation(); openHardcodedModal(${JSON.stringify(item).replace(/"/g, '&quot;')})">${item.isCustomProduct && (item.hasActualCustomizations === false || (!item.customization?.extras?.length && !item.customization?.upsells?.length && (!item.customization?.size || item.customization?.size?.id === 'size-small'))) ? '<i class="fa-solid fa-wand-magic-sparkles"></i> ' + texts.Extras : texts.Extras}</span>` : ''}
-                            ${(item.customization?.notes || item.notes) ? `<span class="notes-badge" onclick="event.stopPropagation(); if(typeof openSimpleNotesModal==='function') openSimpleNotesModal(null, '${item.name.replace(/'/g, "\\'")}', ${item.price}, '${(item.desc || '').replace(/'/g, "\\'")}', '${item.id}'); else openHardcodedModal(${JSON.stringify(item).replace(/"/g, '&quot;')}, null, null, null, null, true)">${texts.Notes}</span>` : ''}
+                            ${item.isCustomized ? `<span class="addons-badge ${item.isCustomProduct && (item.hasActualCustomizations === false || (!item.customization?.extras?.length && !item.customization?.upsells?.length && (!item.customization?.size || item.customization?.size?.id === 'size-small'))) ? 'suggestion-badge' : ''}" onclick="event.stopPropagation(); if(typeof openProductModal==='function') openProductModal('${item.id}', ${JSON.stringify(item).replace(/"/g, '&quot;')}); else if(typeof openHardcodedModal==='function') openHardcodedModal(${JSON.stringify(item).replace(/"/g, '&quot;')})">${item.isCustomProduct && (item.hasActualCustomizations === false || (!item.customization?.extras?.length && !item.customization?.upsells?.length && (!item.customization?.size || item.customization?.size?.id === 'size-small'))) ? '<i class="fa-solid fa-wand-magic-sparkles"></i> ' + texts.Extras : texts.Extras}</span>` : ''}
+                            ${(item.customization?.notes || item.notes) ? `<span class="notes-badge" onclick="event.stopPropagation(); if(typeof openProductModal==='function') openProductModal('${item.id}', ${JSON.stringify(item).replace(/"/g, '&quot;')}, true); else openHardcodedModal(${JSON.stringify(item).replace(/"/g, '&quot;')}, null, null, null, null, true)">${texts.Notes || 'ملاحظات'}</span>` : ''}
                           </div>
                         </div>
                         <span class="totalItemPrice">${itemOnlyTotal.toLocaleString()} ${texts.Currency}</span>
@@ -649,7 +661,10 @@ function showCartToast(message = (window.texts ? window.texts.AddedToCartDefault
                         const editTrigger = article.querySelector(".orderedItemMain");
                         if (editTrigger) {
                             editTrigger.style.cursor = "pointer";
-                            editTrigger.onclick = () => openHardcodedModal(item);
+                            editTrigger.onclick = () => {
+                                if (typeof openProductModal === 'function') openProductModal(item.id, item);
+                                else openHardcodedModal(item);
+                            };
                         }
                     }
                 });
