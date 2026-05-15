@@ -2330,7 +2330,7 @@ body:has(#openedShopFoods) #cartShower {
   grid-template-columns: auto 1fr auto auto;
   align-items: center;
   gap: 12px;
-  padding: 10px 14px;
+  padding: 1rem 0.5rem;
   background: #fff;
   border: 1px solid #efefef;
   border-radius: 14px;

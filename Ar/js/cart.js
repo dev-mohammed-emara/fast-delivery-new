@@ -186,6 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     if (item.customization.upsells) existing.customization.upsells = [...item.customization.upsells];
                 }
                 if (item.isCustomized) existing.isCustomized = true;
+                if (item.isCustomProduct) existing.isCustomProduct = true;
 
                 this.save();
                 return true;
@@ -574,8 +575,18 @@ function showCartToast(message = (window.texts ? window.texts.AddedToCartDefault
                         <div class="orderedItemMain">
                           <span class="orderedItemName">${item.name} ${item.customization?.size ? `<small class="cart-item-size">(${item.customization.size.name})</small>` : ''} <small class="unit-price">(${item.price} ${texts.Currency})</small></span>
                           <div class="cart-item-badges">
-                            ${item.isCustomized || (item.customization?.extras?.length > 0) || (item.customization?.upsells?.length > 0) ? `<span class="addons-badge" onclick="event.stopPropagation(); if(typeof openProductModal==='function') openProductModal('${item.id}', ${JSON.stringify(item).replace(/"/g, '&quot;')}); else if(typeof openHardcodedModal==='function') openHardcodedModal(${JSON.stringify(item).replace(/"/g, '&quot;')})">${texts.Extras || 'الإضافات'}</span>` : ''}
-                            ${(item.customization?.notes || item.notes) ? `<span class="notes-badge" onclick="event.stopPropagation(); if(typeof openProductModal==='function') openProductModal('${item.id}', ${JSON.stringify(item).replace(/"/g, '&quot;')}, true); else openHardcodedModal(${JSON.stringify(item).replace(/"/g, '&quot;')}, null, null, null, null, true)">${texts.Notes || 'ملاحظات'}</span>` : ''}
+                            ${(item.isCustomProduct || (item.customization?.extras?.length > 0) || (item.customization?.upsells?.length > 0) || (item.customization?.quickChoices?.length > 0) || (item.customization?.size && item.customization.size.id && item.customization.size.id !== 'size-small')) 
+                                ? (() => {
+                                    const hasActualAddons = (item.customization?.extras?.length > 0) || (item.customization?.upsells?.length > 0) || (item.customization?.quickChoices?.length > 0) || (item.customization?.size && item.customization.size.id && item.customization.size.id !== 'size-small');
+                                    return `<span class="addons-badge ${!hasActualAddons ? 'suggestion-badge' : ''}" onclick="event.stopPropagation(); if(typeof openProductModal==='function') openProductModal('${item.id}', ${JSON.stringify(item).replace(/"/g, '&quot;')}); else if(typeof openHardcodedModal==='function') openHardcodedModal(${JSON.stringify(item).replace(/"/g, '&quot;')})">${!hasActualAddons ? '<i class="fa-solid fa-wand-magic-sparkles"></i> ' + (texts.Extras || 'الإضافات') : (texts.Extras || 'الإضافات')}</span>`;
+                                })()
+                                : ''
+                            }
+
+                            ${(() => {
+                                const hasNotes = !!(item.customization?.notes || item.notes);
+                                return `<span class="notes-badge ${!hasNotes ? 'suggestion-badge' : ''}" onclick="event.stopPropagation(); if(typeof openProductModal==='function') openProductModal('${item.id}', ${JSON.stringify(item).replace(/"/g, '&quot;')}, true); else openHardcodedModal(${JSON.stringify(item).replace(/"/g, '&quot;')}, null, null, null, null, true)">${!hasNotes ? '<i class="fa-solid fa-comment-medical"></i> ' + (texts.Notes || 'ملاحظات') : (texts.Notes || 'ملاحظات')}</span>`;
+                            })()}
                           </div>
                         </div>
                         <span class="totalItemPrice">${itemOnlyTotal.toLocaleString()} ${texts.Currency}</span>
@@ -741,7 +752,8 @@ function showCartToast(message = (window.texts ? window.texts.AddedToCartDefault
                         shopId: GLOBAL_shop_ID,
                         shopName: GLOBAL_shopName,
                         shopAreaId: GLOBAL_shopArea_ID,
-                        addId: GLOBAL_addid_ID
+                        addId: GLOBAL_addid_ID,
+                        isCustomProduct: itemEl.classList.contains('custom-item') || itemEl.getAttribute('data-has-addons') === '1'
 
                     });
 
@@ -957,7 +969,8 @@ function renderCheckoutArticles(items, summary) {
 
         sendAddId(addId);
 
-        const isPickup = localStorage.getItem("deliveryMethod") === "pickup";
+        const deliveryMethod = localStorage.getItem("deliveryMethod") || "delivery";
+        const isPickup = deliveryMethod === "pickup" || deliveryMethod === "in-shop";
         const shopDeliveryTime = isPickup ? 0 : (shopGroup.items[0].deliveryTime || 0);
 
         titleDiv.innerHTML = `
@@ -1014,9 +1027,6 @@ function renderCheckoutArticles(items, summary) {
                             ${item.customization?.size ? `<small class="checkout-item-size">(${item.customization.size.name})</small>` : ''}
                             <small class="unit-price">(${item.price.toFixed(2)} ${texts.Currency})</small>
                         </span>
-                        <div class="cart-item-badges">
-                            ${item.isCustomized ? `<span class="addons-badge ${item.isCustomProduct && (item.hasActualCustomizations === false || (!item.customization?.extras?.length && !item.customization?.upsells?.length && (!item.customization?.size || item.customization?.size?.id === 'size-small'))) ? 'suggestion-badge' : ''}" onclick="if(typeof openHardcodedModal==='function') openHardcodedModal(${JSON.stringify(item).replace(/"/g, '&quot;')})">${item.isCustomProduct && (item.hasActualCustomizations === false || (!item.customization?.extras?.length && !item.customization?.upsells?.length && (!item.customization?.size || item.customization?.size?.id === 'size-small'))) ? '<i class="fa-solid fa-wand-magic-sparkles"></i> ' + texts.Extras : texts.Extras}</span>` : ''}
-                        </div>
                     </div>
                     <div class="cartItemAmountHandlers">
                       <button class="decrease" type="button"><i class="fa-solid fa-minus"></i></button>
@@ -1176,7 +1186,8 @@ function renderCheckoutArticles(items, summary) {
     // Update Total Delivery Time in summary
     const totalDeliveryTimeEl = document.getElementById("globalTotalDeliveryTime");
     if (totalDeliveryTimeEl) {
-        const isPickup = localStorage.getItem("deliveryMethod") === "pickup";
+        const deliveryMethod = localStorage.getItem("deliveryMethod") || "delivery";
+        const isPickup = deliveryMethod === "pickup" || deliveryMethod === "in-shop";
         if (isPickup) {
             totalDeliveryTimeEl.innerText = `0 ${texts.Minutes}`;
         } else {
@@ -1218,7 +1229,8 @@ function initDeliveryTimeScheduling() {
 
     // 2. Set Default Time (Current + Max Delivery)
     const now = new Date();
-    const isPickup = localStorage.getItem("deliveryMethod") === "pickup";
+    const deliveryMethod = localStorage.getItem("deliveryMethod") || "delivery";
+    const isPickup = deliveryMethod === "pickup" || deliveryMethod === "in-shop";
     const minAllowedDate = isPickup ? now : new Date(now.getTime() + maxDeliveryTime * 60000);
 
     const formatTime = (date) => {

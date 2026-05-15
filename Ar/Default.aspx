@@ -74,6 +74,16 @@
             opacity: 0;
             visibility: hidden;
         }
+        .news-swipr {
+            background: #f5f5f5 !important;
+        }
+
+        @media (max-width:480px){
+                .whatsapp-float {
+                    bottom: 150px !important;
+                }
+
+        }
     </style>
 
     <div id="loader-wrapper">
@@ -200,6 +210,43 @@ document.getElementById('location-btn').addEventListener('click', function() {
         <div class="hero-section-fade-out"></div>
     </section>
 
+    <section class="news-swipr">
+    <div class="swiper newsSwiper">
+        <div class="swiper-wrapper">
+
+            <div class="swiper-slide">
+                <img
+                    src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1200&auto=format&fit=crop"
+                    alt="News Image"
+                />
+            </div>
+
+            <div class="swiper-slide">
+                <img
+                    src="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?q=80&w=1200&auto=format&fit=crop"
+                    alt="News Image"
+                />
+            </div>
+
+            <div class="swiper-slide">
+                <img
+                    src="https://images.unsplash.com/photo-1519608487953-e999c86e7455?q=80&w=1200&auto=format&fit=crop"
+                    alt="News Image"
+                />
+            </div>
+
+            <div class="swiper-slide">
+                <img
+                    src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1200&auto=format&fit=crop"
+                    alt="News Image"
+                />
+            </div>
+
+        </div>
+
+        <div class="swiper-pagination"></div>
+    </div>
+</section>
     <section class="categories-section gray-bg" role="region" aria-labelledby="section_1_title">
         <div class="content-container">
             <h2 id="section_1_title" data-key="section_1_title"> <asp:Literal ID="litSection1Title" runat="server" Text="<%$ Resources:Texts, Section1_Title %>" />

@@ -654,6 +654,25 @@
 
         </div>
       </div>
+      <section class="news-swipr" style="padding: 20px 0; max-width: 1200px; margin: 0 auto; overflow: hidden;">
+        <div class="swiper newsSwiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1200&auto=format&fit=crop" alt="News Image" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?q=80&w=1200&auto=format&fit=crop" alt="News Image" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="https://images.unsplash.com/photo-1519608487953-e999c86e7455?q=80&w=1200&auto=format&fit=crop" alt="News Image" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1200&auto=format&fit=crop" alt="News Image" />
+                </div>
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+    </section>
       <span class="route">
         <a href="Default.aspx">
           <asp:Literal ID="ltHome" runat="server" Text="<%$ Resources:texts, Home %>"></asp:Literal>

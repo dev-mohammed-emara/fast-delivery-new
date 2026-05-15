@@ -1415,6 +1415,25 @@ display: none !important;
                         <%-- &#1605;&#1579;&#1575;&#1604; &#1579;&#1575;&#1576;&#1578;: --%>
                     </div>
                 </div>
+                <section class="news-swipr" style="padding: 20px 0; max-width: 1200px; margin: 0 auto; overflow: hidden;">
+                    <div class="swiper newsSwiper">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide">
+                                <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1200&auto=format&fit=crop" alt="News Image" />
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?q=80&w=1200&auto=format&fit=crop" alt="News Image" />
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="https://images.unsplash.com/photo-1519608487953-e999c86e7455?q=80&w=1200&auto=format&fit=crop" alt="News Image" />
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1200&auto=format&fit=crop" alt="News Image" />
+                            </div>
+                        </div>
+                        <div class="swiper-pagination"></div>
+                    </div>
+                </section>
 
                 <div class="restaurant-content-wrapper">
                 </div>
@@ -1478,10 +1497,13 @@ display: none !important;
 
                                         <ul class="foodDrowdown">
                                             <asp:Repeater ID="rptFoodItems" runat="server">
-                                                <ItemTemplate>                                                    <li class="foodItem <%# Convert.ToBoolean(Eval("isCustom")) ? "custom-item" : "" %>"
+                                                <ItemTemplate>
+                                                    <li class="foodItem <%# Convert.ToBoolean(Eval("isCustom")) ? "custom-item" : "" %>"
                                                         id='<%# Eval("id") %>'
                                                         data-product-name='<%# System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName=="en" ? Eval("NameEn") : Eval("Name") %>'
                                                         data-price='<%# Eval("NewPrice") %>'
+                                                        data-has-addons='<%# Eval("hasAddons") %>'
+                                                        data-is-custom='<%# Eval("isCustom") %>'
                                                         onclick="handleProductClick(this, event)">
                                                          <div class="product-qty-badge">0</div>
                                                         <div class="foodDetailsContainer">
@@ -1891,6 +1913,8 @@ display: none !important;
             justify-content: center;
             white-space: nowrap;
             font-weight: 600;
+            white-space: nowrap;
+            min-width: fit-content;
             cursor: pointer;
             min-height: 26px;
             transition: transform 0.2s, background 0.2s;
@@ -1911,6 +1935,8 @@ display: none !important;
         .addons-badge.suggestion-badge {
             background: #fffdf0;
             color: #d4a017;
+            white-space: nowrap;
+            min-width: fit-content;
             border: 1px dashed #ffc119;
             opacity: 0.9;
         }
@@ -2640,7 +2666,8 @@ padding-inline: 1rem !important;
                 window.cart.addItem({
                     id, name, price,
                     shopId: shopId,
-                    shopName: document.querySelector('.shop-header-info h1')?.innerText || ''
+                    shopName: document.querySelector('.shop-header-info h1')?.innerText || '',
+                    isCustomProduct: itemEl.getAttribute('data-has-addons') === '1' || itemEl.classList.contains('custom-item')
                 }, 1);
             }
 
@@ -2738,7 +2765,7 @@ padding-inline: 1rem !important;
             const sizeSuffix = (currentCustomization && currentCustomization.size) ? `-size-${currentCustomization.size.id}` : '';
             const uniqueId = baseId + sizeSuffix;
 
-            const isCustomProduct = !!(currentTriggeringProduct?.classList.contains('custom-item') || currentEditItem?.isCustomProduct);
+            const isCustomProduct = !!(currentCustomization?.isCustomProduct || currentTriggeringProduct?.closest('.foodItem')?.classList.contains('custom-item') || currentTriggeringProduct?.classList.contains('custom-item') || currentEditItem?.isCustomProduct);
             const hasActualCustomizations = !!(currentCustomization && (
                 (currentCustomization.extras && currentCustomization.extras.length > 0) ||
                 (currentCustomization.upsells && currentCustomization.upsells.length > 0) ||
@@ -3961,6 +3988,7 @@ padding-inline: 1rem !important;
                 // Initialize customization state
                 currentCustomization = {
                     baseItemId: data.id,
+                    isCustomProduct: (data.sizes && data.sizes.length > 0) || (data.extras && data.extras.length > 0) || (data.upsellItems && data.upsellItems.length > 0),
                     selectedSizeId: editItem?.customization?.size?.id || null,
                     size: editItem?.customization?.size ? { ...editItem.customization.size } : null,
                     extras: editItem?.customization?.extras ? [...editItem.customization.extras] : [],

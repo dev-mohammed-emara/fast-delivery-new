@@ -286,7 +286,14 @@ SELECT
     CASE
         WHEN (SELECT COUNT(*) FROM MenuItems_Sizes WHERE MenuItems_id = mi.id) > 1 THEN 1
         ELSE 0
-    END AS isCustom
+    END AS isCustom,
+    
+    -- hasAddons: لو له إضافات أو أحجام متعددة
+    CASE
+        WHEN (SELECT COUNT(*) FROM MenuItems_Sizes WHERE MenuItems_id = mi.id) > 1 THEN 1
+        WHEN (SELECT COUNT(*) FROM MenuItems_Extras WHERE MenuItem_id = mi.id) > 0 THEN 1
+        ELSE 0
+    END AS hasAddons
 
 FROM dbo.Menus m
 INNER JOIN dbo.MenuItems mi ON m.id = mi.MenuID

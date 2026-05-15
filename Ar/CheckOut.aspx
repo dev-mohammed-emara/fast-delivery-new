@@ -10,6 +10,7 @@
 </div> -->
 
                     <style>
+
     /* Premium Checkout Styling */
     .checkoutDetails {
         padding-top: 130px;
@@ -134,8 +135,8 @@
         height: 26px;
         border-radius: 8px;
         border: none;
-        background: white !important;
-        color: var(--fd-blue) !important;
+        color: white !important;
+        background: var(--fd-blue) !important;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -526,25 +527,32 @@
 
         <article class="checkoutBox promo-section">
         <div class="checkoutBoxTitle">
-            <div class="promo-header-wrap">
-                <h2><i class="fa-solid fa-ticket"></i> <asp:Literal ID="ltPromoCodeTitle" runat="server" Text="<%$ Resources:texts, PromoCode %>" /></h2>
-                <div class="promo-modes">
-                    <button type="button" class="promo-mode-btn active" onclick="setPromoMode('order', this)"><asp:Literal ID="ltOrderDiscount" runat="server" Text="<%$ Resources:texts, OrderDiscount %>" /></button>
-                    <button type="button" id="btnPromoShipping" class="promo-mode-btn" onclick="setPromoMode('shipping', this)"><asp:Literal ID="ltShippingDiscount" runat="server" Text="<%$ Resources:texts, ShippingDiscount %>" /></button>
-                </div>
-            </div>
+            <h2><i class="fa-solid fa-ticket"></i> <asp:Literal ID="ltPromoCodeTitle" runat="server" Text="<%$ Resources:texts, PromoCode %>" /></h2>
         </div>
-        <div class="paymentSection">
-            <div class="promo-input-wrap">
-                <input type="text" id="promoInput" placeholder="<%= GetGlobalResourceObject("texts", "EnterPromoCode") %>" class="auth-input" onkeydown="if(event.key === 'Enter') { applyPromo(); event.preventDefault(); }">
-                <button type="button" onclick="applyPromo()" class="apply-btn "><asp:Literal ID="ltApply" runat="server" Text="<%$ Resources:texts, Apply %>" /></button>
+        <div class="paymentSection promo-dual-container">
+            <!-- Order Promo -->
+            <div class="promo-field-group">
+                <label class="promo-field-label"><i class="fa-solid fa-bag-shopping"></i> <asp:Literal runat="server" Text="<%$ Resources:texts, OrderDiscount %>" /></label>
+                <div class="promo-input-wrap">
+                    <input type="text" id="promoInputOrder" placeholder="<%= GetGlobalResourceObject("texts", "EnterPromoCode") %>" class="auth-input" onkeydown="if(event.key === 'Enter') { applyPromo('order'); event.preventDefault(); }">
+                    <button type="button" onclick="applyPromo('order')" id="applyBtnOrder" class="apply-btn"><asp:Literal runat="server" Text="<%$ Resources:texts, Apply %>" /></button>
+                </div>
+                <p class="promo-msg" id="promoMsgOrder" style="display:none;"></p>
             </div>
+
+            <!-- Shipping Promo -->
+            <div class="promo-field-group" id="shippingPromoGroup">
+                <label class="promo-field-label"><i class="fa-solid fa-truck"></i> <asp:Literal runat="server" Text="<%$ Resources:texts, ShippingDiscount %>" /></label>
+                <div class="promo-input-wrap">
+                    <input type="text" id="promoInputShipping" placeholder="<%= GetGlobalResourceObject("texts", "EnterPromoCode") %>" class="auth-input" onkeydown="if(event.key === 'Enter') { applyPromo('shipping'); event.preventDefault(); }">
+                    <button type="button" onclick="applyPromo('shipping')" id="applyBtnShipping" class="apply-btn"><asp:Literal runat="server" Text="<%$ Resources:texts, Apply %>" /></button>
+                </div>
+                <p class="promo-msg" id="promoMsgShipping" style="display:none;"></p>
+            </div>
+
             <div class="promo-info-box">
                 <asp:Literal ID="ltPromoInfo" runat="server" Text="<%$ Resources:texts, PromoInfo %>" />
             </div>
-            <p class="promo-msg success" id="promoMsg" style="display:none;">
-
-            </p>
         </div>
     </article>
 
@@ -559,6 +567,9 @@
             </button>
             <button type="button" class="order-type-opt" data-type="pickup" onclick="setGlobalOrderType('pickup')">
                 <i class="fa-solid fa-store"></i> <asp:Literal ID="ltPickup" runat="server" Text="<%$ Resources:texts, Pickup %>" />
+            </button>
+            <button type="button" class="order-type-opt" data-type="in-shop" onclick="setGlobalOrderType('in-shop')">
+                <i class="fa-solid fa-utensils"></i> <asp:Literal ID="ltInShop" runat="server" Text="<%$ Resources:texts, InShop %>" />
             </button>
         </div>
         <div id="globalAreaDiscountMsg" class="promo-msg success m-10-1rem" style="display:none;">
@@ -740,9 +751,13 @@
                     <span class="label"><i class="fa-solid fa-headset"></i> <asp:Literal ID="ltLiveContactTitle" runat="server" Text="<%$ Resources:texts, ContactMethodTitle %>" />:</span>
                     <strong id="live-contact">-</strong>
                 </div>
-                <div class="summary-item" id="live-coupon-wrap" style="display:none;">
-                    <span class="label"><i class="fa-solid fa-tag"></i> <asp:Literal ID="ltLiveCouponTitle" runat="server" Text="<%$ Resources:texts, PromoCode %>" />:</span>
-                    <strong id="live-coupon" class="success-text">-</strong>
+                <div class="summary-item" id="live-coupon-wrap-order" style="display:none;">
+                    <span class="label"><i class="fa-solid fa-tag"></i> <asp:Literal ID="ltLiveCouponTitleOrder" runat="server" Text="<%$ Resources:texts, OrderDiscount %>" />:</span>
+                    <strong id="live-coupon-order" class="success-text">-</strong>
+                </div>
+                <div class="summary-item" id="live-coupon-wrap-shipping" style="display:none;">
+                    <span class="label"><i class="fa-solid fa-tag"></i> <asp:Literal ID="ltLiveCouponTitleShipping" runat="server" Text="<%$ Resources:texts, ShippingDiscount %>" />:</span>
+                    <strong id="live-coupon-shipping" class="success-text">-</strong>
                 </div>
                 <div class="summary-item" id="live-time-wrap" style="display:none;">
                     <span class="label"><i class="fa-solid fa-calendar-check"></i> <asp:Literal ID="ltLiveTimeTitle" runat="server" Text="<%$ Resources:texts, DeliveryTimeTitle %>" />:</span>
@@ -1162,15 +1177,28 @@
         color: #666;
     }
 
-    .promo-mode-btn.active {
-        background: var(--fd-blue);
-        color:  white;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    .promo-dual-container {
+        display: flex;
+        flex-direction: column;
+        gap: 1.2rem;
+    }
+    .promo-field-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    .promo-field-label {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #444;
+        display: flex;
+        align-items: center;
+        gap: 6px;
     }
     .promo-input-wrap {
         display: flex;
         gap: 10px;
-        margin-top: 15px;
+        margin-top: 5px;
     }
     .promo-input-wrap input {
         flex: 1;
@@ -1367,6 +1395,7 @@
     /* Vendor Order Types (Delivery/Pickup) */
     .vendor-group-types {
         display: flex;
+        flex-wrap: wrap;
         gap: 10px;
         padding:  1rem;
     }
@@ -1458,7 +1487,8 @@
             const scheduledTime = document.getElementById('scheduledTime')?.innerText || '';
             const contactMethodEl = document.querySelector('#contactMethodSection .pay-option.selected');
             const contactMethod = contactMethodEl ? contactMethodEl.getAttribute('data-method') : 'ring_bell';
-            const isPickup = document.querySelector('.global-types .order-type-opt.active')?.getAttribute('data-type') === 'pickup';
+            const activeOrderType = document.querySelector('.global-types .order-type-opt.active')?.getAttribute('data-type') || 'delivery';
+            const isPickup = activeOrderType === 'pickup' || activeOrderType === 'in-shop';
 
             let payerPhone = "";
             let paymentProofBase64 = "";
@@ -1503,8 +1533,8 @@
                     deliveryCost: deliveryCost,
                     paymentMethod: paymentMethod,
                     scheduledTime: scheduledTime,
-                    contactMethod: isPickup ? 'pickup' : contactMethod,
-                    orderType: isPickup ? 'pickup' : 'delivery',
+                    contactMethod: isPickup ? activeOrderType : contactMethod,
+                    orderType: activeOrderType,
                     payerPhone: payerPhone,
                     paymentProofBase64: paymentProofBase64
                 })
@@ -1547,19 +1577,6 @@
         });
 
         // --- Payment & Promo Functions ---
-        window.selectedPromoMode = 'order';
-
-        window.setPromoMode = function(mode, btn) {
-            window.selectedPromoMode = mode;
-            document.querySelectorAll('.promo-mode-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            const input = document.getElementById('promoInput');
-            if (mode === 'shipping') {
-                input.placeholder = texts.ShippingDiscountPlaceholder;
-            } else {
-                input.placeholder = texts.OrderDiscountPlaceholder;
-            }
-        };
 
         window.updateLiveSummary = function() {
             const texts = window.texts || {};
@@ -1579,43 +1596,61 @@
 
             // 2. Delivery Method
             const activeTypeBtn = document.querySelector('.global-types .order-type-opt.active');
-            const isPickup = activeTypeBtn && activeTypeBtn.getAttribute('data-type') === 'pickup';
+            const activeType = activeTypeBtn ? activeTypeBtn.getAttribute('data-type') : 'delivery';
+            const isPickup = activeType === 'pickup' || activeType === 'in-shop';
             const liveDel = document.getElementById('live-delivery');
             const delLabelSpan = document.getElementById('live-del-label-span');
             if (delLabelSpan) {
-                delLabelSpan.innerText = isPickup ? (texts.PickupMethodTitle || 'طريقة الاستلام') : (texts.DeliveryMethodTitle || 'طريقة التوصيل');
+                if (activeType === 'in-shop' || activeType === 'pickup') {
+                    delLabelSpan.innerText = texts.PickupMethodTitle || 'طريقة الاستلام';
+                } else {
+                    delLabelSpan.innerText = texts.DeliveryMethodTitle || 'طريقة التوصيل';
+                }
             }
-            if (liveDel) liveDel.textContent = isPickup ? (texts.PickupFromStore || 'استلام من الفرع') : (texts.HomeDelivery || 'توصيل للمنزل');
+            if (liveDel) {
+                if (activeType === 'in-shop') {
+                    liveDel.textContent = texts.EatInShop || 'طلب في المحل';
+                } else {
+                    liveDel.textContent = isPickup ? (texts.PickupFromStore || 'استلام من الفرع') : (texts.HomeDelivery || 'توصيل للمنزل');
+                }
+            }
 
             // 3. Contact Method
             const contactWrap = document.getElementById('live-contact-wrap');
             if (contactWrap) {
-                if (isPickup) {
-                    contactWrap.style.display = 'none';
+                contactWrap.style.display = 'flex';
+                const contactEl = document.querySelector('.contact-methods .pay-option.selected');
+                const contactVal = contactEl ? contactEl.getAttribute('data-method') : 'phone';
+                const contactLabelMap = {
+                    'phone': texts.CallPhone || 'مكالمة هاتفية',
+                    'whatsapp': texts.WhatsApp || 'واتساب',
+                    'ring_bell': texts.RingBell || 'يرن الجرس'
+                };
+                const liveContact = document.getElementById('live-contact');
+                if (liveContact) liveContact.textContent = contactLabelMap[contactVal] || contactVal;
+            }
+
+            // 4. Coupons (Order & Shipping)
+            const orderCouponWrap = document.getElementById('live-coupon-wrap-order');
+            if (orderCouponWrap) {
+                if (window.promoOrder?.code) {
+                    orderCouponWrap.style.display = 'flex';
+                    const liveCouponOrder = document.getElementById('live-coupon-order');
+                    if (liveCouponOrder) liveCouponOrder.textContent = window.promoOrder.code + ' ' + (texts.Applied || '(تم التطبيق)');
                 } else {
-                    contactWrap.style.display = 'flex';
-                    const contactEl = document.querySelector('.contact-methods .pay-option.selected');
-                    const contactVal = contactEl ? contactEl.getAttribute('data-method') : 'ring_bell';
-                    const contactLabelMap = {
-                        'phone': texts.CallPhone || 'مكالمة هاتفية',
-                        'whatsapp': texts.WhatsApp || 'واتساب',
-                        'ring_bell': texts.RingBell || 'يرن الجرس'
-                    };
-                    const liveContact = document.getElementById('live-contact');
-                    if (liveContact) liveContact.textContent = contactLabelMap[contactVal] || contactVal;
+                    orderCouponWrap.style.display = 'none';
                 }
             }
 
-            // 4. Coupon
-            const couponWrap = document.getElementById('live-coupon-wrap');
-            if (couponWrap) {
-                if (window.currentDiscount > 0) {
-                    couponWrap.style.display = 'flex';
-                    const code = document.getElementById('promoInput').value;
-                    const liveCoupon = document.getElementById('live-coupon');
-                    if (liveCoupon) liveCoupon.textContent = code + ' ' + (texts.Applied || '(تم التطبيق)');
+            const shippingCouponWrap = document.getElementById('live-coupon-wrap-shipping');
+            if (shippingCouponWrap) {
+                // Also hide shipping coupon if in pickup/in-shop mode
+                if (window.promoShipping?.code && !isPickup) {
+                    shippingCouponWrap.style.display = 'flex';
+                    const liveCouponShipping = document.getElementById('live-coupon-shipping');
+                    if (liveCouponShipping) liveCouponShipping.textContent = window.promoShipping.code + ' ' + (texts.Applied || '(تم التطبيق)');
                 } else {
-                    couponWrap.style.display = 'none';
+                    shippingCouponWrap.style.display = 'none';
                 }
             }
 
@@ -1637,43 +1672,53 @@
         };
 
         document.addEventListener('DOMContentLoaded', function() {
+            // Load saved delivery method
+            const savedMethod = localStorage.getItem("deliveryMethod");
+            if (savedMethod && (savedMethod === 'delivery' || savedMethod === 'pickup' || savedMethod === 'in-shop')) {
+                if (typeof setGlobalOrderType === 'function') {
+                    setGlobalOrderType(savedMethod);
+                }
+            }
+
             setTimeout(() => {
                 if (typeof updateLiveSummary === 'function') updateLiveSummary();
             }, 500); // Small delay to ensure texts are loaded
         });
 
-        window.currentDiscount = 0;
-        window.currentDiscountType = 'order'; // 'order' or 'shipping'
+        window.promoOrder = { code: '', amount: 0, percentage: 0 };
+        window.promoShipping = { code: '', amount: 0, percentage: 0 };
 
-        window.applyPromo = function() {
-            const codeInput = document.getElementById('promoInput');
-            const applyBtn = document.querySelector('.promo-input-wrap .apply-btn');
-            const msgEl = document.getElementById('promoMsg');
-            const summaryMsgEl = document.getElementById('promoSummaryMsg');
+        window.applyPromo = function(type) {
+            const codeInput = document.getElementById(type === 'order' ? 'promoInputOrder' : 'promoInputShipping');
+            const applyBtn = document.getElementById(type === 'order' ? 'applyBtnOrder' : 'applyBtnShipping');
+            const msgEl = document.getElementById(type === 'order' ? 'promoMsgOrder' : 'promoMsgShipping');
 
-            if (!msgEl || !applyBtn) return;
+            if (!msgEl || !applyBtn || !codeInput) return;
 
-            // Extra safety: block shipping promo if in pickup mode
-            if (window.selectedPromoMode === 'shipping') {
+            const promoState = type === 'order' ? window.promoOrder : window.promoShipping;
+
+            // Extra safety: block shipping promo if in pickup/in-shop mode
+            if (type === 'shipping') {
                 const activeBtn = document.querySelector('.global-types .order-type-opt.active');
-                if (activeBtn && activeBtn.getAttribute('data-type') === 'pickup') {
-                    msgEl.textContent = texts.ShippingPromoNotValidForPickup || "لا يمكن إضافة كوبون توصيل عند الاستلام من الفرع";
+                if (activeBtn && (activeBtn.getAttribute('data-type') === 'pickup' || activeBtn.getAttribute('data-type') === 'in-shop')) {
+                    msgEl.textContent = (window.texts && window.texts.ShippingPromoNotValidForPickup) || "لا يمكن إضافة كوبون توصيل عند الاستلام من الفرع";
                     msgEl.className = "promo-msg error";
                     msgEl.style.display = 'block';
                     return;
                 }
             }
 
-            // If a coupon is already applied, clicking should remove it
-            if (window.currentDiscount > 0) {
-                window.currentDiscount = 0;
-                window.currentDiscountType = 'order';
+            // If a coupon is already applied for this type, clicking should remove it
+            if (promoState.code) {
+                promoState.code = '';
+                promoState.amount = 0;
+                promoState.percentage = 0;
+
                 codeInput.value = '';
                 codeInput.disabled = false;
-                applyBtn.textContent = texts.Apply;
+                applyBtn.textContent = (window.texts && window.texts.Apply) || "تطبيق";
                 applyBtn.classList.remove('remove');
                 msgEl.style.display = 'none';
-                if (summaryMsgEl) summaryMsgEl.style.display = 'none';
 
                 if (typeof updateGlobalDeliveryCost === 'function') updateGlobalDeliveryCost();
                 if (typeof updateLiveSummary === 'function') updateLiveSummary();
@@ -1682,7 +1727,7 @@
 
             const code = codeInput.value.trim();
             if (!code) {
-                msgEl.textContent = texts.EnterPromoCodeError;
+                msgEl.textContent = (window.texts && window.texts.EnterPromoCodeError) || "يرجى إدخال الكوبون";
                 msgEl.className = "promo-msg error";
                 msgEl.style.display = 'block';
                 return;
@@ -1694,13 +1739,13 @@
                 { code: '7890', type: 'shipping', percentage: 20 }
             ];
 
-            const modeLabel = window.selectedPromoMode === 'shipping' ? texts.ShippingDiscount : texts.OrderDiscount;
-            msgEl.textContent = `${texts.CheckingPromo} ${modeLabel}...`;
+            const modeLabel = type === 'shipping' ? (window.texts && window.texts.ShippingDiscount) || "خصم التوصيل" : (window.texts && window.texts.OrderDiscount) || "خصم الطلب";
+            msgEl.textContent = `${(window.texts && window.texts.CheckingPromo) || "جاري التحقق من"} ${modeLabel}...`;
             msgEl.className = "promo-msg";
             msgEl.style.display = 'block';
 
             setTimeout(() => {
-                const found = validCodes.find(c => c.code === code && c.type === window.selectedPromoMode);
+                const found = validCodes.find(c => c.code === code && c.type === type);
 
                 if (found) {
                     const subtotalEl = document.getElementById("globalSubtotal");
@@ -1711,44 +1756,37 @@
                     let discountAmount = 0;
                     if (found.type === 'shipping') {
                         discountAmount = delivery * (found.percentage / 100);
-                        window.currentDiscountType = 'shipping';
                     } else {
                         discountAmount = subtotal * (found.percentage / 100);
-                        window.currentDiscountType = 'order';
                     }
 
-                    window.currentDiscount = discountAmount;
+                    promoState.code = found.code;
+                    promoState.amount = discountAmount;
+                    promoState.percentage = found.percentage;
 
-                    const successTitle = texts.PromoAppliedSuccess.replace('{0}', modeLabel);
-                    const savedText = texts.PromoSavedAmount.replace('{0}', discountAmount.toFixed(2)).replace('{1}', texts.Currency).replace('{2}', found.percentage);
+                    const successTitle = ((window.texts && window.texts.PromoAppliedSuccess) || "تم تطبيق {0} بنجاح").replace('{0}', modeLabel);
+                    const savedText = ((window.texts && window.texts.PromoSavedAmount) || "وفرت {0} {1} ({2}%)").replace('{0}', discountAmount.toFixed(2)).replace('{1}', (window.texts && window.texts.Currency) || "ج.م").replace('{2}', found.percentage);
 
                     msgEl.innerHTML = `✅ <strong>${successTitle}</strong><br><small>${savedText}</small>`;
                     msgEl.className = "promo-msg success";
                     msgEl.style.display = 'block';
 
                     // Update Button State
-                    applyBtn.textContent = texts.RemoveCoupon;
+                    applyBtn.textContent = (window.texts && window.texts.RemoveCoupon) || "إزالة الكوبون";
                     applyBtn.classList.add('remove');
                     codeInput.disabled = true;
-
-                    if (summaryMsgEl) {
-                        const summaryText = texts.PromoSummaryApplied
-                            .replace('{0}', discountAmount.toFixed(2))
-                            .replace('{1}', texts.Currency)
-                            .replace('{2}', found.percentage)
-                            .replace('{3}', found.type === 'shipping' ? texts.ShippingDiscount : texts.OrderDiscount);
-                        summaryMsgEl.innerHTML = `<i class="fa-solid fa-tag"></i> ${summaryText}`;
-                        summaryMsgEl.style.display = 'block';
-                    }
 
                     if (typeof updateGlobalDeliveryCost === 'function') updateGlobalDeliveryCost();
                     if (typeof updateLiveSummary === 'function') updateLiveSummary();
                 } else {
-                    msgEl.innerHTML = `❌ ${texts.PromoErrorInvalid}`;
+                    msgEl.innerHTML = `❌ ${(window.texts && window.texts.PromoErrorInvalid) || "الكوبون غير صالح"}`;
                     msgEl.className = "promo-msg error";
                     msgEl.style.display = 'block';
-                    window.currentDiscount = 0;
-                    if (summaryMsgEl) summaryMsgEl.style.display = 'none';
+
+                    promoState.code = '';
+                    promoState.amount = 0;
+                    promoState.percentage = 0;
+
                     if (typeof updateGlobalDeliveryCost === 'function') updateGlobalDeliveryCost();
                     if (typeof updateLiveSummary === 'function') updateLiveSummary();
                 }
@@ -1789,6 +1827,9 @@
         };
 
         window.setGlobalOrderType = function(type) {
+            // Save to localStorage for other scripts (like cart.js)
+            localStorage.setItem("deliveryMethod", type);
+
             const container = document.querySelector('.global-types');
             if(!container) return;
             const btns = container.querySelectorAll('.order-type-opt');
@@ -1802,13 +1843,18 @@
 
             const globalMsg = document.getElementById('globalPickupMsg');
             if (globalMsg) {
-                globalMsg.style.display = (type === 'pickup') ? 'block' : 'none';
+                globalMsg.style.display = (type === 'pickup' || type === 'in-shop') ? 'block' : 'none';
+                if (type === 'in-shop') {
+                    globalMsg.innerText = texts.InShopSummaryMsg || "طريقة الاستلام المختارة هي طلب في المحل";
+                } else if (type === 'pickup') {
+                    globalMsg.innerText = texts.PickupWarning || "⚠️ الاستلام من المحل يسري على جميع المحلات في الطلب، وغير مسئولين في حال تغيير رأيكم لاحقاً.";
+                }
             }
 
-            // Handle Contact Method Section Visibility
+            // Handle Contact Method Section Visibility - Always show as per user request
             const contactSection = document.getElementById('contactMethodSection');
             if (contactSection) {
-                contactSection.style.display = (type === 'pickup') ? 'none' : 'block';
+                contactSection.style.display = 'block';
             }
 
             // Handle Label Change
@@ -1816,33 +1862,40 @@
             const summaryTimeLabel = document.querySelector('.summary-line .summary-label-time');
 
             if (timeLabel) {
-                timeLabel.innerHTML = (type === 'pickup')
+                timeLabel.innerHTML = (type === 'pickup' || type === 'in-shop')
                     ? `${texts.PrepTime || "وقت تحضير الطلب"}:`
                     : `${texts.ExpectedDeliveryTime || "وقت التوصيل المتوقع"}:`;
             }
 
             if (summaryTimeLabel) {
-                summaryTimeLabel.innerHTML = (type === 'pickup')
+                summaryTimeLabel.innerHTML = (type === 'pickup' || type === 'in-shop')
                     ? (texts.PrepTime || "وقت تحضير الطلب")
                     : (texts.TotalDeliveryTime || "إجمالي وقت التوصيل");
             }
 
-            // Hide Shipping Promo Button if Pickup is selected
-            const btnPromoShipping = document.getElementById('btnPromoShipping');
-            if (btnPromoShipping) {
-                if (type === 'pickup') {
-                    btnPromoShipping.style.display = 'none';
-                    // If we were in shipping mode, switch back to order mode
-                    if (window.selectedPromoMode === 'shipping') {
-                        const orderBtn = document.querySelector('.promo-mode-btn[onclick*="order"]');
-                        if (orderBtn) setPromoMode('order', orderBtn);
+            // Hide Shipping Promo Group and Reset if Pickup/In-Shop is selected
+            const shippingPromoGroup = document.getElementById('shippingPromoGroup');
+            if (shippingPromoGroup) {
+                if (type === 'pickup' || type === 'in-shop') {
+                    shippingPromoGroup.style.display = 'none';
+
+                    // Force Reset Shipping Promo State & Input
+                    const shippingInput = document.getElementById('promoInputShipping');
+                    if (shippingInput) {
+                        shippingInput.value = '';
+                        shippingInput.disabled = false;
                     }
-                    // Automatically remove applied shipping discount
-                    if (window.currentDiscount > 0 && window.currentDiscountType === 'shipping') {
-                        if (typeof applyPromo === 'function') applyPromo();
+                    const shippingBtn = document.getElementById('applyBtnShipping');
+                    if (shippingBtn) {
+                        shippingBtn.textContent = (window.texts && window.texts.Apply) || "تطبيق";
+                        shippingBtn.classList.remove('remove');
                     }
+                    const shippingMsg = document.getElementById('promoMsgShipping');
+                    if (shippingMsg) shippingMsg.style.display = 'none';
+
+                    window.promoShipping = { code: '', amount: 0, percentage: 0 };
                 } else {
-                    btnPromoShipping.style.display = 'block';
+                    shippingPromoGroup.style.display = 'block';
                 }
             }
 
@@ -1873,28 +1926,15 @@
         function updateGlobalDeliveryCost() {
             const texts = window.texts || {};
             const activeBtn = document.querySelector('.global-types .order-type-opt.active');
-            const isPickup = activeBtn && activeBtn.getAttribute('data-type') === 'pickup';
-            let anyPickup = isPickup;
+            const activeType = activeBtn ? activeBtn.getAttribute('data-type') : 'delivery';
+            const isPickup = activeType === 'pickup' || activeType === 'in-shop';
 
             const summary = JSON.parse(localStorage.getItem("cartSummary") || "{}");
             let globalOrderTotalDelivery = isPickup ? 0 : (parseFloat(summary.delivery) || 0);
-            let totalDiscountAmount = isPickup ? 0 : (parseFloat(summary.discount) || 0);
-
-            const discountMsgEl = document.getElementById('globalAreaDiscountMsg');
-            // Display message only if there is an actual discount and we are in delivery mode
-            if (totalDiscountAmount > 0 && !isPickup) {
-                if (discountMsgEl) {
-                    discountMsgEl.innerHTML = `✅ <strong>\u062E\u0635\u0645 \u0627\u0644\u0645\u0646\u0637\u0642\u0629 \u0627\u0644\u0645\u0648\u062D\u062F\u0629:</strong> \u062A\u0645 \u062A\u0637\u0628\u064A\u0642 \u062E\u0635\u0645 \u0627\u0644\u062A\u0648\u0635\u064A\u0644 \u0644\u062A\u0648\u0627\u062C\u062F \u0627\u0644\u0645\u0637\u0627\u0639\u0645 \u0641\u064A \u0646\u0641\u0633 \u0627\u0644\u0645\u0646\u0637\u0642\u0629!`;
-                    discountMsgEl.style.display = 'block';
-                }
-            } else {
-                if (discountMsgEl) discountMsgEl.style.display = 'none';
-            }
 
             // Update Global Summary UI
-            const displayDeliveryValue = (window.currentDiscountType === 'shipping' && !isPickup)
-                ? Math.max(0, globalOrderTotalDelivery - window.currentDiscount)
-                : globalOrderTotalDelivery;
+            let shippingDiscount = isPickup ? 0 : (window.promoShipping?.amount || 0);
+            const displayDeliveryValue = Math.max(0, globalOrderTotalDelivery - shippingDiscount);
 
             const globalTotalDeliveryEl = document.getElementById("globalTotalDelivery");
             if (globalTotalDeliveryEl) {
@@ -1912,39 +1952,14 @@
 
             if (subtotalEl && finalTotalEl) {
                 const subtotal = parseFloat(subtotalEl.innerText.replace(/[^\d.]/g, '')) || 0;
-
-                let effectiveDiscount = window.currentDiscount || 0;
-                // If it's a shipping discount but we are in pickup mode, it shouldn't apply to the total
-                if (isPickup && window.currentDiscountType === 'shipping') {
-                    effectiveDiscount = 0;
-                }
-
-                const newTotal = (subtotal + globalOrderTotalDelivery) - effectiveDiscount;
-                finalTotalEl.innerText = `${newTotal.toLocaleString()} ${texts.Currency || 'ج.م'}`;
-
-                // Update Promo Badge next to Final Total (Short and clear)
-                const promoBadgeEl = document.getElementById("globalPromoBadge");
-                if (promoBadgeEl) {
-                    if (window.currentDiscount > 0 && effectiveDiscount > 0) {
-                        promoBadgeEl.innerText = `( -${window.currentDiscount.toFixed(2)} ${texts.Currency || 'ج.م'} )`;
-                        promoBadgeEl.style.display = 'block';
-                    } else {
-                        promoBadgeEl.style.display = 'none';
-                    }
-                }
-
-                // Hide detailed summary msg if shipping discount is inactive in pickup mode
-                const summaryMsgEl = document.getElementById('promoSummaryMsg');
-                if (summaryMsgEl && window.currentDiscountType === 'shipping' && window.currentDiscount > 0) {
-                    summaryMsgEl.style.display = isPickup ? 'none' : 'block';
-                }
+                let orderDiscount = window.promoOrder?.amount || 0;
+                const newTotal = (subtotal + globalOrderTotalDelivery) - orderDiscount - shippingDiscount;
+                finalTotalEl.innerText = `${newTotal.toFixed(2)} ${texts.Currency || 'ج.م'}`;
             }
 
             // Show/Hide Pickup Message
-            const pickupMsg = document.getElementById("pickupSummaryMsg");
             const globalPickupMsg = document.getElementById("globalPickupMsg");
-            if (pickupMsg) pickupMsg.style.display = anyPickup ? "block" : "none";
-            if (globalPickupMsg) globalPickupMsg.style.display = anyPickup ? "block" : "none";
+            if (globalPickupMsg) globalPickupMsg.style.display = isPickup ? "block" : "none";
         }
 
         function toBase64(file) {
