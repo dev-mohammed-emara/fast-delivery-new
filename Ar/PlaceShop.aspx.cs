@@ -33,7 +33,7 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
 
             Places place = new Places();
             place.LoadByPrimaryKey(Convert.ToInt32(Request.QueryString["id"].ToString()));
-            ltBanner.Text = "<img src='" + place.PhotoPath + "'>";
+            ltBanner.Text = "<img src='" + place.PhotoPath + "' onerror=\"this.src='/ar/images/placeholderImage.webp'\">";
             var lang = System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName;
 
             ltlocation.Text = lang == "en" ? "<a href='Places.aspx?id=" + place.Categories_id + "&addid=" + addr.ID + "'>" + gov.NameEn + "-" + area.NameEn + "</a>" :
@@ -71,6 +71,7 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
             ltmincost.Text = place.MinOrder.ToString("F2") + " " + (string)GetGlobalResourceObject("texts", "currency");
             ltdeliverytime.Text = (place.DeliveredTime + dzone.DeliveredTime).ToString();
             imgplace.ImageUrl = place.PhotoPath;
+            imgplace.Attributes.Add("onerror", "this.src='/ar/images/placeholderImage.webp'");
 
             // Rating Stars logic
             double rating = 0;
@@ -123,7 +124,7 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
             shopHeartIcon.Attributes["data-id"] = place.s_Id;
             shopHeartIcon.Attributes["data-name"] = place.Name;
             shopHeartIcon.Attributes["data-name-en"] = place.NameEn;
-            shopHeartIcon.Attributes["data-img"] = place.PhotoPath;
+            shopHeartIcon.Attributes["data-img"] = "/ar/" + place.PhotoPath;
             shopHeartIcon.Attributes["data-desc"] = place.Description;
             shopHeartIcon.Attributes["data-desc-en"] = place.DescriptionEn;
             shopHeartIcon.Attributes["data-rate"] = rating.ToString();

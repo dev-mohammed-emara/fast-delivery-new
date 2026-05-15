@@ -24,6 +24,710 @@
     <style>
 
    </style>
+     <style>
+        .swal-sizes-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            text-align: right;
+        }
+        .size-option {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 15px;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .size-option:hover {
+            background: #fdfdfd;
+            border-color: #ffc119;
+        }
+        .size-option.active {
+            background: #fffdf5;
+            border-color: #ffc119;
+            box-shadow: 0 0 0 1px #ffc119;
+        }
+        /* Sidebar active styling */
+        #foodListsNav {
+            background: white;
+            border-radius: 12px;
+            overflow-x: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            border: 1px solid #eee;
+            position: sticky;
+            top: 140px;
+        }
+
+        #foodListsNav h3 {
+            color: black;
+            padding: 15px;
+            margin: 0;
+            font-size: 1.2rem;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .foodNavLinks {
+            padding: 10px;
+        }
+
+        .foodNavLinks a {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            color: #555;
+            text-decoration: none;
+            font-size: 0.95rem;
+            border: 1px solid transparent;
+        }
+
+        .foodNavLinks a:hover {
+            background: #fff9e6;
+            color: #ffc119;
+            transform: translateX(-5px);
+        }
+
+        .swal2-popup.product-modal-popup {
+            border-radius: 16px !important;
+            overflow: hidden;
+        }
+
+        .full-modal-container {
+            width: 100%;
+            height: auto;
+            max-height: 90vh;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+            position: relative;
+            text-align: right;
+            direction: rtl;
+        }
+
+        .modal-banner {
+            position: relative;
+            width: 100%;
+            min-height: 225px;
+            max-height: 225px;
+            background: #eee;
+            height: 225px;
+        }
+
+        .modal-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .modal-content-body {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 20px;
+            padding-bottom: 0px;
+        }
+
+        .modal-main-info h1 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .modal-desc {
+            color: #777;
+            font-size: 0.9rem;
+            margin-bottom: 25px;
+            text-align: initial;
+        }
+        .swal2-container{
+            padding: 0;
+        }
+
+        .modal-section {
+            margin-bottom: 30px;
+            textarea{
+                width: 100%;
+                background-color: #fffcfc;
+                padding: 1rem;
+                border-radius:1rem;
+                resize: none;
+                border-color: rgba(0, 0, 0, 0.1);
+                height: 150px;
+            }
+        }
+
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .section-header h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .required-badge {
+            background: #fff3cd;
+            color: #856404;
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .optional-badge {
+            background: #eee;
+            color: #666;
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        /* Option Rows */
+        .option-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+
+        .price-radio {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .radio-circle {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ddd;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .option-row.active .radio-circle {
+            border-color: #ffc119;
+        }
+
+        .option-row.active .radio-circle::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 10px;
+            height: 10px;
+            background: #ffc119;
+            border-radius: 50%;
+        }
+
+        /* Swiper Quick Cards */
+        .quick-choices-swiper {
+            padding: 5px 0;
+            display: flex;
+        }
+
+        .quick-choices-swiper .swiper-wrapper {
+            align-items: stretch;
+        }
+
+        .quick-card {
+            width: 200px !important;
+            height: auto;
+            background: white;
+            border: 1px solid rgba(0,0,0,0.2);
+            border-radius: 12px;
+            padding: 15px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .quick-card .check-box {
+            margin-top: auto;
+            align-self: flex-start;
+        }
+
+        .quick-card.active {
+            border-color: #ffc119;
+            background: #fffdf5;
+        }
+
+        .quick-card h4 {
+            margin: 10px 0 5px;
+            font-size: 0.95rem;
+        }
+
+        .quick-card-badge {
+            font-size: 0.7rem;
+            color: #e67e22;
+            background: #fff3e0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            width: fit-content;
+        }
+
+        /* Extras List */
+        .extra-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #fffcfc;
+            cursor: pointer;
+        }
+
+        .check-box {
+            width: 22px;
+            height: 22px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .extra-item.active .check-box, .quick-card.active .check-box {
+            background: #ffc119;
+            border-color: #ffc119;
+        }
+
+        .extra-item.active .check-box::after, .quick-card.active .check-box::after {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: white;
+            font-size: 12px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Sticky Footer */
+        .modal-footer-sticky {
+            position: sticky;
+            bottom: 0;
+            justify-content: center;
+            background: white;
+            flex-wrap: wrap;
+            padding: 15px 20px;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        .qty-control {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: #f8f9fa;
+            padding: 5px 15px;
+            border-radius: 30px;
+            border: 1px solid #eee;
+        }
+
+        .qty-control button {
+            background: none;
+            border: none;
+            color: #ffc119;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
+        .add-to-cart-big {
+            background: #ffc119;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 12px 25px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        /* Upsell Cards */
+        .related-products-swiper {
+            padding: 10px 0;
+        }
+
+.swiper-wrapper:has(.upsell-card){
+    max-height: 220px;
+}
+        .upsell-card img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+
+        }
+        .upsell-card {
+            width: 200px !important;
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            max-height: 220px;
+            text-align: center;
+            padding-bottom: 15px;
+            height: 100%; /* Equal height */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .upsell-card h5 {
+            margin: 10px 10px 5px;
+            font-size: 0.9rem;
+            flex-grow: 1; /* Push button to bottom */
+        }
+
+        /* Swiper Slide Equal Height Fix */
+        .swiper-wrapper {
+            display: flex !important;
+            align-items: stretch !important;
+            touch-action: pan-y !important;
+        }
+
+        .swiper-slide {
+            height: auto !important;
+        }
+
+        .quick-card {
+            background: white;
+            border: 1px solid  rgba(0,0,0,0.2);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            width: 200px !important;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .upsell-card p {
+            color: #ffc119;
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+        }
+
+        .upsell-card button {
+            background: #fff9e6;
+            color: #ffc119;
+            border: 1px solid #ffc119;
+            border-radius: 20px;
+            padding: 5px 20px;
+            margin-inline: 0.5rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .upsell-card button:hover {
+            background: #ffc119;
+            color: white;
+        }
+
+        /* Quantity Badge on Product Grid */
+        .product-qty-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #e88b0e;
+            color: white;
+            width: 28px;
+            height: 26px;
+            border-radius: 50%;
+            display: none; /* Hidden by default */
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(255,193,25,0.4);
+            z-index: 5;
+            border: 2px solid white;
+        }
+
+        /* Upsell Quantity Control */
+        .upsell-qty-container {
+            display: none; /* Shown when item is added */
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 5px;
+        }
+
+        .upsell-qty-btn {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 1px solid #ffc119;
+            background: white;
+            color: #ffc119;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            cursor: pointer;
+        }
+
+        .upsell-qty-btn:hover {
+            background: #ffc119;
+            color: white;
+        }
+
+        .upsell-qty-val {
+            font-size: 0.9rem;
+            font-weight: 700;
+            min-width: 15px;
+            color: #333;
+        }
+
+        .upsell-remove-btn {
+            color: #ff4d4d;
+            font-size: 0.75rem;
+            cursor: pointer;
+            margin-top: 5px;
+            display: block;
+            text-decoration: underline;
+        }
+
+        /* Fix Swiper scroll blocking */
+        .swiper-wrapper {
+            touch-action: pan-y !important;
+        }
+
+        .related-products-swiper {
+            overflow: visible !important;
+        }
+
+        /* User Edit Fix: Empty Cart Margin */
+        #emptyCart {
+            margin-bottom: 0px !important;
+        }
+
+        /* Shop Pay Methods Badges */
+        .shopPayMethods {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .pay-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 50px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            border: 1px solid transparent;
+            transition: transform 0.2s;
+            margin: 0;
+        }
+
+        .pay-badge i {
+            font-size: 0.65rem;
+        }
+
+        /* Accent Colors */
+        .pay-badge.tracking {
+            color: #4361ee;
+            background: #f0f3ff;
+            border-color: #dbeafe;
+        }
+
+        .pay-badge.safe {
+            color: #06d6a0;
+            background: #e7fbf5;
+            border-color: #cbf6eb;
+        }
+
+        .pay-badge.free {
+            color: #ff2d55; /* Bright Pink Accent */
+            background: #fff5f7;
+            border-color: #ffe0e5;
+        }
+
+        .shopDelivery {
+            display: flex;
+            flex-wrap: wrap;
+            color: #666;
+        }
+
+        .shopDelivery span {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            font-weight: 500;
+            i{
+                font-size: 0.7rem;
+            }
+        }
+
+
+
+        /* Mobile Full Screen Modal */
+        @media (max-width: 600px) {
+            #shopBanner {
+                height: 250px !important;
+}
+            .swal2-container:has(.product-modal-popup) {
+                padding: 0 !important;
+            }
+            .swal2-popup.product-modal-popup {
+                width: 100vw !important;
+                max-width: 100vw !important;
+                height: 100dvh !important;
+                max-height: 100dvh !important;
+                border-radius: 0 !important;
+                margin: 0 !important;
+            }
+            .full-modal-container {
+                height: 100dvh !important;
+                max-height: 100dvh !important;
+            }
+        }
+
+        /* Missing Modal Styles */
+        .title-price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+            width: 100%;
+        }
+        .compact-price {
+            font-weight: 700;
+            color: #ffc119;
+            font-size: 1.2rem;
+        }
+        .upsell-card-new {
+            width: 150px !important;
+            flex-shrink: 0;
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            padding: 10px;
+            text-align: center;
+        }
+        .upsell-img-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        .upsell-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .upsell-badge {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #ffc119;
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 800;
+            z-index: 5;
+            border: 1.5px solid white;
+        }
+        .upsell-add-btn {
+            position: absolute;
+            bottom: 5px;
+            left: 5px;
+            width: 30px;
+            height: 30px;
+            background: white;
+            color: #ffc119;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            cursor: pointer;
+            z-index: 5;
+            font-size: 0.9rem;
+        }
+        .upsell-info h5 {
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin: 0 0 4px;
+            color: #333;
+        }
+        .upsell-info p {
+            font-size: 0.8rem;
+            color: #ffc119;
+            font-weight: 700;
+            margin: 0;
+                        margin-top: auto;
+
+        }
+        .qty-control.card-qty {
+            background: #f8f9fa;
+            border-radius: 20px;
+            padding: 2px 8px;
+            gap: 10px;
+        }
+        .qty-control.card-qty button {
+            background: var(--fd-blue);
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 4px;
+            font-size: 0.8rem;
+        }
+    </style>
     <style>
         /* زر العودة للأعلى - منضبط حسب منطق الرؤية */
         .back-to-top {
@@ -133,6 +837,10 @@
         .mobile-nav-item.active span {
             color: var(--fd-blue) !important;
         }
+          .swal2-html-container{
+                padding: 0 ;
+                overflow-x: hidden;
+            }
     </style>
 </head>
 <body class="<%= !HttpContext.Current.User.Identity.IsAuthenticated ? "not-logged-in" : "" %>">
@@ -150,7 +858,7 @@
         <div id="mainWrapper">
     <header class="header" role="banner">
         <a href="Default.aspx" class="logo-container">
-            <img src="images/logo.png" alt="Fast Delivery Logo" class="logo">
+            <img src="images/logo.png" alt="Fast Delivery Logo" class="logo" onerror="this.src='/ar/images/placeholderImage.webp'">
         </a>
         <nav class="nav-links">
             <a href="#" data-key="header_link_1"><asp:Literal ID="litLogin" runat="server" Text="<%$ Resources:Texts, Header_Link_1 %>" /></a>
@@ -161,25 +869,25 @@
         <div class="action-buttons">
              <div class="dropdown">
     <button class="lang-btn dropdown-toggle d-flex align-items-center" type="button" id="langDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-        <img src="images/flags/<%= CurrentLang %>.png" alt="Flag" style="width:20px; height:14px;" class="me-2">
+        <img src="images/flags/<%= CurrentLang %>.png" alt="Flag" style="width:20px; height:14px;" class="me-2" onerror="this.src='/ar/images/placeholderImage.webp'">
         <span id="currentLangText"><%= CurrentLang.ToUpper() %></span>
     </button>
     <ul class="dropdown-menu" aria-labelledby="langDropdown">
         <li>
             <a class="dropdown-item d-flex align-items-center" href="javascript:setLang('ar')">
-                <img src="images/flags/ar.png" alt="AR" style="width:20px; height:14px;" class="me-2">
+                <img src="images/flags/ar.png" alt="AR" style="width:20px; height:14px;" class="me-2" onerror="this.src='/ar/images/placeholderImage.webp'">
                 &#1593;&#1585;&#1576;&#1610;
             </a>
         </li>
         <li>
             <a class="dropdown-item d-flex align-items-center" href="javascript:setLang('en')">
-                <img src="images/flags/en.png" alt="English" style="width:20px; height:14px;" class="me-2">
+                <img src="images/flags/en.png" alt="English" style="width:20px; height:14px;" class="me-2" onerror="this.src='/ar/images/placeholderImage.webp'">
                 English
             </a>
         </li>
         <li>
             <a class="dropdown-item d-flex align-items-center" href="javascript:setLang('ru')">
-                <img src="images/flags/ru.png" alt="RU" style="width:20px; height:14px;" class="me-2">
+                <img src="images/flags/ru.png" alt="RU" style="width:20px; height:14px;" class="me-2" onerror="this.src='/ar/images/placeholderImage.webp'">
                 &#1056;&#1091;&#1089;&#1089;&#1082;&#1080;&#1081;
             </a>
         </li>
@@ -541,10 +1249,311 @@ document.addEventListener("DOMContentLoaded", loadTextsOnStart);
         }
     };
 
-    // Close side cart on back navigation
-    window.addEventListener('popstate', function() {
-        closeSideCart();
-    });
+    // --- Centralized Product Modal Logic ---
+    window.currentCustomization = { baseItemId: null, size: null, extras: [], upsells: [], quantity: 1, notes: '' };
+    window.currentTriggeringProduct = null;
+    window.currentEditItem = null;
+    window.basePrice = 0;
+    window.addonsPrice = 0;
+    window.quantity = 1;
+    window.currentProductBasePrice = 0;
+
+    const modalTranslations = {
+        ar: { loading: "جاري التحميل...", errorTitle: "خطأ!", connectionError: "حدث خطأ أثناء الاتصال بالسيرفر", errorMessage: "عذراً، لم نتمكن من جلب البيانات", add: "إضافة للسلة", update: "تحديث السلة", selectSize: "اختار الحجم", required: "إجباري", optional: "اختياري", notes: "ملاحظات", notesPlaceholder: "أضف ملاحظاتك هنا...", upsellTitle: "غالباً ما يُطلب مع", save: "حفظ" },
+        en: { loading: "Loading...", errorTitle: "Error!", connectionError: "Connection error with the server", errorMessage: "Sorry, we couldn't fetch the data", add: "Add to Cart", update: "Update Cart", selectSize: "Select Size", required: "Required", optional: "Optional", notes: "Notes", notesPlaceholder: "Add your notes here...", upsellTitle: "Often ordered with", save: "Save" }
+    };
+
+    window.openProductModal = function(triggerEl, arg2 = null, arg3 = null) {
+        let editItem = arg2;
+        let focusNotes = !!arg3;
+
+        let id = (typeof triggerEl === 'object' && triggerEl !== null) ? triggerEl.getAttribute('id') : triggerEl;
+        const shopId = String(document.getElementById('shopId')?.innerText.trim() || '');
+
+        if (!editItem && window.cart) {
+            // Try to find the item in the cart by base ID or full ID
+            editItem = window.cart.items.find(i => (i.id === id || i.id.startsWith(id + '-size-')) && String(i.shopId) === shopId);
+        }
+
+        if (!id && editItem) id = editItem.id.split('-size-')[0];
+
+        currentTriggeringProduct = (typeof triggerEl === 'object') ? triggerEl : null;
+        currentEditItem = editItem;
+
+        const lang = (typeof getCookie === 'function' ? getCookie("lang") : "ar") || "ar";
+        const t = modalTranslations[lang] || modalTranslations.ar;
+
+        Swal.fire({
+            title: t.loading,
+            allowOutsideClick: false,
+            didOpen: () => { Swal.showLoading(); },
+            customClass: { container: lang === 'ar' ? 'swal2-rtl' : '' }
+        });
+
+        $.ajax({
+            type: "POST",
+            url: "/Ar/PlaceShop.aspx/GetProductDetails",
+            data: JSON.stringify({ itemId: parseInt(id) }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (res) {
+                if (res.d && res.d.success) {
+                    renderProductModal(res.d, editItem, focusNotes);
+                } else {
+                    Swal.fire({ icon: 'error', title: t.errorTitle, text: res.d?.message || t.errorMessage });
+                }
+            },
+            error: function() {
+                Swal.fire({ icon: 'error', title: t.errorTitle, text: t.connectionError });
+            }
+        });
+    };
+
+    window.renderProductModal = function(data, editItem = null, focusNotes = false) {
+        const lang = (typeof getCookie === 'function' ? getCookie("lang") : "ar") || "ar";
+        const t = modalTranslations[lang] || modalTranslations.ar;
+
+        currentCustomization = {
+            baseItemId: data.id,
+            selectedSizeId: editItem?.customization?.size?.id || null,
+            size: editItem?.customization?.size ? { ...editItem.customization.size } : null,
+            extras: editItem?.customization?.extras ? [...editItem.customization.extras] : [],
+            upsells: editItem?.customization?.upsells ? [...editItem.customization.upsells] : [],
+            quantity: editItem?.amount || 1,
+            notes: editItem?.customization?.notes || editItem?.notes || ''
+        };
+
+        quantity = currentCustomization.quantity;
+        currentProductBasePrice = data.price;
+        basePrice = currentCustomization.size ? (currentCustomization.size.price || data.price) : data.price;
+        recalculateAddonsPrice();
+
+        let sizesHtml = '';
+        if (data.sizes && data.sizes.length > 0) {
+            data.sizes.forEach(size => {
+                const activeClass = (currentCustomization.size && currentCustomization.size.id === size.id) ? 'active' : '';
+                sizesHtml += `
+                <div class="option-row ${activeClass}" onclick="selectModalOption(this, ${size.price}, '${size.id}')">
+                    <span>${size.name}</span>
+                    <div class="price-radio">
+                        <span>${size.price} ج.م</span>
+                        <div class="radio-circle"></div>
+                    </div>
+                </div>`;
+            });
+        }
+
+        let extrasHtml = '';
+        if (data.extras && data.extras.length > 0) {
+            data.extras.forEach(ex => {
+                const activeClass = currentCustomization.extras.some(e => e.id === ex.id) ? 'active' : '';
+                extrasHtml += `
+                <div class="option-row extra-item ${activeClass}" onclick="toggleExtra(this, ${ex.price}, '${ex.id}', '${ex.name}')">
+                    <span>${ex.name}</span>
+                    <div class="price-radio">
+                        <span>+ ${ex.price} ج.م</span>
+                        <div class="radio-circle"></div>
+                    </div>
+                </div>`;
+            });
+        }
+
+        let upsellHtml = '';
+        if (data.upsellItems && data.upsellItems.length > 0) {
+            let upsellSlides = '';
+            data.upsellItems.forEach(item => {
+                const existingUpsell = currentCustomization.upsells.find(u => u.id === item.id);
+                const isAdded = !!existingUpsell;
+                const qty = existingUpsell ? existingUpsell.qty : 1;
+                const photo = item.photoUrl || 'images/placeholderImage.webp';
+
+                upsellSlides += `
+                <div class="swiper-slide upsell-card-new">
+                    <div class="upsell-img-wrapper">
+                        <div class="upsell-badge" style="display: ${isAdded ? 'flex' : 'none'};">${qty}</div>
+                        <img src="${photo}" onerror="this.src='images/placeholderImage.webp'">
+                        <div class="upsell-add-btn" style="display: ${isAdded ? 'none' : 'flex'};" onclick="addUpsellItem(this, ${item.price}, '${item.id}', '${item.name}')">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                        <div class="qty-control" style="display: ${isAdded ? 'flex' : 'none'};" onclick="event.stopPropagation()">
+                            <button onclick="updateUpsellQty(this, -1, ${item.price}, '${item.id}')"><i class="fa-solid fa-minus"></i></button>
+                            <span class="upsell-qty-val">${qty}</span>
+                            <button onclick="updateUpsellQty(this, 1, ${item.price}, '${item.id}')"><i class="fa-solid fa-plus"></i></button>
+                        </div>
+                    </div>
+                    <div class="upsell-info">
+                        <h5>${item.name}</h5>
+                        <p>EGP ${item.price.toFixed(2)}</p>
+                    </div>
+                </div>`;
+            });
+            upsellHtml = `<div class="modal-section upsell-section"><div class="section-header"><h3>${t.upsellTitle}</h3></div><div class="swiper related-products-swiper"><div class="swiper-wrapper">${upsellSlides}</div></div></div>`;
+        }
+
+        const modalHtml = `
+        <div class="full-modal-container">
+            <div class="modal-banner">
+                <img src="${data.photoUrl}" onerror="this.src='images/placeholderImage.webp'">
+                <button class="modal-close-btn" onclick="Swal.close()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-content-body">
+                <div class="modal-main-info">
+                    <h1>${data.name}</h1>
+                    <p class="modal-desc">${data.description || ''}</p>
+                </div>
+                ${sizesHtml ? `<div class="modal-section"><div class="section-header"><h3>${t.selectSize}</h3><span class="required-badge">${t.required}</span></div><div class="options-list">${sizesHtml}</div></div>` : ''}
+                ${extrasHtml ? `<div class="modal-section extras-section"><div class="section-header"><h3>الإضافات</h3><span class="optional-badge">${t.optional}</span></div><div class="options-list">${extrasHtml}</div></div>` : ''}
+                ${upsellHtml}
+                <div class="modal-section"><div class="section-header"><h3>${t.notes}</h3><span class="optional-badge">${t.optional}</span></div><textarea id="product-notes" placeholder="${t.notesPlaceholder}">${currentCustomization.notes}</textarea></div>
+            </div>
+            <div class="modal-footer-sticky">
+                <div class="qty-control">
+                    <button onclick="updateModalQty(-1)"><i class="fa-solid fa-minus"></i></button>
+                    <span id="modal-qty">${quantity}</span>
+                    <button onclick="updateModalQty(1)"><i class="fa-solid fa-plus"></i></button>
+                </div>
+                <button class="add-to-cart-big" onclick="submitModalCart(${data.id})">
+                    <span>${editItem ? t.update : t.add}</span>
+                    <strong id="modal-total-price">...</strong>
+                </button>
+            </div>
+        </div>`;
+
+        Swal.fire({
+            html: modalHtml,
+            showConfirmButton: false,
+            width: '500px',
+            padding: '0',
+            customClass: { container: 'p-0', popup: 'product-modal-popup' },
+            didOpen: () => {
+                if (data.upsellItems?.length > 0 && typeof Swiper !== 'undefined') {
+                    new Swiper('.related-products-swiper', { slidesPerView: 'auto', spaceBetween: 10, freeMode: true });
+                }
+                if (focusNotes) {
+                    const notesArea = document.querySelector('.swal2-container #product-notes');
+                    if (notesArea) setTimeout(() => { notesArea.focus(); notesArea.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 500);
+                }
+                updateModalTotal();
+            }
+        });
+    };
+
+    window.selectModalOption = function(el, totalSizePrice, sizeId) {
+        el.parentElement.querySelectorAll('.option-row').forEach(r => r.classList.remove('active'));
+        el.classList.add('active');
+        currentCustomization.size = { id: sizeId, name: el.querySelector('span').innerText, price: totalSizePrice };
+        basePrice = totalSizePrice;
+        updateModalTotal();
+    };
+
+    window.toggleExtra = function(el, price, id, name) {
+        el.classList.toggle('active');
+        if (el.classList.contains('active')) {
+            if (!currentCustomization.extras.some(x => x.id === id)) currentCustomization.extras.push({ id: id, name: name, price: price });
+        } else {
+            currentCustomization.extras = currentCustomization.extras.filter(x => x.id !== id);
+        }
+        recalculateAddonsPrice();
+        updateModalTotal();
+    };
+
+    window.recalculateAddonsPrice = function() {
+        let total = 0;
+        currentCustomization.extras.forEach(x => total += (x.price || 0));
+        currentCustomization.upsells.forEach(x => total += ((x.price || 0) * (x.qty || 0)));
+        addonsPrice = total;
+    };
+
+    window.updateModalQty = function(delta) {
+        quantity = Math.max(1, quantity + delta);
+        const qtyEl = document.querySelector('.swal2-container #modal-qty');
+        if (qtyEl) qtyEl.innerText = quantity;
+        updateModalTotal();
+    };
+
+    window.updateModalTotal = function() {
+        const el = document.querySelector('.swal2-container #modal-total-price');
+        if (!el) return;
+        const hasSizes = !!document.querySelector('.swal2-container .option-row:not(.extra-item)');
+        if (hasSizes && !currentCustomization.size) {
+            el.innerHTML = "اختار الحجم";
+            const btn = document.querySelector('.swal2-container .add-to-cart-big');
+            if (btn) btn.style.opacity = '0.5';
+            return;
+        }
+        const btn = document.querySelector('.swal2-container .add-to-cart-big');
+        if (btn) btn.style.opacity = '1';
+        const total = (basePrice * quantity) + addonsPrice;
+        el.innerHTML = total.toFixed(2) + ' ج.م';
+    };
+
+    window.submitModalCart = function() {
+        const popup = document.querySelector('.swal2-popup');
+        if (!popup) { Swal.close(); return; }
+        const notes = popup.querySelector('#product-notes')?.value || '';
+        const shopId = String(document.getElementById('shopId')?.innerText.trim() || '');
+        const shopName = document.querySelector('.shop-header-info h1')?.innerText || '';
+        const baseId = currentCustomization.baseItemId || 'custom';
+        const uniqueId = baseId + (currentCustomization.size ? `-size-${currentCustomization.size.id}` : '');
+
+        const isCustomized = !!(currentCustomization.size || currentCustomization.extras.length > 0 || currentCustomization.upsells.length > 0 || notes);
+
+        const mainItem = {
+            id: uniqueId, name: popup.querySelector('h1')?.innerText || 'Product',
+            price: basePrice, productBasePrice: currentProductBasePrice,
+            customization: { size: currentCustomization.size, extras: [...currentCustomization.extras], upsells: [...currentCustomization.upsells], notes: notes },
+            shopId: shopId, shopName: shopName, notes: notes,
+            image: popup.querySelector('.modal-banner img')?.src || '',
+            isCustomized: isCustomized
+        };
+
+        if (window.cart) {
+            if (currentEditItem) window.cart.removeItem(currentEditItem.id, currentEditItem.shopId);
+            window.cart.addItem(mainItem, quantity);
+        }
+        Swal.close();
+        setTimeout(() => { Swal.fire({ icon: 'success', title: 'تمت الإضافة', timer: 1500, showConfirmButton: false, toast: true, position: 'top-end' }); }, 100);
+    };
+
+    window.addUpsellItem = function(btn, price, id, name) {
+        const wrapper = btn.closest('.upsell-img-wrapper');
+        btn.style.display = 'none';
+        wrapper.querySelector('.qty-control').style.display = 'flex';
+        const badge = wrapper.querySelector('.upsell-badge');
+        if (badge) { badge.style.display = 'flex'; badge.innerText = '1'; }
+        currentCustomization.upsells.push({ id: id, name: name, price: price, qty: 1 });
+        recalculateAddonsPrice();
+        updateModalTotal();
+    };
+
+    window.updateUpsellQty = function(btn, delta, price, id) {
+        const valSpan = btn.closest('.qty-control').querySelector('.upsell-qty-val');
+        let q = Math.max(0, parseInt(valSpan.innerText) + delta);
+        valSpan.innerText = q;
+        const upsell = currentCustomization.upsells.find(x => x.id === id);
+        if (upsell) upsell.qty = q;
+        if (q === 0) {
+            currentCustomization.upsells = currentCustomization.upsells.filter(x => x.id !== id);
+            const wrapper = btn.closest('.upsell-img-wrapper');
+            wrapper.querySelector('.upsell-add-btn').style.display = 'flex';
+            wrapper.querySelector('.upsell-badge').style.display = 'none';
+            btn.closest('.qty-control').style.display = 'none';
+            valSpan.innerText = 1;
+        } else {
+            const badge = btn.closest('.upsell-img-wrapper').querySelector('.upsell-badge');
+            if (badge) { badge.innerText = q; badge.style.display = 'flex'; }
+        }
+        recalculateAddonsPrice();
+        updateModalTotal();
+    };
+
+    window.openSimpleNotesModal = function(el, name, price, desc = '', idOverride = null) {
+        openProductModal(idOverride || el?.getAttribute('id'), null, true);
+    };
+
+    window.openHardcodedModal = function(editItem, prodName, prodPrice, triggerEl, prodDesc, focusNotes) {
+        openProductModal(triggerEl || editItem?.id, editItem, focusNotes);
+    };
 </script>
 <figure id="sideCartOverlay" onclick="if(event.target === this) closeSideCart()">
     <aside id="sideCart">

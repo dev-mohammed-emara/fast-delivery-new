@@ -380,7 +380,6 @@
         width: 100%;
         position: sticky;
         isolation: isolate;
-        top: 100px;
         height: fit-content;
     }
 

@@ -14,6 +14,7 @@
 
 p {
     margin: 0;
+    text-wrap: pretty;
 }
 /* --- Custom Scrollbar Styling --- */
 /* Main Browser Scrollbar */
@@ -2721,9 +2722,8 @@ html[dir="ltr"] .dropdown{
 
 /* Side Cart Grouping */
 .cart-item-group {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     /* padding-bottom: 8px; */
-    margin-bottom: 8px;
+    margin-bottom: 1rem;
 }
 .cart-item-group:last-child {
     border-bottom: none;
@@ -2809,7 +2809,6 @@ html[dir="ltr"] .dropdown{
 .orderedItemMain {
     display: flex !important;
     flex-wrap: wrap !important;
-    flex-grow: 1 !important;
     margin: 0 12px !important;
     flex-direction: column;
     text-align: right !important;
@@ -2832,8 +2831,7 @@ html[dir="ltr"] .dropdown{
 .cartItemAmountHandlers {
     display: flex !important;
     align-items: center !important;
-    gap: 4px !important;
-    padding: 2px !important;
+    gap: 8px !important;
 }
 
 .removeCartItem, .removeItem {
@@ -2904,8 +2902,6 @@ html[dir="ltr"] .dropdown{
     .cartItemAmountHandlers {
     display: flex !important;
     align-items: center !important;
-    gap: 4px !important;
-    padding: 2px !important;
 }
 .cartItemAmountHandlers {
     background-color: white;
@@ -2928,7 +2924,6 @@ html[dir="ltr"] .dropdown{
     padding: 4px;
     margin: 0;
     min-width: 85px;
-    gap: 6px;
 }
 #sideCartOverlay{
 position: fixed;
@@ -3180,7 +3175,7 @@ html[dir='ltr'] #sideCart{
 .cartShopLabel {
     background-color: #f8f9fa;
     padding: 10px 14px;
-    margin: 15px 0 8px 0;
+    margin: 1rem 0;
     border-radius: 12px;
     font-weight: 700;
     font-size: 0.9rem;
@@ -3189,4 +3184,129 @@ html[dir='ltr'] #sideCart{
     align-items: center;
     gap: 8px;
     border-left: 4px solid var(--fd-blue);
+}
+
+/* Global Product Modal Styles */
+.bottom-sheet-modal {
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    max-width: 800px;
+}
+
+.compact-modal-container .swal2-textarea {
+    border-radius: 15px !important;
+    padding: 15px !important;
+    border: 1px solid #eee !important;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02) !important;
+    font-size: 0.95rem !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+.notes-badge {
+    background: #e6f3ff;
+    color: #007bff;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-inline-start: 5px;
+}
+
+.customization-row {
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 10px 0 !important;
+    border-bottom: 1px dashed #eee;
+    display: flex !important;
+}
+.customization-row:last-child {
+    border-bottom: none;
+}
+
+.quick-card.active .check-box {
+    display: none !important;
+}
+.quick-card.active {
+    border-color: var(--fd-blue) !important;
+    background-color: #fff9e6 !important;
+}
+
+.quick-qty-control {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    display: none;
+    align-items: center;
+    background: #fff;
+    border: 1px solid var(--fd-blue);
+    border-radius: 20px;
+    padding: 2px 6px;
+    gap: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    z-index: 5;
+}
+.quick-card.active .quick-qty-control {
+    display: flex;
+}
+.quick-qty-control button {
+    background: var(--fd-blue);
+    color: #fff;
+    border: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+.quick-qty-control button:hover {
+    transform: scale(1.1);
+    background: #ff6b00;
+}
+.quick-qty-val {
+    font-weight: 700;
+    font-size: 14px;
+    min-width: 18px;
+    text-align: center;
+    color: #333;
+}
+
+.cust-handlers {
+    display: flex;
+    width: fit-content;
+    align-items: center;
+    gap: 8px;
+    background: #f8f8f8;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid #eee;
+    margin-inline-start: 10px;
+}
+.cust-handlers button {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: none;
+    background: var(--fd-blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    cursor: pointer;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: all 0.2s;
+}
+.cust-qty-val {
+    font-weight: 800;
+    font-size: 11px;
+    min-width: 12px;
+    text-align: center;
+    color: #333;
 }

@@ -574,7 +574,7 @@ function showCartToast(message = (window.texts ? window.texts.AddedToCartDefault
                         <div class="orderedItemMain">
                           <span class="orderedItemName">${item.name} ${item.customization?.size ? `<small class="cart-item-size">(${item.customization.size.name})</small>` : ''} <small class="unit-price">(${item.price} ${texts.Currency})</small></span>
                           <div class="cart-item-badges">
-                            ${item.isCustomized ? `<span class="addons-badge ${item.isCustomProduct && (item.hasActualCustomizations === false || (!item.customization?.extras?.length && !item.customization?.upsells?.length && (!item.customization?.size || item.customization?.size?.id === 'size-small'))) ? 'suggestion-badge' : ''}" onclick="event.stopPropagation(); if(typeof openProductModal==='function') openProductModal('${item.id}', ${JSON.stringify(item).replace(/"/g, '&quot;')}); else if(typeof openHardcodedModal==='function') openHardcodedModal(${JSON.stringify(item).replace(/"/g, '&quot;')})">${item.isCustomProduct && (item.hasActualCustomizations === false || (!item.customization?.extras?.length && !item.customization?.upsells?.length && (!item.customization?.size || item.customization?.size?.id === 'size-small'))) ? '<i class="fa-solid fa-wand-magic-sparkles"></i> ' + texts.Extras : texts.Extras}</span>` : ''}
+                            ${item.isCustomized || (item.customization?.extras?.length > 0) || (item.customization?.upsells?.length > 0) ? `<span class="addons-badge" onclick="event.stopPropagation(); if(typeof openProductModal==='function') openProductModal('${item.id}', ${JSON.stringify(item).replace(/"/g, '&quot;')}); else if(typeof openHardcodedModal==='function') openHardcodedModal(${JSON.stringify(item).replace(/"/g, '&quot;')})">${texts.Extras || 'الإضافات'}</span>` : ''}
                             ${(item.customization?.notes || item.notes) ? `<span class="notes-badge" onclick="event.stopPropagation(); if(typeof openProductModal==='function') openProductModal('${item.id}', ${JSON.stringify(item).replace(/"/g, '&quot;')}, true); else openHardcodedModal(${JSON.stringify(item).replace(/"/g, '&quot;')}, null, null, null, null, true)">${texts.Notes || 'ملاحظات'}</span>` : ''}
                           </div>
                         </div>
@@ -710,7 +710,10 @@ function showCartToast(message = (window.texts ? window.texts.AddedToCartDefault
             itemEl.addEventListener("click", (e) => {
 
                 // Ignore clicks on buttons inside the item
-                if (e.target.closest("button")) return;
+                if (e.target.closest("button") || e.target.closest(".addToCartBtn")) return;
+
+                // If item has openSimpleNotesModal or openHardcodedModal, don't auto-add
+                if (itemEl.hasAttribute("onclick") && (itemEl.getAttribute("onclick").includes("openSimpleNotesModal") || itemEl.getAttribute("onclick").includes("openHardcodedModal"))) return;
 
                 const id = itemEl.getAttribute("id");
                 const name = itemEl.querySelector(".foodName")?.textContent.trim();

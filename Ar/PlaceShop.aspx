@@ -9,7 +9,7 @@
         <asp:ScriptManager runat="server" ID="ScriptManager1" EnablePageMethods="true" />
            <style>
             .swal2-html-container{
-                padding: 0;
+                padding: 0 !important;
                 overflow-x: hidden;
             }
             #navShareBtn{
@@ -698,7 +698,6 @@
                 width: 100%;
                 position: sticky;
                 isolation: isolate;
-                top: 100px;
                 height: fit-content;
             }
 
@@ -885,7 +884,7 @@
             .cartShopLabel {
                 background-color: #f8f9fa;
                 padding: 10px 14px;
-                margin: 15px 0 8px 0;
+                margin: 1rem 0;
                 border-radius: 12px;
                 font-weight: 700;
                 font-size: 0.9rem;
@@ -953,7 +952,6 @@
             .orderedItemMain {
                 display: flex;
                 flex-wrap: wrap;
-                flex-grow: 1;
                 gap: 0.5rem;
                 flex-direction: column;
                 margin: 0 12px;
@@ -974,7 +972,7 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                width: 28px;
+                width: 26px;
                 height: 26px;
                 border: none;
                 background: var(--fd-blue);
@@ -1402,7 +1400,7 @@ display: none !important;
                                     <a href='#section-<%# Eval("id")%>' class="category-pill" data-category-id="<%# Eval("ID") %>">
 
                                         <%-- &#1607;&#1584;&#1607; &#1607;&#1610; &#1575;&#1604;&#1589;&#1608;&#1585;&#1577; &#1575;&#1604;&#1605;&#1589;&#1594;&#1585;&#1577; &#1604;&#1604;&#1578;&#1589;&#1606;&#1610;&#1601; --%>
-                                            <img src='<%# Eval("PhotoUrl") %>' alt='<%# Eval("Name") %>' />
+                                            <img src='<%# Eval("PhotoUrl") %>' alt='<%# Eval("Name") %>' onerror="this.src='/ar/images/placeholderImage.webp'" />
                                             <span>
                                                 <%# System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName=="en"
                                                     ? DataBinder.Eval(Container.DataItem, "NameEn" ) :
@@ -1463,47 +1461,7 @@ display: none !important;
                             </div>
 
 
-                            <div class="custom-selection-section">
-                                <h2 class="foodListTitle">اختار على ذوقك</h2>
-                                <div class="custom-grid">
-                                    <div class="foodItem custom-item" id="custom-shawarma-hardcoded" data-price="130" data-product-name="ربع كيلو شاورما فراخ" onclick="openHardcodedModal(null, null, null, this)">
-                                        <div class="product-qty-badge">0</div>
-                                        <div class="foodDetailsContainer">
-                                            <div class="foodText">
-                                                <h4 class="foodName">ربع كيلو شاورما فراخ</h4>
-                                                <p class="foodContent">شاورما دجاج مع التومية</p>
-                                            </div>
-                                            <div class="foodPricing">
-                                                <span class="foodNewPrice">اختار الحجم</span>
-                                            </div>
-                                        </div>
-                                        <div class="foodImage">
-                                            <img src="images/placeholderImage.webp" alt="product">
-                                            <div class="addToCart">
-                                                <span class="addToCartBtn"><i class="fa-solid fa-angle-left"></i></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="foodItem custom-item" id="custom-half-shawarma-hardcoded" data-price="250" data-product-name="نص كيلو شاورما فراخ" onclick="openHardcodedModal(null, null, null, this)">
-                                        <div class="product-qty-badge">0</div>
-                                        <div class="foodDetailsContainer">
-                                            <div class="foodText">
-                                                <h4 class="foodName">نص كيلو شاورما فراخ</h4>
-                                                <p class="foodContent">شاورما دجاج عائلية مع التومية والمخلل</p>
-                                            </div>
-                                            <div class="foodPricing">
-                                                <span class="foodNewPrice">اختار الحجم</span>
-                                            </div>
-                                        </div>
-                                        <div class="foodImage">
-                                            <img src="images/placeholderImage.webp" alt="product">
-                                            <div class="addToCart">
-                                                <span class="addToCartBtn"><i class="fa-solid fa-angle-left"></i></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+
 
                             <asp:Repeater ID="rptCategories" runat="server"
                                 OnItemDataBound="rptCategories_ItemDataBound">
@@ -1564,7 +1522,7 @@ display: none !important;
                                                         </div>
 
                                                         <div class="foodImage">
-                                                            <img src='<%# Eval("PhotoUrl") %>' alt="food image" onerror="this.onerror=null;this.src='images/placeholderImage.webp';" />
+                                                            <img src='<%# Eval("PhotoUrl") %>' alt="food image" onerror="this.src='/ar/images/placeholderImage.webp';" />
                                                             <div class="addToCart">
                                                                 <%# Convert.ToBoolean(Eval("isCustom")) ?
                                                                     "<span class='addToCartBtn'><i class='fa-solid fa-angle-left'></i></span>" :
@@ -1587,142 +1545,7 @@ display: none !important;
                                 </ItemTemplate>
                             </asp:Repeater>
 
-                            <div id="hardcoded-product-modal-content" style="display:none;">
-                                <div class="full-modal-container">
-                                    <div class="modal-banner">
-                                        <img src="images/placeholderImage.webp" alt="ربع كيلو شاورما فراخ">
-                                        <button class="modal-close-btn" onclick="Swal.close()">
-                                            <i class="fa-solid fa-xmark"></i>
-                                        </button>
-                                    </div>
 
-                                    <div class="modal-content-body">
-                                        <div class="modal-main-info">
-                                            <div class="title-price-row">
-                                                <h1>ربع كيلو شاورما فراخ</h1>
-                                                <span class="compact-price" style="display:none;">130 ج.م</span>
-                                            </div>
-                                            <p class="modal-desc">شاورما دجاج مع التومية</p>
-                                        </div>
-
-                                        <div class="modal-section">
-                                            <div class="section-header">
-                                                <h3>اختار الحجم</h3>
-                                                <span class="required-badge">إجباري</span>
-                                            </div>
-                                            <div class="options-list">
-                                                <div class="option-row"  data-item-id="size-small" data-size-id="size-small" onclick="selectModalOption(this, 130, 'size-small')">
-                                                    <span>صغير</span>
-                                                    <div class="price-radio">
-                                                        <span>130 ج.م</span>
-                                                        <div class="radio-circle"></div>
-                                                    </div>
-                                                </div>
-                                                <div class="option-row" data-item-id="size-medium" data-size-id="size-medium" onclick="selectModalOption(this, 180, 'size-medium')">
-                                                    <span>وسط</span>
-                                                    <div class="price-radio">
-                                                        <span>180 ج.م</span>
-                                                        <div class="radio-circle"></div>
-                                                    </div>
-                                                </div>
-                                                <div class="option-row" data-item-id="size-large" data-size-id="size-large" onclick="selectModalOption(this, 230, 'size-large')">
-                                                    <span>كبير</span>
-                                                    <div class="price-radio">
-                                                        <span>230 ج.م</span>
-                                                        <div class="radio-circle"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="modal-section upsell-section">
-                                            <div class="section-header">
-                                                <h3>غالباً ما يُطلب مع</h3>
-                                            </div>
-                                            <div class="swiper related-products-swiper">
-                                                <div class="swiper-wrapper">
-                                                    <div class="swiper-slide upsell-card-new" data-item-id="upsell-orange-juice" data-upsell-id="upsell-orange-juice">
-                                                        <div class="upsell-img-wrapper">
-                                                            <div class="upsell-badge" style="display:none;">1</div>
-                                                            <img src="images/placeholderImage.webp" alt="upsell">
-                                                            <div class="upsell-add-btn" onclick="addUpsellItem(this, 25, 'upsell-orange-juice', 'عصير برتقال')">
-                                                                <i class="fa-solid fa-plus"></i>
-                                                            </div>
-                                                            <div class="qty-control" onclick="event.stopPropagation()">
-                                                                <button onclick="updateUpsellQty(this, -1, 25, 'upsell-orange-juice')"><i class="fa-solid fa-minus"></i></button>
-                                                                <span class="upsell-qty-val">1</span>
-                                                                <button onclick="updateUpsellQty(this, 1, 25, 'upsell-orange-juice')"><i class="fa-solid fa-plus"></i></button>
-                                                            </div>
-                                                        </div>
-                                                        <div class="upsell-info">
-                                                            <h5>عصير برتقال</h5>
-                                                            <p>EGP 25.00</p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="swiper-slide upsell-card-new" data-item-id="upsell-green-salad" data-upsell-id="upsell-green-salad">
-                                                        <div class="upsell-img-wrapper">
-                                                            <div class="upsell-badge" style="display:none;">1</div>
-                                                            <img src="images/placeholderImage.webp" alt="upsell">
-                                                            <div class="upsell-add-btn" onclick="addUpsellItem(this, 35, 'upsell-green-salad', 'سلطة خضراء')">
-                                                                <i class="fa-solid fa-plus"></i>
-                                                            </div>
-                                                            <div class="qty-control" onclick="event.stopPropagation()">
-                                                                <button onclick="updateUpsellQty(this, -1, 35, 'upsell-green-salad')"><i class="fa-solid fa-minus"></i></button>
-                                                                <span class="upsell-qty-val">1</span>
-                                                                <button onclick="updateUpsellQty(this, 1, 35, 'upsell-green-salad')"><i class="fa-solid fa-plus"></i></button>
-                                                            </div>
-                                                        </div>
-                                                        <div class="upsell-info">
-                                                            <h5>سلطة خضراء</h5>
-                                                            <p>EGP 35.00</p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="swiper-slide upsell-card-new" data-item-id="upsell-toum" data-upsell-id="upsell-toum">
-                                                        <div class="upsell-img-wrapper">
-                                                            <div class="upsell-badge" style="display:none;">1</div>
-                                                            <img src="images/placeholderImage.webp" alt="upsell">
-                                                            <div class="addToCart">
-                                                                <div class="upsell-add-btn" onclick="addUpsellItem(this, 15, 'upsell-toum', 'تومية')">
-                                                                    <i class="fa-solid fa-plus"></i>
-                                                                </div>
-                                                                <div class="qty-control" onclick="event.stopPropagation()">
-                                                                    <button onclick="updateUpsellQty(this, -1, 15, 'upsell-toum')"><i class="fa-solid fa-minus"></i></button>
-                                                                    <span class="upsell-qty-val">1</span>
-                                                                    <button onclick="updateUpsellQty(this, 1, 15, 'upsell-toum')"><i class="fa-solid fa-plus"></i></button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="upsell-info">
-                                                            <h5>تومية</h5>
-                                                            <p>EGP 15.00</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                          <div class="modal-section">
-                                            <div class="section-header">
-                                                <h3>ملاحظات</h3>
-                                                <span class="optional-badge">اختياري</span>
-                                            </div>
-                                            <textarea id="product-notes" placeholder="أضف ملاحظاتك هنا..."></textarea>
-                                        </div>
-
-                                    </div>
-
-                                    <div class="modal-footer-sticky">
-                                        <div class="qty-control">
-                                            <button onclick="updateModalQty(-1)"><i class="fa-solid fa-minus"></i></button>
-                                            <span id="modal-qty">1</span>
-                                            <button onclick="updateModalQty(1)"><i class="fa-solid fa-plus"></i></button>
-                                        </div>
-                                        <button class="add-to-cart-big" onclick="submitModalCart()">
-                                            <span>إضافة للسلة</span>
-                                            <strong id="modal-total-price">اختار الحجم</strong>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
                         </article>
                     </figure>
 
@@ -2740,7 +2563,7 @@ padding-inline: 1rem !important;
 
         function toggleExtra(el, price, id, name) {
             el.classList.toggle('active');
-            
+
             if (el.classList.contains('active')) {
                 // Add if not already there
                 if (!currentCustomization.extras.some(x => x.id === id)) {
@@ -4085,7 +3908,7 @@ padding-inline: 1rem !important;
                 if (typeof arg2 === 'string') {
                     const id = (typeof triggerEl === 'object' && triggerEl !== null) ? triggerEl.getAttribute('id') : triggerEl;
                     const shopId = String(document.getElementById('shopId')?.innerText.trim() || '');
-                    
+
                     if (window.cart) {
                         editItem = window.cart.items.find(i => i.id === id && String(i.shopId) === shopId);
                     }
@@ -4097,7 +3920,7 @@ padding-inline: 1rem !important;
                 }
 
                 let id = (typeof triggerEl === 'object' && triggerEl !== null) ? triggerEl.getAttribute('id') : triggerEl;
-                
+
                 // If id is not found and we have an editItem, use its ID
                 if (!id && editItem) {
                     id = editItem.id.split('-size-')[0]; // Remove size suffix for the data fetch
@@ -4294,9 +4117,9 @@ padding-inline: 1rem !important;
                     showConfirmButton: false,
                     width: '500px',
                     padding: '0',
-                    customClass: { 
+                    customClass: {
                         container: 'p-0',
-                        popup: 'product-modal-popup' 
+                        popup: 'product-modal-popup'
                     },
                     didOpen: () => {
                         // Initialize Swipers

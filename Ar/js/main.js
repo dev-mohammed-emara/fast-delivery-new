@@ -378,6 +378,7 @@ const removeFormChange = document.getElementById("removeFormChange");
 
 // ✅ Function to show the popup and the correct container
 function openEditor(formName) {
+    if (!dataEditorPopup) return;
     dataEditorPopup.classList.add("is-visible");
     document.body.style.overflow = "hidden";
 
@@ -405,7 +406,7 @@ showEditPopupBtns.forEach((btn) => {
 
 // ✅ Close popup function (with reset)
 function closeEditPopup() {
-    dataEditorPopup.classList.remove("is-visible");
+    if (dataEditorPopup) dataEditorPopup.classList.remove("is-visible");
     document.body.style.overflow = "";
     if (editorForm) editorForm.reset(); // Reset form on close
 }
@@ -416,9 +417,11 @@ if (removeFormChange) removeFormChange.addEventListener("click", closeEditPopup)
 
 // ✅ Close if click outside container
 const dataEditContainer = document.querySelector(".dataEditContainer");
-dataEditorPopup.addEventListener("click", (e) => {
-    if (!dataEditContainer.contains(e.target)) closeEditPopup();
-});
+if (dataEditorPopup) {
+    dataEditorPopup.addEventListener("click", (e) => {
+        if (dataEditContainer && !dataEditContainer.contains(e.target)) closeEditPopup();
+    });
+}
 
 // ✅ Handle form submission
 if (editorForm) {

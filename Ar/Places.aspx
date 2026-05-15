@@ -151,8 +151,6 @@
         display: flex;
         column-gap: 1rem;
         align-items: center;
-        border-top: 1px solid rgba(0, 0, 0, 0.1);
-        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
         font-weight: bold;
         white-space: nowrap;
         flex-wrap: wrap;
@@ -643,7 +641,7 @@
 
               <a href='Places.aspx?id=<%# Eval("ID") %>&addid=<%# Request.QueryString["addid"].ToString() %>'
                 class="category-item<%# GetActiveClass(Eval(" ID").ToString()) %>">
-                <img src='<%# Eval("PhotoPath") %>' />
+                <img src='<%# Eval("PhotoPath") %>' onerror="this.src='/ar/images/placeholderImage.webp'" />
                 <span>
                   <%# System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName=="en" ?
                     DataBinder.Eval(Container.DataItem, "NameEn" ) :
@@ -714,7 +712,7 @@
 
   <a href="javascript:void(0);" class="category-pill active" onclick="filterByJS('0', this)">
         <div class="all-icon-circle">
-             <img src="images/all-categories.png" alt="الكل" />
+             <img src="images/all-categories.png" alt="الكل" onerror="this.src='/ar/images/placeholderImage.webp'" />
 
              </div>
         <span>الكل(<%= ViewState["AllCount"] %>)</span>
@@ -724,7 +722,7 @@
         <ItemTemplate>
             <a href="javascript:void(0);" class="category-pill"
                onclick='<%# "filterByJS(\"" + Eval("id") + "\", this)" %>'>
-                <img src='<%# Eval("TypeImage") %>' />
+                <img src='<%# Eval("TypeImage") %>' onerror="this.src='/ar/images/placeholderImage.webp'" />
                       <%# System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName=="en" ?
                     DataBinder.Eval(Container.DataItem, "TypeNameEn" ) :
                     System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName=="ru" ?
@@ -748,13 +746,13 @@
                     <%# Eval("Rate")%>
                   </span>
                   <div class="shop-img-wrapper" style="position: relative; width: 120px; height: 120px; flex-shrink: 0;">
-                    <asp:Image ID="Image2" ImageUrl='<%# "~/ar/" + Eval("PhotoPath") %>' runat="server" style="width:100%; height:100%; border-radius:0.5rem; object-fit:cover;" />
+                    <img src='<%# "/ar/" + Eval("PhotoPath") %>' onerror="this.src='/ar/images/placeholderImage.webp'" style="width:100%; height:100%; border-radius:0.5rem; object-fit:cover;" />
                     <div class="favorite-heart"
                          onclick="toggleFavorite(event, this)"
                          data-id='<%# Eval("id") %>'
                          data-name='<%# Eval("Name") %>'
                          data-name-en='<%# Eval("NameEn") %>'
-                         data-img='<%# "~/ar/" + Eval("PhotoPath") %>'
+                         data-img='<%# "/ar/" + Eval("PhotoPath") %>'
                          data-desc='<%# Eval("Description") %>'
                          data-desc-en='<%# Eval("DescriptionEn") %>'
                          data-delivery-time='<%# Eval("DeliveredTime") %>'
