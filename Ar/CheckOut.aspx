@@ -1532,14 +1532,16 @@
             const isPickup = activeOrderType === 'pickup' || activeOrderType === 'in-shop';
             const contactMethod = state.contactMethod || 'ring_bell';
 
-            let payerPhone = state.payerPhone || "";
-            let paymentProofBase64 = state.paymentProofBase64 || "";
+            let payerPhone = "";
+            let paymentProofBase64 = "";
 
             if (['instapay', 'wallet', 'vodafone_cash'].includes(paymentMethod)) {
-                payerPhone = document.getElementById('payerPhone').value;
+                payerPhone = document.getElementById('payerPhone') ? document.getElementById('payerPhone').value : "";
+                if (!payerPhone && state.payerPhone) payerPhone = state.payerPhone;
+
                 const fileInput = document.getElementById('paymentProofFile');
 
-                if (fileInput.files.length > 0) {
+                if (fileInput && fileInput.files && fileInput.files.length > 0) {
                     const file = fileInput.files[0];
                     if (!file.type.startsWith('image/')) {
                          Swal.fire({
@@ -1553,6 +1555,7 @@
                     // Update state
                     if (window.cart) {
                         window.cart.checkoutState.paymentProofBase64 = paymentProofBase64;
+                        window.cart.checkoutState.payerPhone = payerPhone;
                         window.cart.saveCheckoutState();
                     }
                 } else {
@@ -1749,7 +1752,7 @@
                 if (state.paymentMethod) {
                     const payBtn = document.querySelector(`.pay-option.pay-${state.paymentMethod.replace('_', '')}`) ||
                                  document.querySelector(`.pay-option[onclick*="'${state.paymentMethod}'"]`);
-                    if (payBtn) selectPayment(payBtn, state.paymentMethod);
+                    if (payBtn) selectPayment(payBtn, state.paymentMethod, true);
                 }
 
                 // Sync Contact Method
@@ -1883,11 +1886,31 @@
             }, 800);
         };
 
-        window.selectPayment = function(el, method) {
+        window.selectPayment = function(el, method, isInitialLoad = false) {
             document.querySelectorAll('.pay-options-grid .pay-option').forEach(opt => opt.classList.remove('selected'));
             el.classList.add('selected');
             const radio = el.querySelector('input');
             if (radio) radio.checked = true;
+
+            const state = (window.cart && window.cart.checkoutState) ? window.cart.checkoutState : {};
+            const proofWrap = document.getElementById('paymentProofWrap');
+            const preview = document.getElementById('paymentProofPreview');
+            const phoneInput = document.getElementById('payerPhone');
+            const fileInput = document.getElementById('paymentProofFile');
+
+            // Reset proof and phone when manually toggling payment method
+            if (!isInitialLoad && state.paymentMethod !== method) {
+                if (phoneInput) phoneInput.value = '';
+                if (fileInput) fileInput.value = '';
+                if (preview) {
+                    preview.src = '';
+                    preview.style.display = 'none';
+                }
+                if (window.cart) {
+                    window.cart.checkoutState.paymentProofBase64 = "";
+                    window.cart.checkoutState.payerPhone = "";
+                }
+            }
 
             // Update checkoutState
             if (window.cart) {
@@ -1895,17 +1918,13 @@
                 window.cart.saveCheckoutState();
             }
 
-            const proofWrap = document.getElementById('paymentProofWrap');
-            const preview = document.getElementById('paymentProofPreview');
-            const state = (window.cart && window.cart.checkoutState) ? window.cart.checkoutState : {};
-
             if (method === 'cash' || method === 'visa') {
                 if (proofWrap) proofWrap.style.display = 'none';
             } else {
                 if (proofWrap) proofWrap.style.display = 'flex';
                 // Show preview if we have one in state
-                if (preview && state.paymentProofBase64) {
-                    preview.src = (state.paymentProofBase64.startsWith('data:') ? '' : 'data:image/png;base64,') + state.paymentProofBase64;
+                if (preview && window.cart && window.cart.checkoutState.paymentProofBase64) {
+                    preview.src = (window.cart.checkoutState.paymentProofBase64.startsWith('data:') ? '' : 'data:image/png;base64,') + window.cart.checkoutState.paymentProofBase64;
                     preview.style.display = 'block';
                 }
             }

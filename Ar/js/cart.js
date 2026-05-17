@@ -14,26 +14,164 @@ document.addEventListener("DOMContentLoaded", () => {
     // Ensure texts object exists
     const texts = window.texts || {};
 
+    // Helper to extract and clean timer values dynamically
+    const getLiveDeliveryTime = () => {
+        const timerEl = document.querySelector(".timer") || document.querySelector("[id*='timer']") || document.querySelector("[class*='timer']");
+        const val = timerEl ? parseInt(timerEl.textContent.replace(/[^\d]/g, "")) : 0;
+        return isNaN(val) ? 0 : val;
+    };
 
+    // Standardized Global values hydration (CamelCase standard + safe trim casts)
+    const placeIdEl = document.querySelector("#placeId");
+    const areaIdEl = document.querySelector("#areaId");
+    const shopAreaIdEl = document.querySelector("#shopAreaId");
+    const shopIdEl = document.querySelector("#shopId");
+    const addidEl = document.querySelector("#addid") || document.querySelector("#addId");
+    const actualShopNameEl = document.getElementById("shopNameContent") || 
+                             document.querySelector(".availableShopName span") || 
+                             document.querySelector(".availableShopName") || 
+                             document.querySelector("#shopName");
+
+    let GLOBAL_placeId = placeIdEl ? String(placeIdEl.textContent).trim() : String(localStorage.getItem("GLOBAL_placeId") || "").trim();
+    let GLOBAL_areaId = areaIdEl ? String(areaIdEl.textContent).trim() : String(localStorage.getItem("GLOBAL_areaId") || "").trim();
+    let GLOBAL_shopId = shopIdEl ? String(shopIdEl.textContent).trim() : String(localStorage.getItem("GLOBAL_shopId") || "").trim();
+    let GLOBAL_shopAreaId = shopAreaIdEl ? String(shopAreaIdEl.textContent).trim() : String(localStorage.getItem("GLOBAL_shopAreaId") || "").trim();
+    let GLOBAL_addId = addidEl ? String(addidEl.textContent).trim() : String(localStorage.getItem("GLOBAL_addId") || "").trim();
+    let GLOBAL_shopName = actualShopNameEl ? String(actualShopNameEl.textContent).trim() : String(localStorage.getItem("GLOBAL_shopName") || "").trim();
+
+    // Sync variables to localStorage if loaded from DOM
+    if (placeIdEl) localStorage.setItem("GLOBAL_placeId", GLOBAL_placeId);
+    if (areaIdEl) localStorage.setItem("GLOBAL_areaId", GLOBAL_areaId);
+    if (shopIdEl) localStorage.setItem("GLOBAL_shopId", GLOBAL_shopId);
+    if (shopAreaIdEl) localStorage.setItem("GLOBAL_shopAreaId", GLOBAL_shopAreaId);
+    if (addidEl) localStorage.setItem("GLOBAL_addId", GLOBAL_addId);
+    if (actualShopNameEl) localStorage.setItem("GLOBAL_shopName", GLOBAL_shopName);
+
+    // Expose both standardized clean camelCase names and old uppercase/snake_case names to window for 100% backwards compatibility
+    window.GLOBAL_placeId = GLOBAL_placeId;
+    window.GLOBAL_PLACE_ID = GLOBAL_placeId;
+    window.GLOBAL_areaId = GLOBAL_areaId;
+    window.GLOBAL_AREA_ID = GLOBAL_areaId;
+    window.GLOBAL_shopId = GLOBAL_shopId;
+    window.GLOBAL_shop_ID = GLOBAL_shopId;
+    window.GLOBAL_shopAreaId = GLOBAL_shopAreaId;
+    window.GLOBAL_shopArea_ID = GLOBAL_shopAreaId;
+    window.GLOBAL_addId = GLOBAL_addId;
+    window.GLOBAL_addid_ID = GLOBAL_addId;
+    window.GLOBAL_shopName = GLOBAL_shopName;
+
+    // Area Discount Setup
+    const areaDiscountEl = document.querySelector("#areaDiscountPercentage");
+    let GLOBAL_AREA_DISCOUNT = areaDiscountEl
+        ? parseFloat(areaDiscountEl.textContent.trim().replace("%", "")) || 0
+        : parseFloat(localStorage.getItem("GLOBAL_AREA_DISCOUNT")) || 0;
+
+    if (areaDiscountEl) {
+        localStorage.setItem("GLOBAL_AREA_DISCOUNT", String(GLOBAL_AREA_DISCOUNT));
+    }
+    window.GLOBAL_AREA_DISCOUNT = GLOBAL_AREA_DISCOUNT;
+    window.GLOBAL_DELIVERY_TIME = getLiveDeliveryTime();
+
+    // Setup Delivery Fee with safe active-shop coupling
+    let GLOBAL_DELIVERY_FEE = parseFloat(localStorage.getItem("GLOBAL_DELIVERY_FEE")) || 0;
+    const deliveryFeeEl = document.querySelector("#deliveryFee");
+    const deliveryCostValueEl = document.querySelector("#deliveryCostValue");
+    if (deliveryFeeEl || deliveryCostValueEl) {
+        let feeStr = "";
+        if (deliveryFeeEl && deliveryFeeEl.textContent.trim() !== "" && parseFloat(deliveryFeeEl.textContent.trim()) > 0) {
+            feeStr = deliveryFeeEl.textContent.trim();
+        } else if (deliveryCostValueEl) {
+            feeStr = deliveryCostValueEl.textContent.trim();
+        }
+        const fee = parseFloat(feeStr);
+        if (!isNaN(fee)) {
+            GLOBAL_DELIVERY_FEE = fee;
+            localStorage.setItem("GLOBAL_DELIVERY_FEE", String(fee));
+        }
+    }
+    window.GLOBAL_DELIVERY_FEE = GLOBAL_DELIVERY_FEE;
 
     const cart = {
-        // Expose to window for global access
-        initGlobal() { window.cart = this; },
+        // Expose to window for global access with secure context binding
+        initGlobal() {
+            Object.keys(this).forEach(key => {
+                if (typeof this[key] === 'function') {
+                    this[key] = this[key].bind(this);
+                }
+            });
+            window.cart = this;
+        },
 
-        items: JSON.parse(localStorage.getItem("cartItems")) || [],
-        deliveryFee:
-            parseFloat(document.querySelector("#deliveryFee")?.textContent.trim()) ||
-            parseFloat(document.querySelector("#deliveryCostValue")?.textContent.trim()) ||
-            parseFloat(localStorage.getItem("GLOBAL_DELIVERY_FEE")) || 0,
+        items: (() => {
+            // Self-healing load: sanitize any corrupted customization data from localStorage
+            const raw = JSON.parse(localStorage.getItem("cartItems")) || [];
+            const _fix = (src) => {
+                if (!src) return [];
+                if (Array.isArray(src)) return src;
+                // Convert indexed-object {"0":{...}, "1":{...}} back to a proper array
+                return Object.values(src).filter(x => x && typeof x === 'object' && x.id);
+            };
+            raw.forEach(item => {
+                if (item.customization) {
+                    item.customization.extras = _fix(item.customization.extras);
+                    item.customization.upsells = _fix(item.customization.upsells);
+                }
+            });
+            return raw;
+        })(),
+
+        get deliveryFee() {
+            const activeShopId = String(document.querySelector("#shopId")?.textContent || "").trim();
+            const domFee = parseFloat(document.querySelector("#deliveryFee")?.textContent.trim()) ||
+                           parseFloat(document.querySelector("#deliveryCostValue")?.textContent.trim());
+
+            if (activeShopId && !isNaN(domFee)) {
+                return domFee;
+            }
+            if (activeShopId) {
+                const item = this.items.find(i => String(i.shopId).trim() === activeShopId);
+                if (item && item.deliveryFee !== undefined) return parseFloat(item.deliveryFee) || 0;
+            }
+            return parseFloat(localStorage.getItem("GLOBAL_DELIVERY_FEE")) || 0;
+        },
+
+        syncDeliveryFeeWithDOM() {
+            const activeShopId = String(document.querySelector("#shopId")?.textContent || "").trim();
+            const domFee = parseFloat(document.querySelector("#deliveryFee")?.textContent.trim()) ||
+                           parseFloat(document.querySelector("#deliveryCostValue")?.textContent.trim());
+
+            if (activeShopId && !isNaN(domFee)) {
+                let updated = false;
+                this.items.forEach(item => {
+                    if (String(item.shopId).trim() === activeShopId) {
+                        if (parseFloat(item.deliveryFee) !== domFee) {
+                            item.deliveryFee = domFee;
+                            updated = true;
+                        }
+                    }
+                });
+                if (updated) {
+                    this.save();
+                }
+                localStorage.setItem("GLOBAL_DELIVERY_FEE", String(domFee));
+            }
+        },
+
         save() {
             localStorage.setItem("cartItems", JSON.stringify(this.items));
             this.saveSummary();
             this.initGlobal();
-            updateCartUI();
-            updateCartCounter();
-            updateTotalPayAmount();
+            if (typeof updateCartUI === 'function') {
+                updateCartUI();
+            }
+            if (typeof updateCartCounter === 'function') {
+                updateCartCounter();
+            }
+            if (typeof updateTotalPayAmount === 'function') {
+                updateTotalPayAmount();
+            }
             const checkoutCart = document.querySelector("#checkoutCart");
-            if (checkoutCart) {
+            if (checkoutCart && typeof renderCheckoutArticles === 'function') {
                 renderCheckoutArticles(this.items, JSON.parse(localStorage.getItem("cartSummary")) || {});
             }
             if (typeof syncProductBadges === 'function') {
@@ -50,12 +188,16 @@ document.addEventListener("DOMContentLoaded", () => {
             let totalDiscountAmount = 0;
             let finalDeliveryToPay = 0;
 
-            const DISCOUNT_RATE = (typeof GLOBAL_AREA_DISCOUNT !== 'undefined') ? parseFloat(GLOBAL_AREA_DISCOUNT) / 100 : 0;
+            let discountRate = 0;
+            if (typeof window.GLOBAL_AREA_DISCOUNT !== 'undefined') {
+                discountRate = parseFloat(window.GLOBAL_AREA_DISCOUNT) / 100;
+            } else {
+                discountRate = parseFloat(localStorage.getItem("GLOBAL_AREA_DISCOUNT")) / 100 || 0;
+            }
 
-            // 1. تجميع رسوم المتاجر حسب الـ AreaId
+            // 1. Group delivery fees of distinct shops by their areaId (standardized & trimmed)
             const areaMap = this.items.reduce((acc, item) => {
-                // تأكد إن الـ IDs نصوص ونضيف trim عشان نمنع أي مسافات مخفية
-                const aId = String(item.shopAreaId || "").trim();
+                const aId = String(item.areaId || item.shopAreaId || GLOBAL_areaId || "").trim();
                 const sId = String(item.shopId || "").trim();
                 const fee = parseFloat(item.deliveryFee) || 0;
 
@@ -63,30 +205,28 @@ document.addEventListener("DOMContentLoaded", () => {
                     if (!acc[aId]) {
                         acc[aId] = {};
                     }
-                    // بنخزن رسوم المتجر الواحد (مرة واحدة) جوه منطقته
                     acc[aId][sId] = fee;
                 }
                 return acc;
             }, {});
 
-            // لعمل Debug في الكونسول وتشوف الـ Structure اللي اتكون
-            console.log("Area Map Structure:", areaMap);
+            console.log("Structured Area Map for summary calculation:", areaMap);
 
-            // 2. الحساب لكل منطقة
+            // 2. Compute delivery fees and multi-shop discounts for each distinct area
             for (const aId in areaMap) {
                 const shopsInThisArea = areaMap[aId];
                 const feesArray = Object.values(shopsInThisArea);
                 const sumFeesInArea = feesArray.reduce((sum, f) => sum + f, 0);
 
-                console.log(`Area: ${aId}, Shops Count: ${feesArray.length}, Total Fees: ${sumFeesInArea}`);
+                console.log(`Area ID: ${aId}, Shops count in area: ${feesArray.length}, Sum of delivery fees: ${sumFeesInArea}`);
 
                 if (feesArray.length > 1) {
-                    // ✅ أكتر من متجر في نفس الـ Area
-                    const areaDiscount = sumFeesInArea * DISCOUNT_RATE;
+                    // Two or more distinct shops in the same area: apply discount rate to the sum
+                    const areaDiscount = sumFeesInArea * discountRate;
                     totalDiscountAmount += areaDiscount;
                     finalDeliveryToPay += (sumFeesInArea - areaDiscount);
                 } else {
-                    // ❌ متجر واحد بس في المنطقة
+                    // Only one shop in the area: no discount applied
                     finalDeliveryToPay += sumFeesInArea;
                 }
             }
@@ -135,10 +275,10 @@ document.addEventListener("DOMContentLoaded", () => {
         },
 
         updateAddonQty(itemId, addonId, delta, type, shopId) {
-            const item = this.items.find(i => String(i.cartItemId || i.id) === String(itemId) && String(i.shopId) === String(shopId));
+            const item = this.items.find(i => String(i.cartItemId || i.id).trim() === String(itemId).trim() && String(i.shopId).trim() === String(shopId).trim());
             if (!item || !item.customization || !item.customization[type]) return;
 
-            const addon = item.customization[type].find(a => String(a.id) === String(addonId));
+            const addon = item.customization[type].find(a => String(a.id).trim() === String(addonId).trim());
             if (addon) {
                 addon.qty = (Number(addon.qty) || 1) + delta;
                 if (addon.qty < 1) {
@@ -150,15 +290,15 @@ document.addEventListener("DOMContentLoaded", () => {
         },
 
         removeAddon(itemId, addonId, type, shopId) {
-            const item = this.items.find(i => String(i.cartItemId || i.id) === String(itemId) && String(i.shopId) === String(shopId));
+            const item = this.items.find(i => String(i.cartItemId || i.id).trim() === String(itemId).trim() && String(i.shopId).trim() === String(shopId).trim());
             if (!item || !item.customization || !item.customization[type]) return;
 
-            item.customization[type] = item.customization[type].filter(a => String(a.id) !== String(addonId));
+            item.customization[type] = item.customization[type].filter(a => String(a.id).trim() !== String(addonId).trim());
             this.save();
         },
 
         updateItemNotes(itemId, newNotes, shopId) {
-            const index = this.items.findIndex(i => String(i.cartItemId || i.id) === String(itemId) && String(i.shopId) === String(shopId));
+            const index = this.items.findIndex(i => String(i.cartItemId || i.id).trim() === String(itemId).trim() && String(i.shopId).trim() === String(shopId).trim());
             if (index !== -1) {
                 if (!this.items[index].customization) {
                     this.items[index].customization = {};
@@ -169,40 +309,70 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         },
 
-
         addItem(item, count = 1, isUpdate = false) {
-            const targetShopId = item.shopId || GLOBAL_shop_ID;
-            const targetAreaId = item.areaId || GLOBAL_AREA_ID;
+            // Standardize values by explicitly casting and trimming
+            const targetShopId = String(item.shopId || GLOBAL_shopId || "").trim();
+            const targetAreaId = String(item.areaId || GLOBAL_areaId || "").trim();
+            const targetPlaceId = String(item.placeId || GLOBAL_placeId || "").trim();
+            const targetShopAreaId = String(item.shopAreaId || GLOBAL_shopAreaId || "").trim();
+            const targetAddId = String(item.addId || GLOBAL_addId || "").trim();
+            const targetShopName = String(item.shopName || GLOBAL_shopName || "").trim();
 
-            const differentAreaExists = this.items.some(i => i.areaId !== targetAreaId);
+            // --- Sanitize incoming customization data to prevent indexed-object corruption ---
+            if (item.customization) {
+                const _sanitize = (src) => {
+                    if (!src) return [];
+                    const arr = Array.isArray(src) ? src : Object.values(src);
+                    return arr.filter(x => x && typeof x === 'object' && x.id).map(x => ({
+                        id: String(x.id),
+                        name: String(x.name || ''),
+                        price: Number(x.price) || 0,
+                        qty: Math.max(1, parseInt(x.qty) || 1)
+                    }));
+                };
+                item.customization.extras = _sanitize(item.customization.extras);
+                item.customization.upsells = _sanitize(item.customization.upsells);
+                if (item.customization.size && typeof item.customization.size === 'object') {
+                    item.customization.size = {
+                        id: String(item.customization.size.id),
+                        name: String(item.customization.size.name || ''),
+                        price: Number(item.customization.size.price) || 0
+                    };
+                }
+                item.customization.notes = String(item.customization.notes || '');
+            }
+
+            // Explicitly cross-verify the incoming item's area data against existing items in the cart
+            const differentAreaExists = this.items.some(i => String(i.areaId || "").trim() !== targetAreaId);
 
             if (differentAreaExists) {
                 Swal.fire({
-                    title: texts.CannotAddDifferentAreaTitle,
-                    text: texts.CannotAddDifferentAreaText,
+                    title: texts.CannotAddDifferentAreaTitle || "منطقة مختلفة",
+                    text: texts.CannotAddDifferentAreaText || "لا يمكنك إضافة أصناف من منطقة مختلفة إلى سلة المشتريات.",
                     icon: "error",
-                    confirmButtonText:texts.Ok,
+                    confirmButtonText: texts.Ok || "موافق",
                 });
                 return false;
             }
 
             item.cartItemId = item.cartItemId || item.id;
 
-            const shopExists = this.items.some(i => String(i.shopId) === String(targetShopId));
-            const isSameShopEdit = window.currentEditItem && String(window.currentEditItem.shopId) === String(targetShopId);
+            const shopExists = this.items.some(i => String(i.shopId).trim() === targetShopId);
+            const isSameShopEdit = window.currentEditItem && String(window.currentEditItem.shopId).trim() === targetShopId;
 
+            // If different shop but same area
             if (!isUpdate && !isSameShopEdit && !shopExists && this.items.length > 0) {
                 const newItem = {
                     ...item,
                     amount: count,
-                    placeId: item.placeId || GLOBAL_PLACE_ID,
+                    placeId: targetPlaceId,
                     areaId: targetAreaId,
-                    deliveryFee: item.deliveryFee || GLOBAL_DELIVERY_FEE,
+                    deliveryFee: parseFloat(item.deliveryFee) || parseFloat(GLOBAL_DELIVERY_FEE) || 0,
                     shopId: targetShopId,
-                    shopName: item.shopName || GLOBAL_shopName,
-                    shopAreaId: item.shopAreaId || GLOBAL_shopArea_ID,
-                    addId: item.addId || GLOBAL_addid_ID,
-                    deliveryTime: parseInt(item.deliveryTime) || getLiveDeliveryTime(),
+                    shopName: targetShopName,
+                    shopAreaId: targetShopAreaId,
+                    addId: targetAddId,
+                    deliveryTime: getLiveDeliveryTime() || parseInt(item.deliveryTime) || 0,
                 };
 
                 // Close product modal if open
@@ -223,7 +393,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         if (result.isConfirmed) {
                             if (window.currentEditItem) {
                                 const oldId = window.currentEditItem.cartItemId || window.currentEditItem.id;
-                                cart.items = cart.items.filter(i => !(String(i.cartItemId || i.id) === String(oldId) && String(i.shopId) === String(window.currentEditItem.shopId)));
+                                cart.items = cart.items.filter(i => !(String(i.cartItemId || i.id).trim() === String(oldId).trim() && String(i.shopId).trim() === String(window.currentEditItem.shopId).trim()));
                             }
                             cart.items.push(newItem);
                             cart.save();
@@ -235,7 +405,31 @@ document.addEventListener("DOMContentLoaded", () => {
                 return false;
             }
 
-            const existing = this.items.find(i => String(i.cartItemId || i.id) === String(item.cartItemId) && String(i.shopId) === String(targetShopId));
+            // --- Deep customization fingerprint for merge-vs-separate comparison ---
+            const _custFingerprint = (cust) => {
+                if (!cust) return '';
+                const sizeKey = cust.size ? String(cust.size.id) : '';
+                const extrasKey = (cust.extras || []).map(e => String(e.id)).sort().join(',');
+                const upsellsKey = (cust.upsells || []).map(u => String(u.id)).sort().join(',');
+                return `${sizeKey}|${extrasKey}|${upsellsKey}`;
+            };
+
+            const incomingFingerprint = _custFingerprint(item.customization);
+
+            // Find existing item: match by cartItemId + shopId, then verify customization fingerprint
+            const existing = this.items.find(i => {
+                const idMatch = String(i.cartItemId || i.id).trim() === String(item.cartItemId).trim();
+                const shopMatch = String(i.shopId).trim() === targetShopId;
+                if (!idMatch || !shopMatch) return false;
+
+                // For updates from modal, always match by cartItemId (size is baked in)
+                if (isUpdate) return true;
+
+                // For fresh adds, also compare customization fingerprint
+                const existingFingerprint = _custFingerprint(i.customization);
+                return existingFingerprint === incomingFingerprint;
+            });
+
             if (existing) {
                 if (isUpdate) {
                     existing.amount = count; // Replace quantity on update
@@ -243,40 +437,48 @@ document.addEventListener("DOMContentLoaded", () => {
                     existing.amount += count; // Increment on normal add
                 }
 
-                // Sync notes and customizations
-                if (item.notes) existing.notes = item.notes;
+                // Fully replace customization with incoming clean data
                 if (item.customization) {
-                    if (!existing.customization) existing.customization = {};
-                    if (item.customization.notes) existing.customization.notes = item.customization.notes;
-                    if (item.customization.size) existing.customization.size = item.customization.size;
-
-                    // Replace extras and upsells to reflect latest state
-                    if (item.customization.extras) existing.customization.extras = [...item.customization.extras];
-                    if (item.customization.upsells) existing.customization.upsells = [...item.customization.upsells];
+                    existing.customization = {
+                        size: item.customization.size || null,
+                        extras: [...(item.customization.extras || [])],
+                        upsells: [...(item.customization.upsells || [])],
+                        notes: String(item.customization.notes || '')
+                    };
                 }
+                if (item.notes !== undefined) existing.notes = String(item.notes);
 
                 // Sync flags
                 existing.isCustomized = !!item.isCustomized;
                 existing.isCustomProduct = !!item.isCustomProduct;
 
+                // Sync price (may have changed due to size selection)
+                existing.price = Number(item.price) || existing.price;
+                existing.productBasePrice = Number(item.productBasePrice) || existing.productBasePrice;
+                existing.name = item.name || existing.name;
+                existing.image = item.image || existing.image;
+                existing.sizeId = item.sizeId !== undefined ? item.sizeId : existing.sizeId;
+                existing.cartItemId = item.cartItemId || existing.cartItemId;
+
+                // Sync/update delivery time and delivery fee dynamically upon updating
+                existing.deliveryTime = getLiveDeliveryTime() || parseInt(existing.deliveryTime) || parseInt(item.deliveryTime) || 0;
+                existing.deliveryFee = parseFloat(GLOBAL_DELIVERY_FEE) || parseFloat(existing.deliveryFee) || parseFloat(item.deliveryFee) || 0;
+
                 this.save();
                 return true;
             }
 
-
-
-
             this.items.push({
                 ...item,
                 amount: count,
-                placeId: item.placeId || GLOBAL_PLACE_ID,
+                placeId: targetPlaceId,
                 areaId: targetAreaId,
-                deliveryFee: item.deliveryFee || GLOBAL_DELIVERY_FEE,
+                deliveryFee: parseFloat(item.deliveryFee) || parseFloat(GLOBAL_DELIVERY_FEE) || 0,
                 shopId: targetShopId,
-                shopName: item.shopName || GLOBAL_shopName,
-                shopAreaId: item.shopAreaId || GLOBAL_shopArea_ID,
-                addId: item.addId || GLOBAL_addid_ID,
-                deliveryTime: parseInt(item.deliveryTime) || getLiveDeliveryTime(),
+                shopName: targetShopName,
+                shopAreaId: targetShopAreaId,
+                addId: targetAddId,
+                deliveryTime: getLiveDeliveryTime() || parseInt(item.deliveryTime) || 0,
             });
 
             this.save();
@@ -284,12 +486,12 @@ document.addEventListener("DOMContentLoaded", () => {
         },
 
         removeItem(id, shopId) {
-            this.items = this.items.filter(i => !(String(i.cartItemId || i.id) === String(id) && String(i.shopId) === String(shopId)));
+            this.items = this.items.filter(i => !(String(i.cartItemId || i.id).trim() === String(id).trim() && String(i.shopId).trim() === String(shopId).trim()));
             this.save();
         },
 
         increaseItem(id, shopId) {
-            const existing = this.items.find(i => String(i.cartItemId || i.id) === String(id) && String(i.shopId) === String(shopId));
+            const existing = this.items.find(i => String(i.cartItemId || i.id).trim() === String(id).trim() && String(i.shopId).trim() === String(shopId).trim());
             if (existing) {
                 existing.amount += 1;
                 this.save();
@@ -297,7 +499,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
 
         decreaseItem(id, shopId) {
-            const existing = this.items.find(i => String(i.cartItemId || i.id) === String(id) && String(i.shopId) === String(shopId));
+            const existing = this.items.find(i => String(i.cartItemId || i.id).trim() === String(id).trim() && String(i.shopId).trim() === String(shopId).trim());
             if (existing) {
                 existing.amount -= 1;
                 if (existing.amount < 1) {
@@ -314,101 +516,16 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    window.cart = cart;
+    // Initialize global binding and sync
+    cart.initGlobal();
+    cart.syncDeliveryFeeWithDOM();
 
-const cartData = JSON.parse(localStorage.getItem("cartItems")) || [];
-const cartSummary = JSON.parse(localStorage.getItem("cartSummary")) || {};
-renderCheckoutArticles(cartData, cartSummary);
-
-
-
-const placeIdEl = document.querySelector("#placeId");
-const areaIdEl = document.querySelector("#areaId");
-const shopAreaIdEl = document.querySelector("#shopAreaId");
-const shopIdEl = document.querySelector("#shopId"); // you said id="shopId"
-const shopNameEl = document.querySelector("#shopName");
-const addidEl = document.querySelector("#addid");
-// if (shopAreaIdEl) {
-//    localStorage.setItem("currentShopAreaId", shopAreaIdEl.textContent.trim());
-// }
-const areaDiscountEl = document.querySelector("#areaDiscountPercentage");
-let GLOBAL_AREA_DISCOUNT = areaDiscountEl
-    ? parseFloat(areaDiscountEl.textContent.trim().replace("%", "")) || 0
-    : parseFloat(localStorage.getItem("GLOBAL_AREA_DISCOUNT")) || 0;
-
-if (areaDiscountEl) {
-    localStorage.setItem("GLOBAL_AREA_DISCOUNT", GLOBAL_AREA_DISCOUNT);
-}
-
-// Expose these to window for access in CheckOut.aspx
-window.GLOBAL_AREA_DISCOUNT = GLOBAL_AREA_DISCOUNT;
-
-let GLOBAL_PLACE_ID = placeIdEl ? placeIdEl.textContent.trim() : null;
-let GLOBAL_AREA_ID = areaIdEl ? areaIdEl.textContent.trim() : null;
-let GLOBAL_shop_ID = shopIdEl ? shopIdEl.textContent.trim() : null;
-let GLOBAL_addid_ID = addidEl ? addidEl.textContent.trim() : null;
-let GLOBAL_shopArea_ID = shopAreaIdEl ? shopAreaIdEl.textContent.trim() : null;
-
-// Expose these to window for access in CheckOut.aspx
-window.GLOBAL_AREA_DISCOUNT = GLOBAL_AREA_DISCOUNT;
-window.GLOBAL_AREA_ID = GLOBAL_AREA_ID;
-window.GLOBAL_shopArea_ID = GLOBAL_shopArea_ID;
-window.GLOBAL_shop_ID = GLOBAL_shop_ID;
-
-// Global Delivery Time from Shop Page - Function to get fresh value
-function getLiveDeliveryTime() {
-    const timerEl = document.querySelector(".timer");
-    return timerEl ? parseInt(timerEl.textContent.trim()) || 0 : 0;
-}
-window.GLOBAL_DELIVERY_TIME = getLiveDeliveryTime();
-
-let GLOBAL_DELIVERY_FEE =
-    parseFloat(localStorage.getItem("GLOBAL_DELIVERY_FEE")) || 0;
-
-const deliveryFeeEl = document.querySelector("#deliveryFee");
-const deliveryCostValueEl = document.querySelector("#deliveryCostValue");
-if (deliveryFeeEl || deliveryCostValueEl) {
-    let feeStr = "";
-    if (deliveryFeeEl && deliveryFeeEl.textContent.trim() !== "" && parseFloat(deliveryFeeEl.textContent.trim()) > 0) {
-        feeStr = deliveryFeeEl.textContent.trim();
-    } else if (deliveryCostValueEl) {
-        feeStr = deliveryCostValueEl.textContent.trim();
+    const cartData = JSON.parse(localStorage.getItem("cartItems")) || [];
+    const cartSummary = JSON.parse(localStorage.getItem("cartSummary")) || {};
+    if (typeof renderCheckoutArticles === 'function') {
+        renderCheckoutArticles(cartData, cartSummary);
     }
 
-    const fee = parseFloat(feeStr);
-    if (!isNaN(fee)) {
-        GLOBAL_DELIVERY_FEE = fee;
-        localStorage.setItem("GLOBAL_DELIVERY_FEE", fee); // ✅ save it
-
-        // Also update existing items for this shop if they have 0 fee
-        const shopIdEl = document.querySelector("#shopId");
-
-        if (shopIdEl) {
-            const currentShopId = shopIdEl.textContent.trim();
-            let updated = false;
-
-            // Use window.cart.items if available, otherwise fallback to cartItems
-            const targetItems = (window.cart && window.cart.items) ? window.cart.items : cartItems;
-
-            targetItems.forEach(item => {
-                if (String(item.shopId) === currentShopId && (!item.deliveryFee || item.deliveryFee === 0)) {
-                    item.deliveryFee = fee;
-                    updated = true;
-                }
-            });
-            if (updated) {
-                if (window.cart && typeof window.cart.save === 'function') {
-                    window.cart.save();
-                } else {
-                    localStorage.setItem("cartItems", JSON.stringify(targetItems));
-                }
-            }
-        }
-    }
-}
-
-const actualShopNameEl = document.getElementById("shopNameContent") || document.querySelector(".availableShopName span") || document.querySelector(".availableShopName") || document.querySelector("#shopName");
-let GLOBAL_shopName = actualShopNameEl ? actualShopNameEl.textContent.trim() : (localStorage.getItem("currentShopName") || "");
 
 function showCartToast(message = (window.texts ? window.texts.AddedToCartDefault : "تمت الإضافة"), options = {}) {
     const {
@@ -1289,7 +1406,8 @@ function renderCheckoutArticles(items, summary) {
         initDeliveryTimeScheduling();
     }
 
-    // Fetch live shop timers to ensure they are correct and update UI + localStorage
+    // Server-side GetShopTimers call has been removed to ensure 100% reliance on persistent browser localStorage delivery times, preventing resets to 0.
+    /*
     const shopIds = Object.keys(itemsByShop).map(id => parseInt(id));
     const addIdVal = items[0]?.addId || "";
     if (shopIds.length > 0 && addIdVal) {
@@ -1358,6 +1476,7 @@ function renderCheckoutArticles(items, summary) {
             }
         });
     }
+    */
 }
 
 function initDeliveryTimeScheduling() {

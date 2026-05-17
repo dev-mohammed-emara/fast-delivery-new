@@ -29,7 +29,7 @@ function toggleFavorite(event, element) {
     if (!shopId) return;
 
     let favorites = getFavorites();
-    const index = favorites.findIndex(f => f.id === shopId);
+    const index = favorites.findIndex(f => String(f.id) === String(shopId));
 
     const icon = element.querySelector('i');
 
@@ -104,7 +104,7 @@ function initFavorites() {
     heartIcons.forEach(heart => {
         const shopId = heart.getAttribute('data-id');
         const icon = heart.querySelector('i');
-        if (favorites.some(f => f.id === shopId)) {
+        if (favorites.some(f => String(f.id) === String(shopId))) {
             heart.classList.add('is-favorite');
             if (icon) {
                 icon.classList.remove('fa-regular');

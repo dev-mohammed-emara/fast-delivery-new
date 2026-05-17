@@ -36,10 +36,12 @@
 <script>
 function generateStars(rating) {
     let starsHtml = '';
-    const r = parseInt(rating) || 0;
+    const r = parseFloat(rating) || 0;
     for (let i = 1; i <= 5; i++) {
         if (i <= r) {
             starsHtml += `<i class="fa-solid fa-star" style="color:#FFD700; font-size: 0.8rem;"></i>`;
+        } else if (i - 0.5 <= r) {
+            starsHtml += `<i class="fa-solid fa-star-half-stroke" style="color:#FFD700; font-size: 0.8rem;"></i>`;
         } else {
             starsHtml += `<i class="fa-regular fa-star" style="color:#FFD700; font-size: 0.8rem;"></i>`;
         }

@@ -897,6 +897,10 @@
     max-height:400px;
 }
 
+.news-swiper:not(:has(.swiper-slide)){
+    display:none !important;
+}
+
 .news-swipr .newsSwiper {
     width: 100%;
      max-width:1200px;
@@ -1501,15 +1505,29 @@ document.addEventListener("DOMContentLoaded", loadTextsOnStart);
             }
         }
 
+        // Sanitize extras/upsells from editItem: force into clean arrays of plain objects
+        // This prevents indexed-object corruption from stale localStorage data
+        const sanitizeAddonArray = (source) => {
+            if (!source) return [];
+            // Handle case where source is an object with numeric keys instead of an array
+            const arr = Array.isArray(source) ? source : Object.values(source);
+            return arr.filter(item => item && typeof item === 'object' && item.id).map(item => ({
+                id: String(item.id),
+                name: String(item.name || ''),
+                price: Number(item.price) || 0,
+                qty: Math.max(1, parseInt(item.qty) || 1)
+            }));
+        };
+
         currentCustomization = {
             baseItemId: data.id,
             isCustomProduct: !!((data.sizes && data.sizes.length > 0) || (data.extras && data.extras.length > 0) || (data.upsellItems && data.upsellItems.length > 0) || editItem?.isCustomProduct),
             selectedSizeId: savedSize?.id || null,
-            size: savedSize,
-            extras: editItem?.customization?.extras ? editItem.customization.extras.map(e => ({...e})) : [],
-            upsells: editItem?.customization?.upsells ? editItem.customization.upsells.map(u => ({...u})) : [],
+            size: savedSize ? { id: String(savedSize.id), name: String(savedSize.name || ''), price: Number(savedSize.price) || 0 } : null,
+            extras: sanitizeAddonArray(editItem?.customization?.extras),
+            upsells: sanitizeAddonArray(editItem?.customization?.upsells),
             quantity: editItem?.amount || 1,
-            notes: editItem?.customization?.notes || editItem?.notes || ''
+            notes: String(editItem?.customization?.notes || editItem?.notes || '')
         };
 
         quantity = currentCustomization.quantity;
@@ -1645,7 +1663,7 @@ document.addEventListener("DOMContentLoaded", loadTextsOnStart);
     window.selectModalOption = function(el, totalSizePrice, sizeId) {
         el.parentElement.querySelectorAll('.option-row').forEach(r => r.classList.remove('active'));
         el.classList.add('active');
-        currentCustomization.size = { id: sizeId, name: el.querySelector('span').innerText, price: totalSizePrice };
+        currentCustomization.size = { id: String(sizeId), name: String(el.querySelector('span').innerText || ''), price: Number(totalSizePrice) || 0 };
         basePrice = totalSizePrice;
         updateModalTotal();
     };
@@ -1653,15 +1671,16 @@ document.addEventListener("DOMContentLoaded", loadTextsOnStart);
     window.toggleExtra = function(el, price, id, name) {
         el.classList.toggle('active');
         const isAdded = el.classList.contains('active');
+        const strId = String(id);
 
         if (isAdded) {
-            // Add if not already there
-            if (!currentCustomization.extras.some(x => String(x.id) === String(id))) {
-                currentCustomization.extras.push({ id: id, name: name, price: price, qty: 1 });
+            // Add if not already there — enforce clean object schema
+            if (!currentCustomization.extras.some(x => String(x.id) === strId)) {
+                currentCustomization.extras = [...currentCustomization.extras, { id: strId, name: String(name), price: Number(price) || 0, qty: 1 }];
             }
         } else {
-            // Remove
-            currentCustomization.extras = currentCustomization.extras.filter(x => String(x.id) !== String(id));
+            // Remove — create a fresh filtered array
+            currentCustomization.extras = currentCustomization.extras.filter(x => String(x.id) !== strId);
         }
 
         // UI feedback for badge and controls — query within the row element directly
@@ -1759,39 +1778,69 @@ document.addEventListener("DOMContentLoaded", loadTextsOnStart);
     window.submitModalCart = function() {
         const popup = document.querySelector('.swal2-popup');
         if (!popup) { Swal.close(); return; }
-        const notes = popup.querySelector('#product-notes')?.value || '';
+        const notes = String(popup.querySelector('#product-notes')?.value || '').trim();
         // Fallback: if not on PlaceShop page (no #shopId element), get shopId/shopName from currentEditItem
         const shopId = String(document.getElementById('shopId')?.innerText.trim() || currentEditItem?.shopId || '');
-        const shopName = document.querySelector('.shop-header-info h1')?.innerText || currentEditItem?.shopName || '';
+        const shopName = String(document.querySelector('.shop-header-info h1')?.innerText || currentEditItem?.shopName || '').trim();
 
         const baseId = currentCustomization.baseItemId || 'custom';
-        const sizeId = (currentCustomization && currentCustomization.size) ? currentCustomization.size.id : '';
+        const sizeId = (currentCustomization && currentCustomization.size) ? String(currentCustomization.size.id) : '';
         const uniqueId = baseId + (sizeId ? `-size-${sizeId}` : '');
 
         const isCustomProduct = !!(currentCustomization.isCustomProduct || (typeof currentTriggeringProduct === 'object' && currentTriggeringProduct?.closest('.foodItem')?.classList.contains('custom-item')) || currentEditItem?.isCustomProduct);
-        const hasActualCustomizations = !!(currentCustomization.size || currentCustomization.extras.length > 0 || currentCustomization.upsells.length > 0 || notes);
 
+        // Build clean extras array — filter out any zero-qty or invalid entries
+        const cleanExtras = (Array.isArray(currentCustomization.extras) ? currentCustomization.extras : []).filter(e => e && e.id && (e.qty || 1) >= 1).map(e => ({
+            id: String(e.id),
+            name: String(e.name || ''),
+            price: Number(e.price) || 0,
+            qty: Math.max(1, parseInt(e.qty) || 1)
+        }));
+
+        // Build clean upsells array — filter out any zero-qty or invalid entries
+        const cleanUpsells = (Array.isArray(currentCustomization.upsells) ? currentCustomization.upsells : []).filter(u => u && u.id && (u.qty || 1) >= 1).map(u => ({
+            id: String(u.id),
+            name: String(u.name || ''),
+            price: Number(u.price) || 0,
+            qty: Math.max(1, parseInt(u.qty) || 1)
+        }));
+
+        // Build clean size object or null
+        const cleanSize = currentCustomization.size ? {
+            id: String(currentCustomization.size.id),
+            name: String(currentCustomization.size.name || ''),
+            price: Number(currentCustomization.size.price) || 0
+        } : null;
+
+        const hasActualCustomizations = !!(cleanSize || cleanExtras.length > 0 || cleanUpsells.length > 0 || notes);
+
+        // Build the item from scratch — only carry over non-customization metadata from editItem
         const mainItem = {
-            // Preserve all original cart item fields (deliveryFee, addId, areaId, etc.)
-            ...(currentEditItem || {}),
             id: baseId,
             cartItemId: uniqueId,
             sizeId: sizeId,
-            name: popup.querySelector('h1')?.innerText || currentEditItem?.name || 'Product',
-            price: basePrice,
-            productBasePrice: currentProductBasePrice,
+            name: String(popup.querySelector('h1')?.innerText || currentEditItem?.name || 'Product').trim(),
+            price: Number(basePrice) || 0,
+            productBasePrice: Number(currentProductBasePrice) || 0,
             isCustomProduct: isCustomProduct,
             isCustomized: isCustomProduct || hasActualCustomizations,
             customization: {
-                size: currentCustomization.size,
-                extras: [...currentCustomization.extras],
-                upsells: [...currentCustomization.upsells],
+                size: cleanSize,
+                extras: cleanExtras,
+                upsells: cleanUpsells,
                 notes: notes
             },
             shopId: shopId,
             shopName: shopName,
             notes: notes,
             image: popup.querySelector('.modal-banner img')?.src || currentEditItem?.image || '',
+            // Carry over delivery/area metadata from editItem if available (these are NOT customization data)
+            placeId: currentEditItem?.placeId || '',
+            areaId: currentEditItem?.areaId || '',
+            shopAreaId: currentEditItem?.shopAreaId || '',
+            addId: currentEditItem?.addId || '',
+            deliveryFee: currentEditItem?.deliveryFee || 0,
+            deliveryTime: currentEditItem?.deliveryTime || 0
         };
 
         let addedStatus = false;
@@ -1827,7 +1876,11 @@ document.addEventListener("DOMContentLoaded", loadTextsOnStart);
         wrapper.querySelector('.qty-control').style.display = 'flex';
         const badge = wrapper.querySelector('.upsell-badge');
         if (badge) { badge.style.display = 'flex'; badge.innerText = '1'; }
-        currentCustomization.upsells.push({ id: id, name: name, price: price, qty: 1 });
+        const strId = String(id);
+        // Prevent duplicates and enforce clean schema
+        if (!currentCustomization.upsells.some(x => String(x.id) === strId)) {
+            currentCustomization.upsells = [...currentCustomization.upsells, { id: strId, name: String(name), price: Number(price) || 0, qty: 1 }];
+        }
         recalculateAddonsPrice();
         updateModalTotal();
     };
@@ -1836,10 +1889,11 @@ document.addEventListener("DOMContentLoaded", loadTextsOnStart);
         const valSpan = btn.closest('.qty-control').querySelector('.upsell-qty-val');
         let q = Math.max(0, parseInt(valSpan.innerText) + delta);
         valSpan.innerText = q;
-        const upsell = currentCustomization.upsells.find(x => x.id === id);
+        const strId = String(id);
+        const upsell = currentCustomization.upsells.find(x => String(x.id) === strId);
         if (upsell) upsell.qty = q;
         if (q === 0) {
-            currentCustomization.upsells = currentCustomization.upsells.filter(x => x.id !== id);
+            currentCustomization.upsells = currentCustomization.upsells.filter(x => String(x.id) !== strId);
             const wrapper = btn.closest('.upsell-img-wrapper');
             wrapper.querySelector('.upsell-add-btn').style.display = 'flex';
             wrapper.querySelector('.upsell-badge').style.display = 'none';

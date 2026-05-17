@@ -116,7 +116,7 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
             }
 
             ltIsOpened.Text = isOpened.ToString();
-            ltRawRating.Text = rating.ToString();
+            ltRawRating.Text = rating.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture);
             shopStatusBadge.Attributes["class"] = isOpened == 1 ? "status-badge open" : "status-badge closed";
             shopStatusBadge.InnerText = isOpened == 1 ? (string)GetGlobalResourceObject("texts", "Open") : (string)GetGlobalResourceObject("texts", "Closed");
 
@@ -127,7 +127,7 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
             shopHeartIcon.Attributes["data-img"] = "/ar/" + place.PhotoPath;
             shopHeartIcon.Attributes["data-desc"] = place.Description;
             shopHeartIcon.Attributes["data-desc-en"] = place.DescriptionEn;
-            shopHeartIcon.Attributes["data-rate"] = rating.ToString();
+            shopHeartIcon.Attributes["data-rate"] = rating.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture);
             shopHeartIcon.Attributes["data-is-opened"] = isOpened.ToString();
             shopHeartIcon.Attributes["data-url"] = Request.Url.PathAndQuery;
             shopHeartIcon.Attributes["data-delivery-time"] = ltdeliverytime.Text;
