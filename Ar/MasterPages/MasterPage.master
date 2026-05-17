@@ -35,6 +35,10 @@
             gap: 10px;
             text-align: right;
         }
+        #searchIconNav, #favIconNav {
+  display: none !important;
+}
+
         .size-option {
             display: flex;
             justify-content: space-between;
@@ -1071,7 +1075,8 @@
              <button class="icon-btn search-nav-icon" id="searchIconNav" role="button" onclick="handleNavSearch(event)">
                 <i class="fa fa-search"></i>
             </button>
-             <button class="icon-btn fav-nav-icon" id="favIconNav" role="button" onclick="handleNavFavorite(event, this)">
+             <button class="icon-btn fav-nav-icon" id="favIconNav" role="button" onclick="handleNavFavorite(event, this)
+             ">
                 <i class="fa-regular fa-heart"></i>
             </button>
             <button class="icon-btn" id="navShareBtn"  onclick="shareShopGlobal(event)">

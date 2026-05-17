@@ -14,6 +14,9 @@
     overflow: hidden !important;
     max-height: 350px;
 }
+ #searchIconNav, #favIconNav {
+  display: flex !important;
+}
 
 .news-swipr .newsSwiper {
     width: 100%;
@@ -579,13 +582,13 @@
         font-size:0.8rem;
     }}
 
-                .icon-btn{
+                /* .icon-btn{
                     width: 36px !important;
                     height: 36px !important;
                     font-size: 16px !important;
-                }
+                } */
                 .lang-btn{
-                    font-size: 14px !important;
+                    /* font-size: 14px !important; */
                     padding: 10px !important;
                 }
 
@@ -2282,8 +2285,30 @@ padding-inline: 1rem !important;
             max-width: 800px;
         }
 
+        .fav-nav-icon {
+            transition: all 0.3s ease !important;
+        }
         .fav-nav-icon.active i {
             color: palevioletred  !important;
+        }
+
+        @keyframes heartPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.35); }
+            100% { transform: scale(1); }
+        }
+        @keyframes heartSink {
+            0% { transform: scale(1); }
+            50% { transform: scale(0.7); }
+            100% { transform: scale(1); }
+        }
+        .animate-pop {
+            display: inline-block !important;
+            animation: heartPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+        }
+        .animate-sink {
+            display: inline-block !important;
+            animation: heartSink 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
         }
 
         /* Cart Addon Handlers */
@@ -3032,7 +3057,6 @@ padding-inline: 1rem !important;
             const shopId = urlParams.get('id');
             if (!shopId) return;
 
-            const icon = element.querySelector('i');
             let favorites = JSON.parse(localStorage.getItem('favoriteShops') || '[]');
             const index = favorites.findIndex(f => String(f.id) === String(shopId));
 
@@ -3041,7 +3065,7 @@ padding-inline: 1rem !important;
                 const shopData = {
                     id: shopId,
                     name: document.getElementById('shopNameContent')?.innerText.trim() || document.querySelector('.availableShopName')?.innerText.trim() || '',
-                    nameEn: '', // Not easily available on this page without more literals
+                    nameEn: '', 
                     img: document.querySelector('.shop-profile-img')?.src || document.querySelector('.availableShop img')?.src || '',
                     desc: document.getElementById('shopFoodsContent')?.innerText.trim() || '',
                     descEn: '',
@@ -3052,33 +3076,9 @@ padding-inline: 1rem !important;
                     url: window.location.href
                 };
                 favorites.push(shopData);
-                element.classList.add('is-favorite');
-                element.classList.add('active'); // For navbar icon
-                if (icon) {
-                    icon.classList.remove('fa-regular');
-                    icon.classList.add('fa-solid');
-                }
-
-                // Add animation
-                element.style.transform = 'scale(1.2)';
-                setTimeout(() => {
-                    element.style.transform = '';
-                }, 200);
             } else {
                 // Remove from favorites
                 favorites.splice(index, 1);
-                element.classList.remove('is-favorite');
-                element.classList.remove('active'); // For navbar icon
-                if (icon) {
-                    icon.classList.remove('fa-solid');
-                    icon.classList.add('fa-regular');
-                }
-
-                // Add animation
-                element.style.transform = 'scale(0.8)';
-                setTimeout(() => {
-                    element.style.transform = '';
-                }, 200);
             }
             localStorage.setItem('favoriteShops', JSON.stringify(favorites));
 
@@ -3089,11 +3089,11 @@ padding-inline: 1rem !important;
                 Swal.fire({ toast: true, position: 'top-end', icon: 'info', title: '\u062a\u0645\u062a \u0627\u0644\u0625\u0632\u0627\u0644\u0629 \u0645\u0646 \u0627\u0644\u0645\u0641\u0636\u0644\u0629', showConfirmButton: false, timer: 1500 });
             }
 
-            // Sync other heart (if any)
-            syncAllHearts();
+            // Sync other heart and animate both simultaneously
+            syncAllHearts(true);
         }
 
-        function syncAllHearts() {
+        function syncAllHearts(animate = false) {
             const urlParams = new URLSearchParams(window.location.search);
             const shopId = urlParams.get('id');
             if (!shopId) return;
@@ -3108,14 +3108,40 @@ padding-inline: 1rem !important;
             hearts.forEach(heart => {
                 if (!heart) return;
                 const icon = heart.querySelector('i');
+                const target = icon || heart;
+
                 if (isFav) {
                     heart.classList.remove('is-favorite', 'active');
                     void heart.offsetWidth;
                     heart.classList.add('is-favorite', 'active');
-                    if (icon) { icon.classList.remove('fa-regular'); icon.classList.add('fa-solid'); }
+                    if (icon) { 
+                        icon.classList.remove('fa-regular'); 
+                        icon.classList.add('fa-solid'); 
+                    }
+                    
+                    if (animate) {
+                        target.classList.remove('animate-pop', 'animate-sink');
+                        void target.offsetWidth;
+                        target.classList.add('animate-pop');
+                        setTimeout(() => {
+                            target.classList.remove('animate-pop');
+                        }, 400);
+                    }
                 } else {
                     heart.classList.remove('is-favorite', 'active');
-                    if (icon) { icon.classList.remove('fa-solid'); icon.classList.add('fa-regular'); }
+                    if (icon) { 
+                        icon.classList.remove('fa-solid'); 
+                        icon.classList.add('fa-regular'); 
+                    }
+                    
+                    if (animate) {
+                        target.classList.remove('animate-pop', 'animate-sink');
+                        void target.offsetWidth;
+                        target.classList.add('animate-sink');
+                        setTimeout(() => {
+                            target.classList.remove('animate-sink');
+                        }, 400);
+                    }
                 }
             });
         }
@@ -3133,33 +3159,8 @@ padding-inline: 1rem !important;
             }
         }
 
-
-
         function initFavorites() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const shopId = urlParams.get('id');
-            if (!shopId) return;
-            const favorites = JSON.parse(localStorage.getItem('favoriteShops') || '[]');
-
-            // Use attribute-ends-with selector to handle ASP.NET ID mangling
-            const hearts = [
-                document.querySelector('[id$="shopHeartIcon"]'),
-                document.getElementById('favIconNav')
-            ];
-
-            const isFav = favorites.some(f => String(f.id) === String(shopId));
-
-            hearts.forEach(heart => {
-                if (!heart) return;
-                const icon = heart.querySelector('i');
-                if (isFav) {
-                    heart.classList.add('is-favorite', 'active');
-                    if (icon) { icon.classList.remove('fa-regular'); icon.classList.add('fa-solid'); }
-                } else {
-                    heart.classList.remove('is-favorite', 'active');
-                    if (icon) { icon.classList.remove('fa-solid'); icon.classList.add('fa-regular'); }
-                }
-            });
+            syncAllHearts(false);
         }
 
         // Active Sidebar Styling logic with Scroll Spy
@@ -3247,8 +3248,11 @@ padding-inline: 1rem !important;
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            // Override global favorites functions for PlaceShop page to ensure they sync in real-time
+            window.toggleFavorite = toggleFavorite;
+            window.initFavorites = initFavorites;
+
             initFavorites();
-            syncAllHearts();
             initSidebarActiveState();
 
             // Show search + fav icons ONLY on PlaceShop page

@@ -1,6 +1,6 @@
 <%@ Page Title="" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true" CodeFile="Favorites.aspx.cs" Inherits="Ar_Favorites" %>
 <asp:Content ID="Content3" ContentPlaceHolderID="head" Runat="Server">
-    <asp:Literal ID="litPageTitle" runat="server" Text="<%$ Resources: texts, nav_favorites %>"></asp:Literal>
+    <title><asp:Literal ID="litPageTitle" runat="server" Text="<%$ Resources: texts, nav_favorites %>"></asp:Literal></title>
 </asp:Content>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">

@@ -1,7 +1,7 @@
 <%@ Page Title="" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true"
   CodeFile="Places.aspx.cs" Inherits="Ar_Places" %>
   <asp:Content ID="Content3" ContentPlaceHolderID="head" Runat="Server">
-    <asp:Literal ID="ltPageTitle" runat="server" Text="<%$ Resources:texts, Page_Places_Title %>"></asp:Literal>
+    <title><asp:Literal ID="ltPageTitle" runat="server" Text="<%$ Resources:texts, Page_Places_Title %>"></asp:Literal></title>
   </asp:Content>
   <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
     <style>
@@ -258,7 +258,6 @@
       }
 
       .allAvailableShops {
-        padding-top: 25px;
         display: flex;
         flex-direction: column;
       }
@@ -541,7 +540,7 @@
                 transition: all 0.3s ease !important;
                 text-decoration: none !important;
                 color: inherit !important;
-                margin-bottom: 2rem !important;
+                margin-bottom: 1rem !important;
                 height: auto !important;
             }
 

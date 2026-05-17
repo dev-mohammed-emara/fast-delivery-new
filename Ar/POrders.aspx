@@ -1,7 +1,7 @@
 <%@ Page Title="" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true" CodeFile="POrders.aspx.cs" Inherits="Ar_POrders" %>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="head" Runat="Server">
-    <asp:Literal runat="server" Text="<%$ Resources:texts, PageOtitle %>" />
+    <title><asp:Literal runat="server" Text="<%$ Resources:texts, PageOtitle %>" /></title>
 </asp:Content>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">

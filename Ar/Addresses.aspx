@@ -2,7 +2,7 @@
 <%@ Import Namespace="System.Web" %>
 <%@ Import Namespace="System.Globalization" %>
 <asp:Content ID="Content3" ContentPlaceHolderID="head" Runat="Server">
-    <asp:Literal ID="litTitle" runat="server" Text="<%$ Resources:texts, Title %>"></asp:Literal>
+    <title><asp:Literal ID="litTitle" runat="server" Text="<%$ Resources:texts, Title %>"></asp:Literal></title>
 </asp:Content>
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

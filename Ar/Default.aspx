@@ -1,7 +1,7 @@
 <%@ Page Title="" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="Ar_Default" %>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="head" Runat="Server">
- <asp:Literal ID="litPageTitle" runat="server" Text="<%$ Resources:Texts, Default_PageTitle %>" />
+    <title><asp:Literal ID="litPageTitle" runat="server" Text="<%$ Resources:Texts, Default_PageTitle %>" /></title>
 </asp:Content>
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
        <asp:ScriptManager runat="server" ID="ScriptManager1" EnablePageMethods="true" />
