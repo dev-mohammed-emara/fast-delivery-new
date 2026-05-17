@@ -57,17 +57,12 @@ function toggleFavorite(event, element) {
         }
         element.classList.add('is-favorite');
         
-        // Visual feedback
-        if (window.Swal) {
-            Swal.fire({
-                icon: 'success',
-                title: document.documentElement.lang === 'en' ? 'Added to Favorites' : 'تم الإضافة للمفضلة',
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 2000
-            });
-        }
+        // Add animation
+        element.style.transform = 'scale(1.2)';
+        setTimeout(() => {
+            element.style.transform = '';
+        }, 200);
+
     } else {
         // Remove from favorites
         favorites.splice(index, 1);
@@ -76,6 +71,12 @@ function toggleFavorite(event, element) {
             icon.classList.add('fa-regular');
         }
         element.classList.remove('is-favorite');
+
+        // Add animation
+        element.style.transform = 'scale(0.8)';
+        setTimeout(() => {
+            element.style.transform = '';
+        }, 200);
 
         // If we are on the favorites page (Favorites.aspx), remove the card immediately
         if (window.location.pathname.toLowerCase().includes('favorites.aspx')) {

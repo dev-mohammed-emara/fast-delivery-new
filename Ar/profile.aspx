@@ -919,12 +919,6 @@ input[type="radio"] {
         from { opacity: 0; transform: translateY(-3px); }
         to { opacity: 1; transform: translateY(0); }
     }
-    .header {
-
-    background: linear-gradient(135deg, #fffbe6 0%, #ffffff 0%, #fffbe6 10%) !important;
-
-}
-
 </style>
 </asp:Content>
 

@@ -110,10 +110,52 @@
     .orderInfo {
         display: flex;
         flex-direction: column;
-        overflow-x: auto;
         gap: 0.5rem;
-        padding: 1.5rem;
-        -webkit-overflow-scrolling: touch;
+        padding: 1rem;
+        overflow-x: hidden;
+    }
+
+    /* Hide the old labels row - compact layout is self-describing */
+    .orderLabels {
+        display: none !important;
+    }
+
+    /* Compact card layout for each checkout item */
+    .orderStats.checkout-main-item-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 0.5rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        min-width: unset;
+    }
+
+    .orderStats.checkout-main-item-row .orderedItemMain.orderName {
+        flex: 1 1 100%;
+        text-align: start !important;
+        font-weight: 700;
+        color: #333;
+        flex-direction: row;
+        gap: 1rem;
+        justify-content: space-between;
+        margin-bottom: 0.25rem;
+    }
+
+    .orderStats.checkout-main-item-row .orderedItemName {
+        font-size: 0.95rem;
+        white-space: normal;
+        word-break: break-word;
+    }
+
+    .orderStats.checkout-main-item-row .checkout-item-size {
+        color: #888;
+        font-weight: 600;
+    }
+
+    .orderStats.checkout-main-item-row .unit-price {
+        color: #999;
+        font-size: 0.8rem;
     }
 
     /* Quantity Handlers Styles */
@@ -123,10 +165,8 @@
         justify-content: center;
         border-radius: 10px;
         padding: 4px;
-        margin: 0 auto;
         width: fit-content;
         gap: 8px;
-        min-width: 100px;
     }
 
     .cartItemAmountHandlers button,
@@ -154,16 +194,30 @@
 
     .itemAmount, .cust-qty-val {
         font-weight: 700;
-        min-width: 20px;
+        font-size: 1rem;
         text-align: center;
         color: #333;
     }
 
+    /* Price shown in the bottom row */
+    .orderStats.checkout-main-item-row .totalItemPrice {
+        margin-inline-start: auto;
+        font-weight: 800;
+        color: #e65100;
+        font-size: 1rem;
+        white-space: nowrap;
+    }
+
+    /* Hide the unit price column - already shown in name */
+    .orderStats.checkout-main-item-row .itemPrice {
+        display: none;
+    }
+
     /* Delete Button Refined */
     .removeItem {
-        width: 42px !important;
-        height: 42px !important;
-        border-radius: 12px !important;
+        width: 34px !important;
+        height: 34px !important;
+        border-radius: 10px !important;
         transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
         background-color: #fff5f5 !important;
         color: #ff4d4d !important;
@@ -173,11 +227,11 @@
         align-items: center !important;
         cursor: pointer !important;
         border: 1px solid #ffebeb !important;
-        margin: 0 auto !important;
+        flex-shrink: 0;
     }
 
     .removeItem i {
-        font-size: 1.15rem !important;
+        font-size: 0.9rem !important;
         margin: 0 !important;
     }
 
@@ -186,54 +240,65 @@
         box-shadow: 0 4px 12px rgba(255, 77, 77, 0.25);
     }
 
-    /* Grid for order items */
-    .orderLabels,
-    .orderStats {
-        display: grid;
-        grid-template-columns: 3fr 120px 1fr 1fr 0.5fr; /* Name, Quantity, Price, Total, Remove */
-        padding-inline: 0.5rem;
-        text-align: center;
-        gap: 1rem;
-        min-width: 750px;
+    /* Customization addon rows */
+    .checkout-customization-row,
+    .checkout-upsell-row {
+        display: flex !important;
+        flex-wrap: wrap;
         align-items: center;
+        gap: 0.5rem;
+        padding: 0.35rem 0.5rem 0.35rem 1.5rem;
+        min-width: unset !important;
+        font-size: 0.85rem;
+        color: #666;
+        border-bottom: 1px dashed rgba(0,0,0,0.04);
     }
 
-    .orderLabels span,
-    .orderStats span {
-        display: flex;
-        flex-direction: column;
-        line-height: 1.4;
-        justify-content: center;
-        padding: 1rem 0;
+    .checkout-customization-row .orderName,
+    .checkout-upsell-row .orderName {
+        flex: 1;
+        text-align: start !important;
+    }
+
+    .checkout-customization-row .itemPrice,
+    .checkout-upsell-row .itemPrice {
+        display: none;
+    }
+
+    .checkout-customization-row .itemTotal,
+    .checkout-upsell-row .itemTotal {
+        font-weight: 700;
+        color: var(--fd-blue);
+        margin-inline-start: auto;
         white-space: nowrap;
     }
 
-    .orderLabels {
-        background-color: #f8f9fa;
-        border-radius: 12px;
-        margin-bottom: 0.75rem;
+    .checkout-customization-row .removeItem,
+    .checkout-upsell-row .removeItem {
+        width: 28px !important;
+        height: 28px !important;
     }
 
-    .orderLabels span {
+    /* Checkout group total */
+    .checkout-group-total {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 0.5rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+        margin-top: 0.25rem;
+        font-size: 0.9rem;
+    }
+
+    .checkout-group-total .group-total-label {
+        font-weight: 600;
+        color: #666;
+    }
+
+    .checkout-group-total .group-total-amount {
         font-weight: 800;
-        color: #999;
-        font-size: 0.85rem;
-        letter-spacing: 0.5px;
-    }
-
-    .orderStats {
-        font-size: 1rem;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.03);
-    }
-
-    .orderStats:last-child {
-        border-bottom: none;
-    }
-
-    .orderName {
-        text-align: right !important;
-        font-weight: 700;
-        color: #333;
+        color: #e65100;
     }
 
     /* SUMMARY BOX OVERRIDE - Fixing the alignment */
@@ -896,8 +961,8 @@
         height: 26px;
         border-radius: 8px;
         border: none;
-        background: white !important;
-        color: var(--fd-blue) !important;
+        color: white !important;
+        background: var(--fd-blue) !important;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -915,8 +980,8 @@
 
     .itemAmount, .cust-qty-val {
         font-weight: 700;
-        min-width: 20px;
         text-align: center;
+        font-size: 1rem;
         color: #333;
     }
 
@@ -943,54 +1008,39 @@
 
 
 
-    /* Grid for order items */
-    .orderLabels,
-    .orderStats {
-        display: grid;
-        grid-template-columns: 2.5fr 120px 1fr 1fr 0.5fr; /* Fixed width for handlers */
-        padding-inline: 0.5rem;
-        text-align: center;
-        gap: 1rem;
-        min-width: 750px;
-        align-items: center;
+    /* Compact card layout - duplicated in PageScripts for full coverage */
+    .orderLabels {
+        display: none !important;
     }
 
-    .orderLabels span,
-    .orderStats span {
+    .orderStats.checkout-main-item-row {
         display: flex;
-        flex-direction: column;
-        line-height: 1.4;
-        justify-content: center;
-        padding: 1rem 0;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 0.5rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        min-width: unset;
+    }
+
+    .orderStats.checkout-main-item-row .orderedItemMain.orderName {
+        flex: 1 1 100%;
+        text-align: start !important;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 0.25rem;
+    }
+
+    .orderStats.checkout-main-item-row .totalItemPrice {
+        margin-inline-start: auto;
+        font-weight: 800;
+        color: #e65100;
+        font-size: 1rem;
         white-space: nowrap;
     }
 
-    .orderLabels {
-        background-color: #f8f9fa;
-        border-radius: 12px;
-        margin-bottom: 0.75rem;
-    }
-
-    .orderLabels span {
-        font-weight: 800;
-        color: #999;
-        font-size: 0.85rem;
-        letter-spacing: 0.5px;
-    }
-
-    .orderStats {
-        font-size: 1rem;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.03);
-    }
-
-    .orderStats:last-child {
-        border-bottom: none;
-    }
-
-    .orderName {
-        text-align: right !important;
-        font-weight: 700;
-        color: #333;
+    .orderStats.checkout-main-item-row .itemPrice {
+        display: none;
     }
 
     /* SUMMARY BOX OVERRIDE - Fixing the alignment */
@@ -1125,27 +1175,10 @@
     @media (max-width: 768px) {
         .checkoutDetails {
             padding-top: 110px;
-            padding-inline: 1rem;
+            padding-inline: 0.5rem;
         }
-        .orderLabels {
-            display: grid;
-        }
-        .orderStats {
-            grid-template-columns: 3fr 120px 1fr 1fr 0.5fr;
-            text-align: center;
-            gap: 1rem;
-            padding: 1rem 0.5rem;
-            min-width: 750px;
-        }
-        .orderName {
-            grid-column: unset;
-            font-size: 0.95rem;
-        }
-        .removeItem {
-            grid-column: unset;
-            width: 42px !important;
-            height: 42px !important;
-            margin-top: 0 !important;
+        .orderInfo {
+            padding: 0.75rem;
         }
     }
         /* Promo & Payment Sections */
@@ -1403,6 +1436,7 @@
         flex: 1;
         display: flex;
         align-items: center;
+        white-space: nowrap;
         justify-content: center;
         gap: 8px;
         padding: 16px 10px;
@@ -1483,15 +1517,15 @@
             raw = raw.replace(/\.$/, "");
             let deliveryCost = raw.trim();
 
-            const paymentMethod = document.querySelector('input[name="payMethod"]:checked')?.value || 'cash';
-            const scheduledTime = document.getElementById('scheduledTime')?.innerText || '';
-            const contactMethodEl = document.querySelector('#contactMethodSection .pay-option.selected');
-            const contactMethod = contactMethodEl ? contactMethodEl.getAttribute('data-method') : 'ring_bell';
-            const activeOrderType = document.querySelector('.global-types .order-type-opt.active')?.getAttribute('data-type') || 'delivery';
+            const state = (window.cart && window.cart.checkoutState) ? window.cart.checkoutState : {};
+            const paymentMethod = state.paymentMethod || 'cash';
+            const scheduledTime = state.scheduledTime || '';
+            const activeOrderType = state.deliveryMethod || 'delivery';
             const isPickup = activeOrderType === 'pickup' || activeOrderType === 'in-shop';
+            const contactMethod = state.contactMethod || 'ring_bell';
 
-            let payerPhone = "";
-            let paymentProofBase64 = "";
+            let payerPhone = state.payerPhone || "";
+            let paymentProofBase64 = state.paymentProofBase64 || "";
 
             if (['instapay', 'wallet', 'vodafone_cash'].includes(paymentMethod)) {
                 payerPhone = document.getElementById('payerPhone').value;
@@ -1499,7 +1533,6 @@
 
                 if (fileInput.files.length > 0) {
                     const file = fileInput.files[0];
-                    // Validate file type again in JS
                     if (!file.type.startsWith('image/')) {
                          Swal.fire({
                             title: "خطأ في الملف",
@@ -1509,6 +1542,32 @@
                         return;
                     }
                     paymentProofBase64 = await toBase64(file);
+                    // Update state
+                    if (window.cart) {
+                        window.cart.checkoutState.paymentProofBase64 = paymentProofBase64;
+                        window.cart.saveCheckoutState();
+                    }
+                } else {
+                    // Fallback to state if already uploaded
+                    paymentProofBase64 = state.paymentProofBase64 || "";
+                }
+
+                if (!paymentProofBase64) {
+                    Swal.fire({
+                        title: "مطلوب إثبات الدفع",
+                        text: "يرجى إرفاق صورة إثبات الدفع (سكرين شوت التحويل)",
+                        icon: "error"
+                    });
+                    return;
+                }
+
+                if (!payerPhone) {
+                    Swal.fire({
+                        title: "مطلوب رقم الهاتف",
+                        text: "يرجى إدخال رقم الهاتف الذي تم التحويل منه",
+                        icon: "error"
+                    });
+                    return;
                 }
             }
 
@@ -1533,7 +1592,7 @@
                     deliveryCost: deliveryCost,
                     paymentMethod: paymentMethod,
                     scheduledTime: scheduledTime,
-                    contactMethod: isPickup ? activeOrderType : contactMethod,
+                    contactMethod: isPickup ? "" : contactMethod,
                     orderType: activeOrderType,
                     payerPhone: payerPhone,
                     paymentProofBase64: paymentProofBase64
@@ -1580,10 +1639,10 @@
 
         window.updateLiveSummary = function() {
             const texts = window.texts || {};
+            const state = (window.cart && window.cart.checkoutState) ? window.cart.checkoutState : {};
 
             // 1. Payment Method
-            const payInput = document.querySelector('input[name="payMethod"]:checked');
-            const payVal = payInput ? payInput.value : 'cash';
+            const payVal = state.paymentMethod || 'cash';
             const payLabelMap = {
                 'cash': texts.Cash || 'نقدي',
                 'visa': texts.Visa || 'فيزا / ماستر كارد',
@@ -1595,8 +1654,7 @@
             if (livePay) livePay.textContent = payLabelMap[payVal] || payVal;
 
             // 2. Delivery Method
-            const activeTypeBtn = document.querySelector('.global-types .order-type-opt.active');
-            const activeType = activeTypeBtn ? activeTypeBtn.getAttribute('data-type') : 'delivery';
+            const activeType = state.deliveryMethod || 'delivery';
             const isPickup = activeType === 'pickup' || activeType === 'in-shop';
             const liveDel = document.getElementById('live-delivery');
             const delLabelSpan = document.getElementById('live-del-label-span');
@@ -1618,9 +1676,8 @@
             // 3. Contact Method
             const contactWrap = document.getElementById('live-contact-wrap');
             if (contactWrap) {
-                contactWrap.style.display = 'flex';
-                const contactEl = document.querySelector('.contact-methods .pay-option.selected');
-                const contactVal = contactEl ? contactEl.getAttribute('data-method') : 'phone';
+                contactWrap.style.display = isPickup ? 'none' : 'flex';
+                const contactVal = state.contactMethod || 'ring_bell';
                 const contactLabelMap = {
                     'phone': texts.CallPhone || 'مكالمة هاتفية',
                     'whatsapp': texts.WhatsApp || 'واتساب',
@@ -1657,8 +1714,7 @@
             // 5. Scheduled Time
             const timeWrap = document.getElementById('live-time-wrap');
             if (timeWrap) {
-                const schedEl = document.getElementById('scheduledTime');
-                const schedTime = schedEl ? schedEl.innerText : '';
+                const schedTime = state.scheduledTime || '';
                 // Check if it's NOT "Now" (either Arabic or English)
                 const isNow = !schedTime || schedTime.includes('الآن') || schedTime.includes('Now');
                 if (!isNow) {
@@ -1672,11 +1728,37 @@
         };
 
         document.addEventListener('DOMContentLoaded', function() {
-            // Load saved delivery method
-            const savedMethod = localStorage.getItem("deliveryMethod");
-            if (savedMethod && (savedMethod === 'delivery' || savedMethod === 'pickup' || savedMethod === 'in-shop')) {
-                if (typeof setGlobalOrderType === 'function') {
-                    setGlobalOrderType(savedMethod);
+            // Load state and sync UI
+            if (window.cart && window.cart.checkoutState) {
+                const state = window.cart.checkoutState;
+
+                // Sync Delivery Type
+                if (state.deliveryMethod) {
+                    setGlobalOrderType(state.deliveryMethod);
+                }
+
+                // Sync Payment Method
+                if (state.paymentMethod) {
+                    const payBtn = document.querySelector(`.pay-option.pay-${state.paymentMethod.replace('_', '')}`) ||
+                                 document.querySelector(`.pay-option[onclick*="'${state.paymentMethod}'"]`);
+                    if (payBtn) selectPayment(payBtn, state.paymentMethod);
+                }
+
+                // Sync Contact Method
+                if (state.contactMethod) {
+                    const contactBtn = document.querySelector(`.pay-option.contact-${state.contactMethod.replace('_', '')}`) ||
+                                     document.querySelector(`.pay-option[onclick*="'${state.contactMethod}'"]`);
+                    if (contactBtn) selectContactMethod(contactBtn, state.contactMethod);
+                }
+
+                // Sync Payer Phone
+                const phoneInput = document.getElementById('payerPhone');
+                if (phoneInput) {
+                    phoneInput.value = state.payerPhone || '';
+                    phoneInput.addEventListener('input', (e) => {
+                        window.cart.checkoutState.payerPhone = e.target.value;
+                        window.cart.saveCheckoutState();
+                    });
                 }
             }
 
@@ -1799,11 +1881,25 @@
             const radio = el.querySelector('input');
             if (radio) radio.checked = true;
 
+            // Update checkoutState
+            if (window.cart) {
+                window.cart.checkoutState.paymentMethod = method;
+                window.cart.saveCheckoutState();
+            }
+
             const proofWrap = document.getElementById('paymentProofWrap');
+            const preview = document.getElementById('paymentProofPreview');
+            const state = (window.cart && window.cart.checkoutState) ? window.cart.checkoutState : {};
+
             if (method === 'cash' || method === 'visa') {
                 if (proofWrap) proofWrap.style.display = 'none';
             } else {
                 if (proofWrap) proofWrap.style.display = 'flex';
+                // Show preview if we have one in state
+                if (preview && state.paymentProofBase64) {
+                    preview.src = (state.paymentProofBase64.startsWith('data:') ? '' : 'data:image/png;base64,') + state.paymentProofBase64;
+                    preview.style.display = 'block';
+                }
             }
             if (typeof updateLiveSummary === 'function') updateLiveSummary();
         };
@@ -1811,6 +1907,13 @@
         window.selectContactMethod = function(el, method) {
             document.querySelectorAll('.contact-methods .pay-option').forEach(opt => opt.classList.remove('selected'));
             el.classList.add('selected');
+
+            // Update checkoutState
+            if (window.cart) {
+                window.cart.checkoutState.contactMethod = method;
+                window.cart.saveCheckoutState();
+            }
+
             if (typeof updateLiveSummary === 'function') updateLiveSummary();
         };
 
@@ -1821,13 +1924,24 @@
                 reader.onload = function(e) {
                     preview.src = e.target.result;
                     preview.style.display = 'block';
+
+                    // Also save to state
+                    if (window.cart) {
+                        window.cart.checkoutState.paymentProofBase64 = e.target.result.split(',')[1];
+                        window.cart.saveCheckoutState();
+                    }
                 }
                 reader.readAsDataURL(input.files[0]);
             }
         };
 
         window.setGlobalOrderType = function(type) {
-            // Save to localStorage for other scripts (like cart.js)
+            // Save to checkoutState
+            if (window.cart) {
+                window.cart.checkoutState.deliveryMethod = type;
+                window.cart.saveCheckoutState();
+            }
+            // Compatibility fallback
             localStorage.setItem("deliveryMethod", type);
 
             const container = document.querySelector('.global-types');
@@ -1851,10 +1965,10 @@
                 }
             }
 
-            // Handle Contact Method Section Visibility - Always show as per user request
+            // Handle Contact Method Section Visibility - Hide if pickup or in-shop
             const contactSection = document.getElementById('contactMethodSection');
             if (contactSection) {
-                contactSection.style.display = 'block';
+                contactSection.style.display = (type === 'pickup' || type === 'in-shop') ? 'none' : 'block';
             }
 
             // Handle Label Change

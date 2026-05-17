@@ -7,9 +7,6 @@
        <asp:ScriptManager runat="server" ID="ScriptManager1" EnablePageMethods="true" />
     <style>
         #map { height: 500px; }
-        .header {
-            background:none !important;
-        }
 
         /* --- New Premium Loader --- */
         #loader-wrapper {
@@ -197,7 +194,7 @@ document.getElementById('location-btn').addEventListener('click', function() {
     }
 
     .search-box i {
-        color: #555;
+        color: white;
     }
 
     .search-box button:hover i {
@@ -211,42 +208,23 @@ document.getElementById('location-btn').addEventListener('click', function() {
     </section>
 
     <section class="news-swipr">
-    <div class="swiper newsSwiper">
-        <div class="swiper-wrapper">
-
-            <div class="swiper-slide">
-                <img
-                    src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1200&auto=format&fit=crop"
-                    alt="News Image"
-                />
+        <div class="swiper newsSwiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <img src="https://np.naukimg.com/cphoto/l45XrkFOujKTaHBdN6PUrTtURaQ/6AFPI5l/k2gAkQqVwFKHFwvhK7u32Kmseoy1Xu1tTnRJRtug8Q2lzX6Wp02NFCPzn2tkSW8b4Mm3yavA7NNZXdbZaFECMd/ZnVDpzp" alt="News Image" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTb_FiZTdONoWw2NWQ_hk1FBfFb3NIhiWImUA&s" alt="News Image" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCL35UgrPqNPxqfmpoEq1ZFvdM7I7bz61B3w&s" alt="News Image" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTx319C2Cuuz7TXEhCMHcSrpvwcLgqnO2ahzg&s" alt="News Image" />
+                </div>
             </div>
-
-            <div class="swiper-slide">
-                <img
-                    src="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?q=80&w=1200&auto=format&fit=crop"
-                    alt="News Image"
-                />
-            </div>
-
-            <div class="swiper-slide">
-                <img
-                    src="https://images.unsplash.com/photo-1519608487953-e999c86e7455?q=80&w=1200&auto=format&fit=crop"
-                    alt="News Image"
-                />
-            </div>
-
-            <div class="swiper-slide">
-                <img
-                    src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1200&auto=format&fit=crop"
-                    alt="News Image"
-                />
-            </div>
-
         </div>
-
-        <div class="swiper-pagination"></div>
-    </div>
-</section>
+    </section>
     <section class="categories-section gray-bg" role="region" aria-labelledby="section_1_title">
         <div class="content-container">
             <h2 id="section_1_title" data-key="section_1_title"> <asp:Literal ID="litSection1Title" runat="server" Text="<%$ Resources:Texts, Section1_Title %>" />

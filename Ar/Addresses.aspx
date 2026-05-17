@@ -1184,10 +1184,6 @@ function reverseGeocode(latlng, retries = 2) {
             font-size: 20px;
             margin-bottom: 5px;
         }
-
-        .header {
-            background: linear-gradient(135deg, #fffbe6 0%, #ffffff 0%, #fffbe6 10%) !important;
-        }
     </style>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
      <script>

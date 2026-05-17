@@ -5,6 +5,32 @@
   </asp:Content>
   <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
     <style>
+
+
+.news-swipr {
+    width: 100%;
+    background: transparent;
+    padding: 40px;
+    height: auto;
+    overflow: hidden !important;
+    max-height: 350px;
+}
+
+.news-swipr .newsSwiper {
+    width: 100%;
+    max-width: 1200px;
+    margin: auto;
+    overflow: visible !important;
+    max-height: 300px;
+}
+
+.news-swipr .newsSwiper {
+    .swiper-wrapper {
+        max-height: 280px;
+    }
+}
+
+
       .shopRating {
         display: flex;
         gap: 0.25rem;
@@ -21,7 +47,7 @@
         padding-inline: 25px;
         padding-bottom: 50px;
         margin: auto;
-        max-width: 1024px;
+        max-width: 1200px;
         width: 100%;
 
         h2 {
@@ -56,6 +82,11 @@
         }
       }
 
+      @media (max-width:480px){
+        #selectedLocationShops{
+          padding-top: 50px !important;
+        }
+      }
       .inputHolder {
         position: relative;
         width: 100%;
@@ -654,25 +685,6 @@
 
         </div>
       </div>
-      <section class="news-swipr" style="padding: 20px 0; max-width: 1200px; margin: 0 auto; overflow: hidden;">
-        <div class="swiper newsSwiper">
-            <div class="swiper-wrapper">
-                <div class="swiper-slide">
-                    <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1200&auto=format&fit=crop" alt="News Image" />
-                </div>
-                <div class="swiper-slide">
-                    <img src="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?q=80&w=1200&auto=format&fit=crop" alt="News Image" />
-                </div>
-                <div class="swiper-slide">
-                    <img src="https://images.unsplash.com/photo-1519608487953-e999c86e7455?q=80&w=1200&auto=format&fit=crop" alt="News Image" />
-                </div>
-                <div class="swiper-slide">
-                    <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1200&auto=format&fit=crop" alt="News Image" />
-                </div>
-            </div>
-            <div class="swiper-pagination"></div>
-        </div>
-    </section>
       <span class="route">
         <a href="Default.aspx">
           <asp:Literal ID="ltHome" runat="server" Text="<%$ Resources:texts, Home %>"></asp:Literal>
@@ -688,6 +700,24 @@
         (<asp:Literal ID="ltlocation2" runat="server"></asp:Literal>)
         <span id="filterIcon"><i class="fa-solid fa-filter"></i></span>
       </h2>
+      <section class="news-swipr">
+          <div class="swiper newsSwiper">
+              <div class="swiper-wrapper">
+                  <div class="swiper-slide">
+                      <img src="https://np.naukimg.com/cphoto/l45XrkFOujKTaHBdN6PUrTtURaQ/6AFPI5l/k2gAkQqVwFKHFwvhK7u32Kmseoy1Xu1tTnRJRtug8Q2lzX6Wp02NFCPzn2tkSW8b4Mm3yavA7NNZXdbZaFECMd/ZnVDpzp" alt="News Image" />
+                  </div>
+                  <div class="swiper-slide">
+                      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTb_FiZTdONoWw2NWQ_hk1FBfFb3NIhiWImUA&s" alt="News Image" />
+                  </div>
+                  <div class="swiper-slide">
+                      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCL35UgrPqNPxqfmpoEq1ZFvdM7I7bz61B3w&s" alt="News Image" />
+                  </div>
+                  <div class="swiper-slide">
+                      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTx319C2Cuuz7TXEhCMHcSrpvwcLgqnO2ahzg&s" alt="News Image" />
+                  </div>
+              </div>
+          </div>
+      </section>
 
       <div class="selectedLocationFilters">
         <figure class="locationShops">

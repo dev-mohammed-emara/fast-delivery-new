@@ -99,8 +99,20 @@ document.addEventListener("DOMContentLoaded", () => {
             };
 
             localStorage.setItem("cartSummary", JSON.stringify(summary));
-        }
-    ,
+        },
+
+        checkoutState: JSON.parse(localStorage.getItem("checkoutState")) || {
+            paymentMethod: 'cash',
+            deliveryMethod: 'delivery',
+            contactMethod: 'ring_bell',
+            scheduledTime: '',
+            payerPhone: '',
+            paymentProofBase64: ''
+        },
+
+        saveCheckoutState() {
+            localStorage.setItem("checkoutState", JSON.stringify(this.checkoutState));
+        },
 
         getSubtotal() {
             return this.items.reduce((sum, item) => {
@@ -108,9 +120,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 let totalForItem = itemPrice * item.amount;
 
                 if (item.customization) {
+                    // Extras with qty support
+                    (item.customization.extras || []).forEach(e => {
+                        totalForItem += (Number(e.price) || 0) * (e.qty || 1);
+                    });
                     // Upsells with independent qty
                     (item.customization.upsells || []).forEach(u => {
-                        totalForItem += (Number(u.price) || 0) * (u.qty || 0);
+                        totalForItem += (Number(u.price) || 0) * (u.qty || 1);
                     });
                 }
 
@@ -119,32 +135,30 @@ document.addEventListener("DOMContentLoaded", () => {
         },
 
         updateAddonQty(itemId, addonId, delta, type, shopId) {
-            const item = this.items.find(i => i.id === itemId && i.shopId === shopId);
+            const item = this.items.find(i => String(i.cartItemId || i.id) === String(itemId) && String(i.shopId) === String(shopId));
             if (!item || !item.customization || !item.customization[type]) return;
 
-            const addon = item.customization[type].find(a => a.id === addonId);
+            const addon = item.customization[type].find(a => String(a.id) === String(addonId));
             if (addon) {
-                addon.qty = (addon.qty || 1) + delta;
+                addon.qty = (Number(addon.qty) || 1) + delta;
                 if (addon.qty < 1) {
                     this.removeAddon(itemId, addonId, type, shopId);
                     return;
                 }
                 this.save();
-                if (typeof sync === 'function') this.sync();
             }
         },
 
         removeAddon(itemId, addonId, type, shopId) {
-            const item = this.items.find(i => i.id === itemId && i.shopId === shopId);
+            const item = this.items.find(i => String(i.cartItemId || i.id) === String(itemId) && String(i.shopId) === String(shopId));
             if (!item || !item.customization || !item.customization[type]) return;
 
-            item.customization[type] = item.customization[type].filter(a => a.id !== addonId);
+            item.customization[type] = item.customization[type].filter(a => String(a.id) !== String(addonId));
             this.save();
-            if (typeof sync === 'function') this.sync();
         },
 
         updateItemNotes(itemId, newNotes, shopId) {
-            const index = this.items.findIndex(i => i.id === itemId && i.shopId === shopId);
+            const index = this.items.findIndex(i => String(i.cartItemId || i.id) === String(itemId) && String(i.shopId) === String(shopId));
             if (index !== -1) {
                 if (!this.items[index].customization) {
                     this.items[index].customization = {};
@@ -172,29 +186,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 return false;
             }
 
-            const existing = this.items.find(i => i.id === item.id && String(i.shopId) === String(targetShopId));
-            if (existing) {
-                existing.amount += count;
-                
-                // Sync notes and customizations
-                if (item.notes) existing.notes = item.notes;
-                if (item.customization) {
-                    if (!existing.customization) existing.customization = {};
-                    if (item.customization.notes) existing.customization.notes = item.customization.notes;
-                    if (item.customization.size) existing.customization.size = item.customization.size;
-                    if (item.customization.extras) existing.customization.extras = [...item.customization.extras];
-                    if (item.customization.upsells) existing.customization.upsells = [...item.customization.upsells];
-                }
-                if (item.isCustomized) existing.isCustomized = true;
-                if (item.isCustomProduct) existing.isCustomProduct = true;
-
-                this.save();
-                return true;
-            }
+            item.cartItemId = item.cartItemId || item.id;
 
             const shopExists = this.items.some(i => String(i.shopId) === String(targetShopId));
+            const isSameShopEdit = window.currentEditItem && String(window.currentEditItem.shopId) === String(targetShopId);
 
-            if (!isUpdate && !shopExists && this.items.length > 0) {
+            if (!isUpdate && !isSameShopEdit && !shopExists && this.items.length > 0) {
                 const newItem = {
                     ...item,
                     amount: count,
@@ -205,26 +202,69 @@ document.addEventListener("DOMContentLoaded", () => {
                     shopName: item.shopName || GLOBAL_shopName,
                     shopAreaId: item.shopAreaId || GLOBAL_shopArea_ID,
                     addId: item.addId || GLOBAL_addid_ID,
-                    deliveryTime: item.deliveryTime || GLOBAL_DELIVERY_TIME
+                    deliveryTime: parseInt(item.deliveryTime) || getLiveDeliveryTime(),
                 };
 
-                Swal.fire({
-                    title: texts.AddItemDifferentShopTitle,
-                    text: texts.AddItemDifferentShopText,
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonText: texts.YesAdd,
-                    cancelButtonText: texts.Cancel,
-                    reverseButtons: true,
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        cart.items.push(newItem);
-                        cart.save();
-                        showCartToast(texts.AddedFromDifferentShop);
-                    }
-                });
+                // Close product modal if open
+                if (typeof Swal !== 'undefined' && Swal.isVisible()) {
+                    Swal.close();
+                }
+
+                setTimeout(() => {
+                    Swal.fire({
+                        title: texts.AddItemDifferentShopTitle || "صنف من متجر آخر",
+                        text: texts.AddItemDifferentShopText || "هل تريد إضافة هذا الصنف من متجر آخر؟",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonText: texts.YesAdd || "نعم، أضف",
+                        cancelButtonText: texts.Cancel || "إلغاء",
+                        reverseButtons: true,
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            if (window.currentEditItem) {
+                                const oldId = window.currentEditItem.cartItemId || window.currentEditItem.id;
+                                cart.items = cart.items.filter(i => !(String(i.cartItemId || i.id) === String(oldId) && String(i.shopId) === String(window.currentEditItem.shopId)));
+                            }
+                            cart.items.push(newItem);
+                            cart.save();
+                            showCartToast(texts.AddedFromDifferentShop || "تمت إضافة الصنف من متجر آخر!");
+                        }
+                    });
+                }, 100);
+
                 return false;
             }
+
+            const existing = this.items.find(i => String(i.cartItemId || i.id) === String(item.cartItemId) && String(i.shopId) === String(targetShopId));
+            if (existing) {
+                if (isUpdate) {
+                    existing.amount = count; // Replace quantity on update
+                } else {
+                    existing.amount += count; // Increment on normal add
+                }
+
+                // Sync notes and customizations
+                if (item.notes) existing.notes = item.notes;
+                if (item.customization) {
+                    if (!existing.customization) existing.customization = {};
+                    if (item.customization.notes) existing.customization.notes = item.customization.notes;
+                    if (item.customization.size) existing.customization.size = item.customization.size;
+
+                    // Replace extras and upsells to reflect latest state
+                    if (item.customization.extras) existing.customization.extras = [...item.customization.extras];
+                    if (item.customization.upsells) existing.customization.upsells = [...item.customization.upsells];
+                }
+
+                // Sync flags
+                existing.isCustomized = !!item.isCustomized;
+                existing.isCustomProduct = !!item.isCustomProduct;
+
+                this.save();
+                return true;
+            }
+
+
+
 
             this.items.push({
                 ...item,
@@ -236,7 +276,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 shopName: item.shopName || GLOBAL_shopName,
                 shopAreaId: item.shopAreaId || GLOBAL_shopArea_ID,
                 addId: item.addId || GLOBAL_addid_ID,
-                deliveryTime: item.deliveryTime || getLiveDeliveryTime(),
+                deliveryTime: parseInt(item.deliveryTime) || getLiveDeliveryTime(),
             });
 
             this.save();
@@ -244,12 +284,12 @@ document.addEventListener("DOMContentLoaded", () => {
         },
 
         removeItem(id, shopId) {
-            this.items = this.items.filter(i => !(i.id === id && i.shopId === shopId));
+            this.items = this.items.filter(i => !(String(i.cartItemId || i.id) === String(id) && String(i.shopId) === String(shopId)));
             this.save();
         },
 
         increaseItem(id, shopId) {
-            const existing = this.items.find(i => i.id === id && i.shopId === shopId);
+            const existing = this.items.find(i => String(i.cartItemId || i.id) === String(id) && String(i.shopId) === String(shopId));
             if (existing) {
                 existing.amount += 1;
                 this.save();
@@ -257,7 +297,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
 
         decreaseItem(id, shopId) {
-            const existing = this.items.find(i => i.id === id && i.shopId === shopId);
+            const existing = this.items.find(i => String(i.cartItemId || i.id) === String(id) && String(i.shopId) === String(shopId));
             if (existing) {
                 existing.amount -= 1;
                 if (existing.amount < 1) {
@@ -367,7 +407,8 @@ if (deliveryFeeEl || deliveryCostValueEl) {
     }
 }
 
-let GLOBAL_shopName = shopNameEl ? shopNameEl.textContent.trim() : (localStorage.getItem("currentShopName") || "");
+const actualShopNameEl = document.getElementById("shopNameContent") || document.querySelector(".availableShopName span") || document.querySelector(".availableShopName") || document.querySelector("#shopName");
+let GLOBAL_shopName = actualShopNameEl ? actualShopNameEl.textContent.trim() : (localStorage.getItem("currentShopName") || "");
 
 function showCartToast(message = (window.texts ? window.texts.AddedToCartDefault : "تمت الإضافة"), options = {}) {
     const {
@@ -466,7 +507,7 @@ function showCartToast(message = (window.texts ? window.texts.AddedToCartDefault
     function updateCartUI() {
         const inCartEls = document.querySelectorAll("#inCartItems");
         const emptyEls = document.querySelectorAll("#emptyCart");
-        
+
         if (inCartEls.length === 0 || emptyEls.length === 0) return;
 
         inCartEls.forEach((inCart, index) => {
@@ -481,11 +522,11 @@ function showCartToast(message = (window.texts ? window.texts.AddedToCartDefault
             if (cart.items.length === 0) {
                 if (empty) empty.style.setProperty('display', 'flex', 'important');
                 if (inCart) inCart.style.setProperty('display', 'none', 'important');
-                
+
                 // Clear any residual items to prevent them from staying alongside empty state
                 const oldWrapper = inCart.querySelector(".orderedItemsWrapper");
                 if (oldWrapper) oldWrapper.remove();
-                
+
                 // Also handle the footer explicitly if it's a child of inCartItems
                 const sideFooter = inCart.querySelector(".side-cart-footer-container");
                 if (sideFooter) {
@@ -494,7 +535,7 @@ function showCartToast(message = (window.texts ? window.texts.AddedToCartDefault
 
                 // Update summary even when empty to ensure localStorage is in sync
                 cart.saveSummary();
-                
+
                 return;
             }
 
@@ -541,7 +582,23 @@ function showCartToast(message = (window.texts ? window.texts.AddedToCartDefault
                 // Shop label
                 const shopLabel = document.createElement("div");
                 shopLabel.classList.add("cartShopLabel");
-                shopLabel.innerHTML = `<i class="fa-solid fa-store"></i> ${group.shopName}`;
+                shopLabel.style.display = "flex";
+                shopLabel.style.justifyContent = "space-between";
+                shopLabel.style.alignItems = "center";
+
+                let deliveryTimeStr = "";
+                if (group.items[0]?.deliveryTime) {
+                    deliveryTimeStr = `
+                        <span class="deliveryTime" style="font-size: 0.85rem; color: var(--text-color, #666); font-weight: normal; display: flex; align-items: center; gap: 4px;">
+                            <i class="fa-regular fa-clock"></i>
+                            ${texts.DeliveryTimeHint || 'إستلام خلال'}
+                            <span class="timer">${group.items[0].deliveryTime}</span>
+                            ${texts.Minutes || 'دقيقة'}
+                        </span>
+                    `;
+                }
+
+                shopLabel.innerHTML = `<div style="display: flex; align-items: center; gap: 5px;"><i class="fa-solid fa-store" style="color: var(--orange-500);"></i> ${group.shopName}</div> ${deliveryTimeStr}`;
                 wrapper.appendChild(shopLabel);
 
                 // Render each product in shop
@@ -550,8 +607,8 @@ function showCartToast(message = (window.texts ? window.texts.AddedToCartDefault
                     let addonsTotal = 0;
                     if (item.customization) {
                         (item.customization.quickChoices || []).forEach(qc => addonsTotal += (Number(qc.price) || 0) * (qc.qty || 1));
-                        (item.customization.extras || []).forEach(ex => addonsTotal += (Number(ex.price) || 0));
-                        (item.customization.upsells || []).forEach(up => addonsTotal += (Number(up.price) || 0) * (up.qty || 0));
+                        (item.customization.extras || []).forEach(ex => addonsTotal += (Number(ex.price) || 0) * (ex.qty || 1));
+                        (item.customization.upsells || []).forEach(up => addonsTotal += (Number(up.price) || 0) * (up.qty || 1));
                     }
                     // Parent item total (just product * amount)
                     const itemOnlyTotal = priceNum * item.amount;
@@ -560,7 +617,7 @@ function showCartToast(message = (window.texts ? window.texts.AddedToCartDefault
 
                     const itemGroup = document.createElement("div");
                     itemGroup.classList.add("cart-item-group");
-                    itemGroup.setAttribute("data-item-id", item.id);
+                    itemGroup.setAttribute("data-item-id", item.cartItemId || item.id);
 
                     const article = document.createElement("article");
                     article.classList.add("orderedItem");
@@ -575,17 +632,17 @@ function showCartToast(message = (window.texts ? window.texts.AddedToCartDefault
                         <div class="orderedItemMain">
                           <span class="orderedItemName">${item.name} ${item.customization?.size ? `<small class="cart-item-size">(${item.customization.size.name})</small>` : ''} <small class="unit-price">(${item.price} ${texts.Currency})</small></span>
                           <div class="cart-item-badges">
-                            ${(item.isCustomProduct || (item.customization?.extras?.length > 0) || (item.customization?.upsells?.length > 0) || (item.customization?.quickChoices?.length > 0) || (item.customization?.size && item.customization.size.id && item.customization.size.id !== 'size-small')) 
+                            ${(item.isCustomProduct || (item.customization?.extras?.length > 0) || (item.customization?.upsells?.length > 0) || (item.customization?.quickChoices?.length > 0) || (item.customization?.size && item.customization.size.id && item.customization.size.id !== 'size-small'))
                                 ? (() => {
                                     const hasActualAddons = (item.customization?.extras?.length > 0) || (item.customization?.upsells?.length > 0) || (item.customization?.quickChoices?.length > 0) || (item.customization?.size && item.customization.size.id && item.customization.size.id !== 'size-small');
-                                    return `<span class="addons-badge ${!hasActualAddons ? 'suggestion-badge' : ''}" onclick="event.stopPropagation(); if(typeof openProductModal==='function') openProductModal('${item.id}', ${JSON.stringify(item).replace(/"/g, '&quot;')}); else if(typeof openHardcodedModal==='function') openHardcodedModal(${JSON.stringify(item).replace(/"/g, '&quot;')})">${!hasActualAddons ? '<i class="fa-solid fa-wand-magic-sparkles"></i> ' + (texts.Extras || 'الإضافات') : (texts.Extras || 'الإضافات')}</span>`;
+                                    return `<span class="addons-badge ${!hasActualAddons ? 'suggestion-badge' : ''}" onclick="event.stopPropagation(); if(typeof openProductModal==='function') openProductModal('${item.cartItemId || item.id}', ${JSON.stringify(item).replace(/"/g, '&quot;')}); else if(typeof openHardcodedModal==='function') openHardcodedModal(${JSON.stringify(item).replace(/"/g, '&quot;')})">${!hasActualAddons ? '<i class="fa-solid fa-wand-magic-sparkles"></i> ' + (texts.Extras || 'الإضافات') : (texts.Extras || 'الإضافات')}</span>`;
                                 })()
                                 : ''
                             }
 
                             ${(() => {
                                 const hasNotes = !!(item.customization?.notes || item.notes);
-                                return `<span class="notes-badge ${!hasNotes ? 'suggestion-badge' : ''}" onclick="event.stopPropagation(); if(typeof openProductModal==='function') openProductModal('${item.id}', ${JSON.stringify(item).replace(/"/g, '&quot;')}, true); else openHardcodedModal(${JSON.stringify(item).replace(/"/g, '&quot;')}, null, null, null, null, true)">${!hasNotes ? '<i class="fa-solid fa-comment-medical"></i> ' + (texts.Notes || 'ملاحظات') : (texts.Notes || 'ملاحظات')}</span>`;
+                                return `<span class="notes-badge ${!hasNotes ? 'suggestion-badge' : ''}" onclick="event.stopPropagation(); if(typeof openProductModal==='function') openProductModal('${item.cartItemId || item.id}', ${JSON.stringify(item).replace(/"/g, '&quot;')}, true); else openHardcodedModal(${JSON.stringify(item).replace(/"/g, '&quot;')}, null, null, null, null, true)">${!hasNotes ? '<i class="fa-solid fa-comment-medical"></i> ' + (texts.Notes || 'ملاحظات') : (texts.Notes || 'ملاحظات')}</span>`;
                             })()}
                           </div>
                         </div>
@@ -605,11 +662,18 @@ function showCartToast(message = (window.texts ? window.texts.AddedToCartDefault
                             item.customization.extras.forEach(ex => {
                                 const div = document.createElement("div");
                                 div.classList.add("customization-row");
+                                const exTotal = (Number(ex.price) || 0) * (ex.qty || 1);
+
                                 div.innerHTML = `
-                                    <span>+ ${ex.name}</span>
+                                    <span>+ ${ex.name} ${ex.qty > 1 ? `(x${ex.qty})` : ''}</span>
                                     <div class="cust-right-col">
-                                        <span class="cust-price">${(Number(ex.price) || 0).toLocaleString()} ${texts.Currency}</span>
-                                        <span class="remove-cust-item" onclick="event.stopPropagation(); cart.removeAddon('${item.id}', '${ex.id}', 'extras', '${item.shopId}')"><i class="fa-solid fa-trash"></i></span>
+                                        <div class="cartItemAmountHandlers mini-handlers">
+                                            <button class="decrease" type="button" onclick="event.stopPropagation(); cart.updateAddonQty('${item.cartItemId || item.id}', '${ex.id}', -1, 'extras', '${item.shopId}')"><i class="fa-solid fa-minus"></i></button>
+                                            <span class="itemAmount">${ex.qty || 1}</span>
+                                            <button class="increase" type="button" onclick="event.stopPropagation(); cart.updateAddonQty('${item.cartItemId || item.id}', '${ex.id}', 1, 'extras', '${item.shopId}')"><i class="fa-solid fa-plus"></i></button>
+                                        </div>
+                                        <span class="cust-price">${exTotal.toLocaleString()} ${texts.Currency}</span>
+                                        <span class="remove-cust-item" onclick="event.stopPropagation(); cart.removeAddon('${item.cartItemId || item.id}', '${ex.id}', 'extras', '${item.shopId}')"><i class="fa-solid fa-trash"></i></span>
                                     </div>
                                 `;
                                 custWrapper.appendChild(div);
@@ -634,15 +698,15 @@ function showCartToast(message = (window.texts ? window.texts.AddedToCartDefault
                             upsellArticle.innerHTML = `
                                 <div class="upsell-connector"></div>
                                 <div class="cartItemAmountHandlers">
-                                    <button class="decrease" type="button" onclick="event.stopPropagation(); cart.updateAddonQty('${item.id}', '${upsell.id}', -1, 'upsells', '${item.shopId}')"><i class="fa-solid fa-minus"></i></button>
+                                    <button class="decrease" type="button" onclick="event.stopPropagation(); cart.updateAddonQty('${item.cartItemId || item.id}', '${upsell.id}', -1, 'upsells', '${item.shopId}')"><i class="fa-solid fa-minus"></i></button>
                                     <span class="itemAmount">${upsell.qty}</span>
-                                    <button class="increase" type="button" onclick="event.stopPropagation(); cart.updateAddonQty('${item.id}', '${upsell.id}', 1, 'upsells', '${item.shopId}')"><i class="fa-solid fa-plus"></i></button>
+                                    <button class="increase" type="button" onclick="event.stopPropagation(); cart.updateAddonQty('${item.cartItemId || item.id}', '${upsell.id}', 1, 'upsells', '${item.shopId}')"><i class="fa-solid fa-plus"></i></button>
                                 </div>
                                 <div class="orderedItemMain">
                                     <span class="orderedItemName">${upsell.name}</span>
                                 </div>
                                 <span class="totalItemPrice">${upsellTotal.toLocaleString()} ${texts.Currency}</span>
-                                <span class="removeUpsellItem" onclick="event.stopPropagation(); cart.removeAddon('${item.id}', '${upsell.id}', 'upsells', '${item.shopId}')"><i class="fa-solid fa-trash"></i></span>
+                                <span class="removeUpsellItem" onclick="event.stopPropagation(); cart.removeAddon('${item.cartItemId || item.id}', '${upsell.id}', 'upsells', '${item.shopId}')"><i class="fa-solid fa-trash"></i></span>
                             `;
                             upsellsWrapper.appendChild(upsellArticle);
                         });
@@ -663,9 +727,9 @@ function showCartToast(message = (window.texts ? window.texts.AddedToCartDefault
                     wrapper.appendChild(itemGroup);
 
                     // Buttons
-                    article.querySelector(".increase").onclick = () => cart.increaseItem(item.id, item.shopId);
-                    article.querySelector(".decrease").onclick = () => cart.decreaseItem(item.id, item.shopId);
-                    article.querySelector(".removeCartItem").onclick = () => cart.removeItem(item.id, item.shopId);
+                    article.querySelector(".increase").onclick = () => cart.increaseItem(item.cartItemId || item.id, item.shopId);
+                    article.querySelector(".decrease").onclick = () => cart.decreaseItem(item.cartItemId || item.id, item.shopId);
+                    article.querySelector(".removeCartItem").onclick = () => cart.removeItem(item.cartItemId || item.id, item.shopId);
 
                     // Edit Logic for customized items
                     if (item.isCustomized && typeof openHardcodedModal === 'function') {
@@ -673,7 +737,7 @@ function showCartToast(message = (window.texts ? window.texts.AddedToCartDefault
                         if (editTrigger) {
                             editTrigger.style.cursor = "pointer";
                             editTrigger.onclick = () => {
-                                if (typeof openProductModal === 'function') openProductModal(item.id, item);
+                                if (typeof openProductModal === 'function') openProductModal(item.cartItemId || item.id, item);
                                 else openHardcodedModal(item);
                             };
                         }
@@ -731,18 +795,8 @@ function showCartToast(message = (window.texts ? window.texts.AddedToCartDefault
                 const price = itemEl.querySelector(".foodNewPrice")?.textContent.trim();
 
                 if (id && name && price) {
-                    // Load clicked IDs from localStorage
-                    let clickedIds = JSON.parse(localStorage.getItem("clickedProductIds")) || [];
-
-                    // Only add to clicked IDs if not already present
-                    const isNewClick = !clickedIds.includes(id);
-                    if (isNewClick) {
-                        clickedIds.push(id);
-                        localStorage.setItem("clickedProductIds", JSON.stringify(clickedIds));
-                    }
-
                     // Add item to cart
-                    cart.addItem({
+                    const added = cart.addItem({
                         id, // unique product ID
                         name,
                         price: parseFloat(price.replace(/[^\d.]/g, "")),
@@ -754,16 +808,22 @@ function showCartToast(message = (window.texts ? window.texts.AddedToCartDefault
                         shopAreaId: GLOBAL_shopArea_ID,
                         addId: GLOBAL_addid_ID,
                         isCustomProduct: itemEl.classList.contains('custom-item') || itemEl.getAttribute('data-has-addons') === '1'
-
                     });
 
+                    if (added) {
+                        // Load clicked IDs from localStorage
+                        let clickedIds = JSON.parse(localStorage.getItem("clickedProductIds")) || [];
 
-                    // Show toast ONLY if first time clicked
-                    if (isNewClick) {
-                        showCartToast(`${texts.AddedToCartPrefix} "${name}" ${texts.AddedToCartSuffix}`);
+                        // Only add to clicked IDs if not already present
+                        const isNewClick = !clickedIds.includes(id);
+                        if (isNewClick) {
+                            clickedIds.push(id);
+                            localStorage.setItem("clickedProductIds", JSON.stringify(clickedIds));
+                            showCartToast(`${texts.AddedToCartPrefix} "${name}" ${texts.AddedToCartSuffix}`);
+                        }
                     }
 
-                    console.log("Clicked product IDs:", clickedIds);
+                    console.log("Clicked product IDs:", JSON.parse(localStorage.getItem("clickedProductIds")) || []);
                 }
             });
         });
@@ -971,7 +1031,7 @@ function renderCheckoutArticles(items, summary) {
 
         const deliveryMethod = localStorage.getItem("deliveryMethod") || "delivery";
         const isPickup = deliveryMethod === "pickup" || deliveryMethod === "in-shop";
-        const shopDeliveryTime = isPickup ? 0 : (shopGroup.items[0].deliveryTime || 0);
+        const shopDeliveryTime = isPickup ? 0 : (parseInt(shopGroup.items[0].deliveryTime) || 0);
 
         titleDiv.innerHTML = `
       <div style="display: flex; flex-direction: column; gap: 4px;">
@@ -980,7 +1040,7 @@ function renderCheckoutArticles(items, summary) {
             ${shopGroup.shopName}
         </h2>
         <small style="color: #666; font-size: 0.85rem; margin-inline: 1rem;">
-            <i class="fa-regular fa-clock"></i> ${texts.DeliveryTimeHint} ${shopDeliveryTime} ${texts.Minutes}
+            <i class="fa-regular fa-clock"></i> ${texts.DeliveryTimeHint} <span id="live-timer-val-${shopId}">${shopDeliveryTime}</span> ${texts.Minutes}
         </small>
       </div>
       <a href="PlaceShop.aspx?id=${shopId}&addid=${addId}">${texts.UpdateOrder}</a>
@@ -1027,6 +1087,20 @@ function renderCheckoutArticles(items, summary) {
                             ${item.customization?.size ? `<small class="checkout-item-size">(${item.customization.size.name})</small>` : ''}
                             <small class="unit-price">(${item.price.toFixed(2)} ${texts.Currency})</small>
                         </span>
+                        <div class="cart-item-badges" style="margin-top: 5px;">
+                            ${(item.isCustomProduct || (item.customization?.extras?.length > 0) || (item.customization?.upsells?.length > 0) || (item.customization?.quickChoices?.length > 0) || (item.customization?.size && item.customization.size.id && item.customization.size.id !== 'size-small'))
+                                ? (() => {
+                                    const hasActualAddons = (item.customization?.extras?.length > 0) || (item.customization?.upsells?.length > 0) || (item.customization?.quickChoices?.length > 0) || (item.customization?.size && item.customization.size.id && item.customization.size.id !== 'size-small');
+                                    return `<span class="addons-badge ${!hasActualAddons ? 'suggestion-badge' : ''}" onclick="event.stopPropagation(); if(typeof openProductModal==='function') openProductModal('${item.cartItemId || item.id}', ${JSON.stringify(item).replace(/"/g, '&quot;')}); else if(typeof openHardcodedModal==='function') openHardcodedModal(${JSON.stringify(item).replace(/"/g, '&quot;')})">${!hasActualAddons ? '<i class="fa-solid fa-wand-magic-sparkles"></i> ' + (texts.Extras || 'الإضافات') : (texts.Extras || 'الإضافات')}</span>`;
+                                })()
+                                : ''
+                            }
+
+                            ${(() => {
+                                const hasNotes = !!(item.customization?.notes || item.notes);
+                                return `<span class="notes-badge ${!hasNotes ? 'suggestion-badge' : ''}" onclick="event.stopPropagation(); if(typeof openProductModal==='function') openProductModal('${item.cartItemId || item.id}', ${JSON.stringify(item).replace(/"/g, '&quot;')}, true); else openHardcodedModal(${JSON.stringify(item).replace(/"/g, '&quot;')}, null, null, null, null, true)">${!hasNotes ? '<i class="fa-solid fa-comment-medical"></i> ' + (texts.Notes || 'ملاحظات') : (texts.Notes || 'ملاحظات')}</span>`;
+                            })()}
+                        </div>
                     </div>
                     <div class="cartItemAmountHandlers">
                       <button class="decrease" type="button"><i class="fa-solid fa-minus"></i></button>
@@ -1057,27 +1131,31 @@ function renderCheckoutArticles(items, summary) {
                         exRow.innerHTML = `
                             <span class="orderName"><small>+ ${qc.name}</small></span>
                             <div class="cartItemAmountHandlers">
-                                <button class="decrease" type="button" onclick="cart.updateAddonQty('${item.id}', '${qc.id}', -1, 'quickChoices', '${item.shopId}')"><i class="fa-solid fa-minus"></i></button>
+                                <button class="decrease" type="button" onclick="cart.updateAddonQty('${item.cartItemId || item.id}', '${qc.id}', -1, 'quickChoices', '${item.shopId}')"><i class="fa-solid fa-minus"></i></button>
                                 <span class="itemAmount">${qc.qty || 1}</span>
-                                <button class="increase" type="button" onclick="cart.updateAddonQty('${item.id}', '${qc.id}', 1, 'quickChoices', '${item.shopId}')"><i class="fa-solid fa-plus"></i></button>
+                                <button class="increase" type="button" onclick="cart.updateAddonQty('${item.cartItemId || item.id}', '${qc.id}', 1, 'quickChoices', '${item.shopId}')"><i class="fa-solid fa-plus"></i></button>
                             </div>
                             <span class="itemPrice">${qc.price} ${texts.Currency}</span>
                             <span class="itemTotal">${(qc.price * (qc.qty || 1)).toFixed(2)} ${texts.Currency}</span>
-                            <span class="removeItem" onclick="cart.removeAddon('${item.id}', '${qc.id}', 'quickChoices', '${item.shopId}')"><i class="fa-solid fa-trash"></i></span>
+                            <span class="removeItem" onclick="cart.removeAddon('${item.cartItemId || item.id}', '${qc.id}', 'quickChoices', '${item.shopId}')"><i class="fa-solid fa-trash"></i></span>
                         `;
                         itemGroupWrapper.appendChild(exRow);
                     });
 
-                    // Extras (legacy)
+                    // Extras (with qty support)
                     (item.customization.extras || []).forEach(ex => {
                         const exRow = document.createElement("div");
                         exRow.classList.add("orderStats", "checkout-customization-row");
                         exRow.innerHTML = `
                             <span class="orderName"><small>+ ${ex.name}</small></span>
-                            <span></span>
+                            <div class="cartItemAmountHandlers">
+                                <button class="decrease" type="button" onclick="cart.updateAddonQty('${item.cartItemId || item.id}', '${ex.id}', -1, 'extras', '${item.shopId}')"><i class="fa-solid fa-minus"></i></button>
+                                <span class="itemAmount">${ex.qty || 1}</span>
+                                <button class="increase" type="button" onclick="cart.updateAddonQty('${item.cartItemId || item.id}', '${ex.id}', 1, 'extras', '${item.shopId}')"><i class="fa-solid fa-plus"></i></button>
+                            </div>
                             <span class="itemPrice">${ex.price} ${texts.Currency}</span>
-                            <span class="itemTotal">${(ex.price).toFixed(2)} ${texts.Currency}</span>
-                            <span class="removeItem" onclick="cart.removeAddon('${item.id}', '${ex.id}', 'extras', '${item.shopId}')"><i class="fa-solid fa-trash"></i></span>
+                            <span class="itemTotal">${((ex.price) * (ex.qty || 1)).toFixed(2)} ${texts.Currency}</span>
+                            <span class="removeItem" onclick="cart.removeAddon('${item.cartItemId || item.id}', '${ex.id}', 'extras', '${item.shopId}')"><i class="fa-solid fa-trash"></i></span>
                         `;
                         itemGroupWrapper.appendChild(exRow);
                     });
@@ -1091,13 +1169,13 @@ function renderCheckoutArticles(items, summary) {
                             upRow.innerHTML = `
                                 <span class="orderName"><small><i class="fa-solid fa-plus"></i> ${up.name}</small></span>
                                 <div class="cartItemAmountHandlers">
-                                    <button class="decrease" type="button" onclick="cart.updateAddonQty('${item.id}', '${up.id}', -1, 'upsells', '${item.shopId}')"><i class="fa-solid fa-minus"></i></button>
+                                    <button class="decrease" type="button" onclick="cart.updateAddonQty('${item.cartItemId || item.id}', '${up.id}', -1, 'upsells', '${item.shopId}')"><i class="fa-solid fa-minus"></i></button>
                                     <span class="itemAmount">${up.qty}</span>
-                                    <button class="increase" type="button" onclick="cart.updateAddonQty('${item.id}', '${up.id}', 1, 'upsells', '${item.shopId}')"><i class="fa-solid fa-plus"></i></button>
+                                    <button class="increase" type="button" onclick="cart.updateAddonQty('${item.cartItemId || item.id}', '${up.id}', 1, 'upsells', '${item.shopId}')"><i class="fa-solid fa-plus"></i></button>
                                 </div>
                                 <span class="itemPrice">${up.price} ${texts.Currency}</span>
                                 <span class="itemTotal">${upTotal} ${texts.Currency}</span>
-                                <span class="removeItem" onclick="cart.removeAddon('${item.id}', '${up.id}', 'upsells', '${item.shopId}')"><i class="fa-solid fa-trash"></i></span>
+                                <span class="removeItem" onclick="cart.removeAddon('${item.cartItemId || item.id}', '${up.id}', 'upsells', '${item.shopId}')"><i class="fa-solid fa-trash"></i></span>
                             `;
                             itemGroupWrapper.appendChild(upRow);
                         });
@@ -1115,7 +1193,7 @@ function renderCheckoutArticles(items, summary) {
                                 <i class="fa-solid fa-comment-dots"></i>
                                 <span class="notes-label">${texts.Notes}</span>
                             </div>
-                            <textarea class="notes-textarea" placeholder="${texts.AddNotesPlaceholder}" onblur="cart.updateItemNotes('${item.id}', this.value, '${item.shopId}')">${noteText}</textarea>
+                            <textarea class="notes-textarea" placeholder="${texts.AddNotesPlaceholder}" onblur="cart.updateItemNotes('${item.cartItemId || item.id}', this.value, '${item.shopId}')">${noteText}</textarea>
                         </div>
                     `;
                     itemGroupWrapper.appendChild(notesRow);
@@ -1133,9 +1211,9 @@ function renderCheckoutArticles(items, summary) {
                 }
 
                 // Handlers
-                row.querySelector(".increase").onclick = () => cart.increaseItem(item.id, item.shopId);
-                row.querySelector(".decrease").onclick = () => cart.decreaseItem(item.id, item.shopId);
-                row.querySelector(".removeItem").onclick = () => cart.removeItem(item.id, item.shopId);
+                row.querySelector(".increase").onclick = () => cart.increaseItem(item.cartItemId || item.id, item.shopId);
+                row.querySelector(".decrease").onclick = () => cart.decreaseItem(item.cartItemId || item.id, item.shopId);
+                row.querySelector(".removeItem").onclick = () => cart.removeItem(item.cartItemId || item.id, item.shopId);
             });
 
         article.appendChild(orderInfo);
@@ -1191,7 +1269,10 @@ function renderCheckoutArticles(items, summary) {
         if (isPickup) {
             totalDeliveryTimeEl.innerText = `0 ${texts.Minutes}`;
         } else {
-            const maxTime = items.reduce((max, item) => Math.max(max, parseInt(item.deliveryTime) || 0), 0);
+            const maxTime = items.reduce((max, item) => {
+                const t = parseInt(item.deliveryTime);
+                return isNaN(t) ? max : Math.max(max, t);
+            }, 0);
             totalDeliveryTimeEl.innerText = `${maxTime} ${texts.Minutes}`;
         }
     }
@@ -1206,6 +1287,76 @@ function renderCheckoutArticles(items, summary) {
     // Initialize delivery time scheduling
     if (typeof initDeliveryTimeScheduling === 'function') {
         initDeliveryTimeScheduling();
+    }
+
+    // Fetch live shop timers to ensure they are correct and update UI + localStorage
+    const shopIds = Object.keys(itemsByShop).map(id => parseInt(id));
+    const addIdVal = items[0]?.addId || "";
+    if (shopIds.length > 0 && addIdVal) {
+        $.ajax({
+            type: "POST",
+            url: "CheckOut.aspx/GetShopTimers",
+            data: JSON.stringify({ shopIds: shopIds, addId: parseInt(addIdVal) }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function(res) {
+                const timers = res.d;
+                if (timers) {
+                    let cartChanged = false;
+                    const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+                    cartItems.forEach(item => {
+                        const liveTimer = timers[item.shopId.toString()];
+                        if (liveTimer !== undefined && item.deliveryTime !== liveTimer) {
+                            item.deliveryTime = liveTimer;
+                            cartChanged = true;
+                        }
+                    });
+                    if (cartChanged) {
+                        localStorage.setItem("cartItems", JSON.stringify(cartItems));
+                        // Update the local "items" array too so that immediate UI calculations are correct
+                        items.forEach(item => {
+                            const liveTimer = timers[item.shopId.toString()];
+                            if (liveTimer !== undefined) {
+                                item.deliveryTime = liveTimer;
+                            }
+                        });
+
+                        // Re-update total delivery time in summary
+                        if (totalDeliveryTimeEl) {
+                            const deliveryMethod = localStorage.getItem("deliveryMethod") || "delivery";
+                            const isPickup = deliveryMethod === "pickup" || deliveryMethod === "in-shop";
+                            if (isPickup) {
+                                totalDeliveryTimeEl.innerText = `0 ${texts.Minutes}`;
+                            } else {
+                                const maxTime = items.reduce((max, item) => Math.max(max, parseInt(item.deliveryTime) || 0), 0);
+                                totalDeliveryTimeEl.innerText = `${maxTime} ${texts.Minutes}`;
+                            }
+                        }
+
+                        // Re-initialize scheduled time calculations
+                        if (typeof initDeliveryTimeScheduling === 'function') {
+                            initDeliveryTimeScheduling();
+                        }
+                    }
+
+                    // Update UI elements for each shop timer
+                    Object.keys(timers).forEach(sId => {
+                        const liveTimer = timers[sId];
+                        const deliveryMethod = localStorage.getItem("deliveryMethod") || "delivery";
+                        const isPickup = deliveryMethod === "pickup" || deliveryMethod === "in-shop";
+                        const displayTime = isPickup ? 0 : liveTimer;
+
+                        const timerSpan = document.getElementById(`live-timer-val-${sId}`);
+                        if (timerSpan) {
+                            timerSpan.innerText = displayTime;
+                        }
+                    });
+                }
+            },
+            error: function(err) {
+                console.log("Error fetching shop timers:", err);
+            }
+        });
     }
 }
 
@@ -1251,6 +1402,12 @@ function initDeliveryTimeScheduling() {
             scheduledTimeEl.innerText = formatTime(minAllowedDate);
             setHintText(`${texts.DeliveryTimeHint} ${maxDeliveryTime} ${texts.Minutes}`);
         }
+
+        if (window.cart) {
+            window.cart.checkoutState.scheduledTime = '';
+            window.cart.saveCheckoutState();
+        }
+
         delete scheduledTimeEl.dataset.customSet;
         if (resetBtn) resetBtn.style.display = "none";
     };
@@ -1301,6 +1458,12 @@ function initDeliveryTimeScheduling() {
                             const timeStr = formatTime(selected);
                             scheduledTimeEl.innerText = timeStr;
                             scheduledTimeEl.dataset.customSet = "true";
+
+                            if (window.cart) {
+                                window.cart.checkoutState.scheduledTime = timeStr;
+                                window.cart.saveCheckoutState();
+                            }
+
                             setHintText(`${texts.ScheduledAt || "مجدول في"}: ${timeStr}`);
                             if (resetBtn) resetBtn.style.display = "block";
                             if (typeof updateLiveSummary === 'function') updateLiveSummary();

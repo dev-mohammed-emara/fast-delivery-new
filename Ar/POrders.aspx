@@ -48,7 +48,7 @@
                     <i class="fa-solid fa-cart-shopping"></i>
                 </div>
                 <div class="previousOrderDetails">
-                    
+
                     <%-- تظهر هذه الكلمة فقط إذا كان الطلب من أكثر من مطعم --%>
                     <%# Convert.ToInt32(Eval("PlacesCount")) > 1 ? "<span class='multi-tag'>طلب مشترك</span>" : "" %>
 
@@ -69,7 +69,7 @@
             <div class="previousOrderAction">
                 <div class="priceAndDate">
                     <h3 class="orderedItemPrice">
-                        <%# Decimal.Parse(Eval("TotalPrice").ToString()).ToString("0.##") %> 
+                        <%# Decimal.Parse(Eval("TotalPrice").ToString()).ToString("0.##") %>
                         <asp:Literal runat="server" Text="<%$ Resources: texts, Currency %>"></asp:Literal>
                     </h3>
                     <p class="orderDate">
@@ -102,16 +102,16 @@
         .profileSettings li { padding: 10px; transition: 0.3s color ease; }
         .profileSettings li.active { border-right: 2px solid var(--fd-blue); }
         .profileSettings li.active a { color: var(--fd-blue); }
-        
+
         .previousOrder { display: flex; justify-content: space-between; align-items: center; padding: 1.25rem; gap: 1.5rem; background-color: #fff; border: 1px solid #eee; border-radius: 1rem; margin-bottom: 1rem; transition: all 0.3s ease; cursor: pointer; }
         .previousOrder:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.06); border-color: var(--fd-blue); }
         .previousOrderMain { display: flex; gap: 1.25rem; align-items: center; flex: 1; }
         .shopIcon { width: 60px; height: 60px; background-color: #f8f9fa; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; color: var(--fd-blue); }
         .shopName { font-size: 1.1rem; font-weight: 700; margin-bottom: 2px; display: flex; align-items: center; gap: 8px; }
-        
+
         /* ستايل التاج الخاص بالطلب المشترك */
         .multi-tag { background: #e8f5e9; color: #2e7d32; font-size: 0.65rem; padding: 2px 8px; border-radius: 4px; font-weight: bold; border: 1px solid #c8e6c9; }
-        
+
         .orderedItemSummary { font-size: 0.85rem; color: #666; max-width: 450px; white-space: normal; line-height: 1.4; }
         .orderedItemPrice { color: var(--fd-blue); font-weight: 800; font-size: 1.2rem; }
         .viewDetailsBtn { background-color: #f0f4ff; color: var(--fd-blue); border: none; padding: 10px 18px; border-radius: 10px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; }
@@ -155,6 +155,13 @@
     border-right: none;
     margin-bottom: 5px;
 }
+.orderDates{
+        display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-inline: 1rem;
+}
+
         @media (max-width: 768px) {
             .profileContainer { grid-template-columns: 100%; }
             .profileSettings { display: none; }

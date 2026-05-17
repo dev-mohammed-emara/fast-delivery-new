@@ -1,13 +1,34 @@
 <%@ Page Title="" Language="C#" MasterPageFile="~/Ar/MasterPages/MasterPage.master" AutoEventWireup="true"
     CodeFile="PlaceShop.aspx.cs" Inherits="Ar_PlaceShop" ResponseEncoding="utf-8" ContentType="text/html" %>
     <asp:Content ID="Content3" ContentPlaceHolderID="head" Runat="Server">
-
-        <asp:Literal ID="ltPageTitle" runat="server" Text="<%$ Resources:texts, PagePlaceShopTitle %>"></asp:Literal>
     </asp:Content>
 
     <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
         <asp:ScriptManager runat="server" ID="ScriptManager1" EnablePageMethods="true" />
            <style>
+            .news-swipr {
+    width: 100%;
+    background: transparent;
+    padding: 40px;
+    height: auto;
+    overflow: hidden !important;
+    max-height: 350px;
+}
+
+.news-swipr .newsSwiper {
+    width: 100%;
+    max-width: 1200px;
+    margin: auto;
+    overflow: visible !important;
+    max-height: 300px;
+}
+
+.news-swipr .newsSwiper {
+    .swiper-wrapper {
+        max-height: 280px;
+    }
+}
+
             .swal2-html-container{
                 padding: 0 !important;
                 overflow-x: hidden;
@@ -15,20 +36,6 @@
             #navShareBtn{
                 display: flex !important;
             }
-            .header {
-                display: grid;
-                grid-template-columns: 1fr auto 1fr;
-                align-items: center;
-                padding: 6px 50px;
-                background: linear-gradient(135deg, #fffbe6 0%, #ffffff 0%, #fffbe6 10%);
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                z-index: 100;
-                transition: background-color 0.3s, box-shadow 0.3s;
-            }
-
             #openedShopFoods {
                 padding-top: 125px;
                 padding-inline: 25px;
@@ -62,8 +69,9 @@
             .availableShop {
                 display: flex;
                 gap: 1rem;
-                margin-block: 1.5rem;
                 padding: 1.5rem;
+                margin-bottom: 0.5rem;
+                margin-top: 0;
                 background:white ;
                 border-radius: 1.25rem;
                 border: 1px solid rgba(0, 0, 0, 0.1);
@@ -600,6 +608,7 @@
 
                 #openedShopFoods{
                     padding-inline: 1rem !important;
+                    padding-top: 100px !important;
                 }
 
                 .foodItem {
@@ -1372,6 +1381,24 @@ display: none !important;
                 </div>
             </article>
 
+            <section class="news-swipr">
+                <div class="swiper newsSwiper">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+                            <img src="https://np.naukimg.com/cphoto/l45XrkFOujKTaHBdN6PUrTtURaQ/6AFPI5l/k2gAkQqVwFKHFwvhK7u32Kmseoy1Xu1tTnRJRtug8Q2lzX6Wp02NFCPzn2tkSW8b4Mm3yavA7NNZXdbZaFECMd/ZnVDpzp" alt="News Image" />
+                        </div>
+                        <div class="swiper-slide">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTb_FiZTdONoWw2NWQ_hk1FBfFb3NIhiWImUA&s" alt="News Image" />
+                        </div>
+                        <div class="swiper-slide">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCL35UgrPqNPxqfmpoEq1ZFvdM7I7bz61B3w&s" alt="News Image" />
+                        </div>
+                        <div class="swiper-slide">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTx319C2Cuuz7TXEhCMHcSrpvwcLgqnO2ahzg&s" alt="News Image" />
+                        </div>
+                    </div>
+                </div>
+            </section>
 
             <div id="shopLists">
                 <ul id="shopListsOptions">
@@ -1415,25 +1442,6 @@ display: none !important;
                         <%-- &#1605;&#1579;&#1575;&#1604; &#1579;&#1575;&#1576;&#1578;: --%>
                     </div>
                 </div>
-                <section class="news-swipr" style="padding: 20px 0; max-width: 1200px; margin: 0 auto; overflow: hidden;">
-                    <div class="swiper newsSwiper">
-                        <div class="swiper-wrapper">
-                            <div class="swiper-slide">
-                                <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1200&auto=format&fit=crop" alt="News Image" />
-                            </div>
-                            <div class="swiper-slide">
-                                <img src="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?q=80&w=1200&auto=format&fit=crop" alt="News Image" />
-                            </div>
-                            <div class="swiper-slide">
-                                <img src="https://images.unsplash.com/photo-1519608487953-e999c86e7455?q=80&w=1200&auto=format&fit=crop" alt="News Image" />
-                            </div>
-                            <div class="swiper-slide">
-                                <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1200&auto=format&fit=crop" alt="News Image" />
-                            </div>
-                        </div>
-                        <div class="swiper-pagination"></div>
-                    </div>
-                </section>
 
                 <div class="restaurant-content-wrapper">
                 </div>
@@ -1896,13 +1904,7 @@ display: none !important;
         }
 
         /* Cart Badge Styles */
-        .cart-item-badges {
-            display: flex;
-            flex-direction: row;
-            gap: 8px;
-            margin-top: 5px;
-            flex-wrap: nowrap;
-        }
+
 
         .addons-badge, .notes-badge {
             font-size: 0.7rem;
@@ -2522,39 +2524,7 @@ padding-inline: 1rem !important;
             Swal.fire(modalOptions);
         }
 
-        function toggleShopFavorite() {
-            const shopId = document.getElementById('shopId')?.innerText.trim();
-            if (!shopId) return;
 
-            let favorites = JSON.parse(localStorage.getItem('favoriteShops') || '[]');
-            const index = favorites.indexOf(shopId);
-            const favIcon = document.querySelector('#favIconNav i');
-
-            if (index > -1) {
-                favorites.splice(index, 1);
-                if (favIcon) favIcon.className = 'fa-regular fa-heart';
-                Swal.fire({ toast: true, position: 'top-end', icon: 'info', title: '\u062a\u0645\u062a \u0627\u0644\u0625\u0632\u0627\u0644\u0629 \u0645\u0646 \u0627\u0644\u0645\u0641\u0636\u0644\u0629', showConfirmButton: false, timer: 1500 });
-            } else {
-                favorites.push(shopId);
-                if (favIcon) favIcon.className = 'fa-solid fa-heart';
-                Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: '\u062a\u0645\u062a \u0627\u0644\u0625\u0636\u0627\u0641\u0629 \u0644\u0644\u0645\u0641\u0636\u0644\u0629', showConfirmButton: false, timer: 1500 });
-            }
-            localStorage.setItem('favoriteShops', JSON.stringify(favorites));
-        }
-
-        function checkFavoriteStatus() {
-            const shopId = document.getElementById('shopId')?.innerText.trim();
-            const favIcon = document.querySelector('#favIconNav i');
-            if (!shopId || !favIcon) return;
-
-            let favorites = JSON.parse(localStorage.getItem('favoriteShops') || '[]');
-            if (favorites.indexOf(shopId) > -1) {
-                favIcon.className = 'fa-solid fa-heart';
-            } else {
-                favIcon.className = 'fa-regular fa-heart';
-            }
-        }
-        document.addEventListener('DOMContentLoaded', checkFavoriteStatus);
 
         let basePrice = 0;
         let currentProductBasePrice = 130;
@@ -2589,15 +2559,29 @@ padding-inline: 1rem !important;
 
         function toggleExtra(el, price, id, name) {
             el.classList.toggle('active');
+            const isAdded = el.classList.contains('active');
 
-            if (el.classList.contains('active')) {
+            if (isAdded) {
                 // Add if not already there
-                if (!currentCustomization.extras.some(x => x.id === id)) {
-                    currentCustomization.extras.push({ id: id, name: name, price: price });
+                if (!currentCustomization.extras.some(x => String(x.id) === String(id))) {
+                    currentCustomization.extras.push({ id: id, name: name, price: price, qty: 1 });
                 }
             } else {
                 // Remove
-                currentCustomization.extras = currentCustomization.extras.filter(x => x.id !== id);
+                currentCustomization.extras = currentCustomization.extras.filter(x => String(x.id) !== String(id));
+            }
+
+            // UI feedback for badge and controls
+            const badge = el.querySelector('.extra-badge');
+            const controls = el.querySelector('.extra-qty-control');
+            if (badge) {
+                badge.style.display = isAdded ? 'flex' : 'none';
+                badge.innerText = '1';
+            }
+            if (controls) {
+                controls.style.display = isAdded ? 'flex' : 'none';
+                const qtyVal = controls.querySelector('.extra-qty-val');
+                if (qtyVal) qtyVal.innerText = '1';
             }
 
             recalculateAddonsPrice();
@@ -2606,9 +2590,57 @@ padding-inline: 1rem !important;
 
         function recalculateAddonsPrice() {
             let total = 0;
-            if (currentCustomization.extras) currentCustomization.extras.forEach(x => total += (x.price || 0));
-            if (currentCustomization.upsells) currentCustomization.upsells.forEach(x => total += ((x.price || 0) * (x.qty || 0)));
+            if (currentCustomization.extras) {
+                currentCustomization.extras.forEach(x => {
+                    total += (x.price || 0) * (x.qty || 1);
+                });
+            }
+            if (currentCustomization.upsells) {
+                currentCustomization.upsells.forEach(x => {
+                    total += (x.price || 0) * (x.qty || 1);
+                });
+            }
             addonsPrice = total;
+        }
+
+        function updateExtraQty(event, delta, price, extraId) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+
+            const extra = currentCustomization.extras.find(e => String(e.id) === String(extraId));
+            if (!extra) return;
+
+            extra.qty = (extra.qty || 1) + delta;
+
+            if (extra.qty < 1) {
+                // Remove the extra if qty becomes 0
+                currentCustomization.extras = currentCustomization.extras.filter(e => String(e.id) !== String(extraId));
+                const row = document.querySelector(`.extra-item[data-extra-id="${extraId}"]`);
+                if (row) {
+                    row.classList.remove('active');
+                    const badge = row.querySelector('.extra-badge');
+                    if (badge) badge.style.display = 'none';
+                    const controls = row.querySelector('.extra-qty-control');
+                    if (controls) controls.style.display = 'none';
+                }
+            } else {
+                // Update display
+                const row = document.querySelector(`.extra-item[data-extra-id="${extraId}"]`);
+                if (row) {
+                    const badge = row.querySelector('.extra-badge');
+                    if (badge) {
+                        badge.innerText = extra.qty;
+                        badge.style.display = 'flex';
+                    }
+                    const qtyVal = row.querySelector('.extra-qty-val');
+                    if (qtyVal) qtyVal.innerText = extra.qty;
+                }
+            }
+
+            recalculateAddonsPrice();
+            updateModalTotal();
         }
 
         function updateModalQty(delta) {
@@ -2666,7 +2698,8 @@ padding-inline: 1rem !important;
                 window.cart.addItem({
                     id, name, price,
                     shopId: shopId,
-                    shopName: document.querySelector('.shop-header-info h1')?.innerText || '',
+                    shopName: document.getElementById('shopNameContent')?.innerText.trim() || document.querySelector('.availableShopName')?.innerText.trim() || '',
+                    deliveryTime: document.querySelector('.timer')?.innerText.trim() || '',
                     isCustomProduct: itemEl.getAttribute('data-has-addons') === '1' || itemEl.classList.contains('custom-item')
                 }, 1);
             }
@@ -2696,7 +2729,7 @@ padding-inline: 1rem !important;
             window.cart.items.forEach(item => {
                 if (String(item.shopId) === shopId) {
                     // Get base ID (remove size suffix if exists)
-                    const baseId = item.id.split('-size-')[0];
+                    const baseId = String(item.id).split('-size-')[0];
                     counts[baseId] = (counts[baseId] || 0) + item.amount;
                 }
             });
@@ -2758,12 +2791,13 @@ padding-inline: 1rem !important;
             const notes = notesEl?.value || '';
 
             const shopId = String(document.getElementById('shopId')?.innerText.trim() || '');
-            const shopName = document.querySelector('.shop-header-info h1')?.innerText || '';
+            const shopName = document.getElementById('shopNameContent')?.innerText.trim() || document.querySelector('.availableShopName')?.innerText.trim() || '';
+            const deliveryTime = document.querySelector('.timer')?.innerText.trim() || '';
 
             // Unique ID based on product ID and size ID
-            const baseId = currentCustomization?.baseItemId || currentTriggeringProduct?.id || (currentEditItem ? currentEditItem.id.split('-size-')[0] : 'custom');
-            const sizeSuffix = (currentCustomization && currentCustomization.size) ? `-size-${currentCustomization.size.id}` : '';
-            const uniqueId = baseId + sizeSuffix;
+            const baseId = currentCustomization?.baseItemId || currentTriggeringProduct?.id || (currentEditItem ? currentEditItem.id : 'custom');
+            const sizeId = (currentCustomization && currentCustomization.size) ? currentCustomization.size.id : '';
+            const uniqueId = baseId + (sizeId ? `-size-${sizeId}` : '');
 
             const isCustomProduct = !!(currentCustomization?.isCustomProduct || currentTriggeringProduct?.closest('.foodItem')?.classList.contains('custom-item') || currentTriggeringProduct?.classList.contains('custom-item') || currentEditItem?.isCustomProduct);
             const hasActualCustomizations = !!(currentCustomization && (
@@ -2774,7 +2808,9 @@ padding-inline: 1rem !important;
             ));
 
             const mainItem = {
-                id: uniqueId,
+                id: baseId,
+                cartItemId: uniqueId,
+                sizeId: sizeId,
                 name: productName,
                 price: basePrice,
                 productBasePrice: currentProductBasePrice,
@@ -2789,6 +2825,7 @@ padding-inline: 1rem !important;
                 } : { notes: notes },
                 shopId: shopId,
                 shopName: shopName,
+                deliveryTime: deliveryTime,
                 notes: notes,
                 image: popup.querySelector('.modal-banner img')?.src || ''
             };
@@ -2796,8 +2833,13 @@ padding-inline: 1rem !important;
 
             let addedStatus = false;
             if (window.cart) {
-                if (currentEditItem) {
-                    window.cart.removeItem(currentEditItem.id, currentEditItem.shopId);
+                const targetShopId = mainItem.shopId || GLOBAL_shop_ID;
+                const shopExists = window.cart.items.some(i => String(i.shopId) === String(targetShopId));
+                const isSameShopEdit = currentEditItem && String(currentEditItem.shopId) === String(targetShopId);
+                const isDifferentShop = !isSameShopEdit && !shopExists && window.cart.items.length > 0;
+
+                if (!isDifferentShop && currentEditItem) {
+                    window.cart.removeItem(currentEditItem.cartItemId || currentEditItem.id, currentEditItem.shopId);
                 }
                 addedStatus = window.cart.addItem(mainItem, quantity, !!currentEditItem);
             }
@@ -2986,9 +3028,10 @@ padding-inline: 1rem !important;
                 event.stopPropagation();
             }
 
-            const shopIdEl = document.getElementById('shopId');
-            if (!shopIdEl) return;
-            const shopId = shopIdEl.innerText.trim();
+            const urlParams = new URLSearchParams(window.location.search);
+            const shopId = urlParams.get('id');
+            if (!shopId) return;
+
             const icon = element.querySelector('i');
             let favorites = JSON.parse(localStorage.getItem('favoriteShops') || '[]');
             const index = favorites.findIndex(f => String(f.id) === String(shopId));
@@ -2997,14 +3040,14 @@ padding-inline: 1rem !important;
                 // Add to favorites
                 const shopData = {
                     id: shopId,
-                    name: document.getElementById('shopNameContent')?.innerText.trim() || '',
+                    name: document.getElementById('shopNameContent')?.innerText.trim() || document.querySelector('.availableShopName')?.innerText.trim() || '',
                     nameEn: '', // Not easily available on this page without more literals
-                    img: document.querySelector('.shop-profile-img')?.src || '',
+                    img: document.querySelector('.shop-profile-img')?.src || document.querySelector('.availableShop img')?.src || '',
                     desc: document.getElementById('shopFoodsContent')?.innerText.trim() || '',
                     descEn: '',
                     deliveryTime: document.querySelector('.timer')?.innerText.trim() || '',
                     deliveryCost: document.getElementById('deliveryCostValue')?.innerText.trim() || '',
-                    rate: document.getElementById('rawRating')?.innerText.trim() || '',
+                    rate: document.getElementById('rawRating')?.innerText.trim() || document.querySelector('.shopRating .rating-number')?.innerText.trim() || '',
                     isOpened: document.getElementById('isOpened')?.innerText.trim() || '',
                     url: window.location.href
                 };
@@ -3015,8 +3058,12 @@ padding-inline: 1rem !important;
                     icon.classList.remove('fa-regular');
                     icon.classList.add('fa-solid');
                 }
-                element.classList.add('animate-twirl');
-                setTimeout(() => element.classList.remove('animate-twirl'), 800);
+
+                // Add animation
+                element.style.transform = 'scale(1.2)';
+                setTimeout(() => {
+                    element.style.transform = '';
+                }, 200);
             } else {
                 // Remove from favorites
                 favorites.splice(index, 1);
@@ -3026,22 +3073,35 @@ padding-inline: 1rem !important;
                     icon.classList.remove('fa-solid');
                     icon.classList.add('fa-regular');
                 }
+
+                // Add animation
+                element.style.transform = 'scale(0.8)';
+                setTimeout(() => {
+                    element.style.transform = '';
+                }, 200);
             }
             localStorage.setItem('favoriteShops', JSON.stringify(favorites));
+
+            // Toast notification
+            if (index === -1) {
+                Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: '\u062a\u0645\u062a \u0627\u0644\u0625\u0636\u0627\u0641\u0629 \u0644\u0644\u0645\u0641\u0636\u0644\u0629', showConfirmButton: false, timer: 1500 });
+            } else {
+                Swal.fire({ toast: true, position: 'top-end', icon: 'info', title: '\u062a\u0645\u062a \u0627\u0644\u0625\u0632\u0627\u0644\u0629 \u0645\u0646 \u0627\u0644\u0645\u0641\u0636\u0644\u0629', showConfirmButton: false, timer: 1500 });
+            }
 
             // Sync other heart (if any)
             syncAllHearts();
         }
 
         function syncAllHearts() {
-            const shopIdEl = document.getElementById('shopId');
-            if (!shopIdEl) return;
-            const shopId = shopIdEl.innerText.trim();
+            const urlParams = new URLSearchParams(window.location.search);
+            const shopId = urlParams.get('id');
+            if (!shopId) return;
             const favorites = JSON.parse(localStorage.getItem('favoriteShops') || '[]');
             const isFav = favorites.some(f => String(f.id) === String(shopId));
 
             const hearts = [
-                document.getElementById('shopHeartIcon'),
+                document.querySelector('[id$="shopHeartIcon"]'),
                 document.getElementById('favIconNav')
             ];
 
@@ -3049,6 +3109,8 @@ padding-inline: 1rem !important;
                 if (!heart) return;
                 const icon = heart.querySelector('i');
                 if (isFav) {
+                    heart.classList.remove('is-favorite', 'active');
+                    void heart.offsetWidth;
                     heart.classList.add('is-favorite', 'active');
                     if (icon) { icon.classList.remove('fa-regular'); icon.classList.add('fa-solid'); }
                 } else {
@@ -3074,27 +3136,30 @@ padding-inline: 1rem !important;
 
 
         function initFavorites() {
-            const shopIdEl = document.getElementById('shopId');
-            if (!shopIdEl) return;
-            const shopId = shopIdEl.innerText.trim();
+            const urlParams = new URLSearchParams(window.location.search);
+            const shopId = urlParams.get('id');
+            if (!shopId) return;
             const favorites = JSON.parse(localStorage.getItem('favoriteShops') || '[]');
-            const heart = document.getElementById('shopHeartIcon');
-            if (!heart) return;
-            const icon = heart.querySelector('i');
 
-            if (favorites.some(f => String(f.id) === String(shopId))) {
-                heart.classList.add('is-favorite');
-                if (icon) {
-                    icon.classList.remove('fa-regular');
-                    icon.classList.add('fa-solid');
+            // Use attribute-ends-with selector to handle ASP.NET ID mangling
+            const hearts = [
+                document.querySelector('[id$="shopHeartIcon"]'),
+                document.getElementById('favIconNav')
+            ];
+
+            const isFav = favorites.some(f => String(f.id) === String(shopId));
+
+            hearts.forEach(heart => {
+                if (!heart) return;
+                const icon = heart.querySelector('i');
+                if (isFav) {
+                    heart.classList.add('is-favorite', 'active');
+                    if (icon) { icon.classList.remove('fa-regular'); icon.classList.add('fa-solid'); }
+                } else {
+                    heart.classList.remove('is-favorite', 'active');
+                    if (icon) { icon.classList.remove('fa-solid'); icon.classList.add('fa-regular'); }
                 }
-            } else {
-                heart.classList.remove('is-favorite');
-                if (icon) {
-                    icon.classList.remove('fa-solid');
-                    icon.classList.add('fa-regular');
-                }
-            }
+            });
         }
 
         // Active Sidebar Styling logic with Scroll Spy
@@ -3183,8 +3248,20 @@ padding-inline: 1rem !important;
 
         document.addEventListener('DOMContentLoaded', () => {
             initFavorites();
-            syncAllHearts(); // Update navbar icon too
+            syncAllHearts();
             initSidebarActiveState();
+
+            // Show search + fav icons ONLY on PlaceShop page
+            const searchIcon = document.getElementById('searchIconNav');
+            const favIcon    = document.getElementById('favIconNav');
+            if (searchIcon) searchIcon.style.display = 'flex';
+            if (favIcon)    favIcon.style.display    = 'flex';
+
+            // Set page title from shop name
+            const shopNameEl = document.getElementById('shopNameContent') || document.querySelector('.availableShopName');
+            if (shopNameEl && shopNameEl.innerText.trim()) {
+                document.title = shopNameEl.innerText.trim();
+            }
         });
     </script>
     <style>
@@ -3933,12 +4010,6 @@ padding-inline: 1rem !important;
 
                 // Handle legacy signature: (triggerEl, name, desc, isCustom, price)
                 if (typeof arg2 === 'string') {
-                    const id = (typeof triggerEl === 'object' && triggerEl !== null) ? triggerEl.getAttribute('id') : triggerEl;
-                    const shopId = String(document.getElementById('shopId')?.innerText.trim() || '');
-
-                    if (window.cart) {
-                        editItem = window.cart.items.find(i => i.id === id && String(i.shopId) === shopId);
-                    }
                     focusNotes = false;
                 } else {
                     // New signature: (triggerEl, editItem, focusNotes)
@@ -3947,10 +4018,16 @@ padding-inline: 1rem !important;
                 }
 
                 let id = (typeof triggerEl === 'object' && triggerEl !== null) ? triggerEl.getAttribute('id') : triggerEl;
+                const shopId = String(document.getElementById('shopId')?.innerText.trim() || '');
+
+                if (!editItem && id && window.cart) {
+                    // Try to find the item in the cart by base ID or full ID (handling sizes)
+                    editItem = window.cart.items.find(i => (String(i.id) === String(id) || String(i.id).startsWith(id + '-size-')) && String(i.shopId) === String(shopId));
+                }
 
                 // If id is not found and we have an editItem, use its ID
                 if (!id && editItem) {
-                    id = editItem.id.split('-size-')[0]; // Remove size suffix for the data fetch
+                    id = String(editItem.id).split('-size-')[0]; // Remove size suffix for the data fetch
                 }
 
                 currentTriggeringProduct = (typeof triggerEl === 'object') ? triggerEl : null;
@@ -3986,11 +4063,27 @@ padding-inline: 1rem !important;
 
             function renderProductModal(data, editItem = null, focusNotes = false) {
                 // Initialize customization state
+                const hasAvailableAddons = !!((data.sizes && data.sizes.length > 0) || (data.extras && data.extras.length > 0) || (data.upsellItems && data.upsellItems.length > 0));
+
+                let savedSize = null;
+                if (editItem) {
+                    const editSizeId = editItem.customization?.size?.id || editItem.sizeId || (typeof editItem.customization?.size === 'string' || typeof editItem.customization?.size === 'number' ? editItem.customization.size : null);
+                    if (editSizeId && data.sizes) {
+                        const found = data.sizes.find(s => String(s.id) === String(editSizeId));
+                        if (found) {
+                            savedSize = { id: found.id, name: found.name, price: found.price };
+                        }
+                    }
+                    if (!savedSize && editItem.customization?.size && typeof editItem.customization.size === 'object') {
+                        savedSize = { ...editItem.customization.size };
+                    }
+                }
+
                 currentCustomization = {
                     baseItemId: data.id,
-                    isCustomProduct: (data.sizes && data.sizes.length > 0) || (data.extras && data.extras.length > 0) || (data.upsellItems && data.upsellItems.length > 0),
-                    selectedSizeId: editItem?.customization?.size?.id || null,
-                    size: editItem?.customization?.size ? { ...editItem.customization.size } : null,
+                    isCustomProduct: hasAvailableAddons || editItem?.isCustomProduct,
+                    selectedSizeId: savedSize?.id || null,
+                    size: savedSize,
                     extras: editItem?.customization?.extras ? [...editItem.customization.extras] : [],
                     upsells: editItem?.customization?.upsells ? [...editItem.customization.upsells] : [],
                     quantity: editItem?.amount || 1,
@@ -4007,7 +4100,7 @@ padding-inline: 1rem !important;
                 var sizesHtml = '';
                 if (data.sizes && data.sizes.length > 0) {
                     data.sizes.forEach(function (size) {
-                        var activeClass = (currentCustomization.size && currentCustomization.size.id === size.id) ? 'active' : '';
+                        var activeClass = (currentCustomization.size && String(currentCustomization.size.id) === String(size.id)) ? 'active' : '';
                         sizesHtml += `
                 <div class="option-row ${activeClass}" data-item-id="${size.menuItemid}" data-size-id="${size.id}" onclick="selectModalOption(this, ${size.price}, '${size.id}')">
                     <span>${size.name}</span>
@@ -4023,13 +4116,27 @@ padding-inline: 1rem !important;
                 var extrasHtml = '';
                 if (data.extras && data.extras.length > 0) {
                     data.extras.forEach(function (ex) {
-                        var activeClass = currentCustomization.extras.some(e => e.id === ex.id) ? 'active' : '';
+                        const existingExtra = currentCustomization.extras.find(e => String(e.id) === String(ex.id));
+                        const isAdded = !!existingExtra;
+                        const qty = existingExtra ? (existingExtra.qty || 1) : 1;
+                        const activeClass = isAdded ? 'active' : '';
+
                         extrasHtml += `
                         <div class="option-row extra-item ${activeClass}" data-extra-id="${ex.id}" data-price="${ex.price}" onclick="toggleExtra(this, ${ex.price}, '${ex.id}', '${ex.name}')">
-                            <span>${ex.name}</span>
-                            <div class="price-radio">
-                                <span>+ ${ex.price} ج.م</span>
-                                <div class="radio-circle"></div>
+                            <div class="extra-main-info">
+                                <div class="extra-badge" style="display: ${isAdded ? 'flex' : 'none'};">${qty}</div>
+                                <span>${ex.name}</span>
+                                <span class="extra-unit-price">+ ${ex.price} ج.م</span>
+                            </div>
+                            <div class="extra-actions">
+                                <div class="qty-control extra-qty-control" style="display: ${isAdded ? 'flex' : 'none'};" onclick="event.stopPropagation()">
+                                    <button onclick="updateExtraQty(event, -1, ${ex.price}, '${ex.id}')"><i class="fa-solid fa-minus"></i></button>
+                                    <span class="extra-qty-val">${qty}</span>
+                                    <button onclick="updateExtraQty(event, 1, ${ex.price}, '${ex.id}')"><i class="fa-solid fa-plus"></i></button>
+                                </div>
+                                <div class="price-radio">
+                                    <div class="radio-circle"></div>
+                                </div>
                             </div>
                         </div>`;
                     });

@@ -18,6 +18,7 @@ window.texts = window.texts || {
     CartEmptied: "تم إفراغ السلة!",
     AddItemDifferentShopTitle: "صنف من متجر آخر",
     AddItemDifferentShopText: "هل تريد إضافة هذا الصنف من متجر آخر؟",
+    AddedFromDifferentShop: "تمت إضافة الصنف من متجر آخر!",
     CannotAddDifferentAreaTitle: "لا يمكن الإضافة",
     CannotAddDifferentAreaText: "لا يمكن إضافة أصناف من منطقة مختلفة.",
     YesAdd: "نعم، أضف",

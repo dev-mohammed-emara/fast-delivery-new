@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title><asp:ContentPlaceHolder id="head" runat="server">
-
-    </asp:ContentPlaceHolder></title>
+    <title></title>
+    <asp:ContentPlaceHolder id="head" runat="server"></asp:ContentPlaceHolder>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
@@ -22,10 +21,14 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="icon" type="image/png" href="images/logo.png">
-    <style>
-
-   </style>
      <style>
+        .extra-item { display: flex !important; justify-content: space-between !important; align-items: center !important; padding: 12px 15px !important; }
+        .extra-main-info { display: flex; align-items: center; gap: 10px; }
+        .extra-unit-price { font-size: 0.85rem; color: #888; margin-inline-start: 5px; }
+        .extra-actions { display: flex; align-items: center; gap: 12px; }
+        .extra-qty-control { scale: 0.85; background: #f5f5f5 !important; border-radius: 30px; }
+        .extra-badge { width: 20px; height: 20px; background: var(--fd-blue); color: white; border-radius: 50%; font-size: 11px; font-weight: bold; display: flex; align-items: center; justify-content: center; }
+
         .swal-sizes-container {
             display: flex;
             flex-direction: column;
@@ -49,6 +52,16 @@
             background: #fffdf5;
             border-color: #ffc119;
             box-shadow: 0 0 0 1px #ffc119;
+        }
+        .mini-handlers {
+            transform: scale(0.85);
+            margin: 0 -5px;
+            background: #f1f1f1 !important;
+        }
+        .customization-row .cust-right-col {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         /* Sidebar active styling */
         #foodListsNav {
@@ -728,6 +741,53 @@
             padding: 4px;
             font-size: 0.8rem;
         }
+        .upsell-card-new .qty-control {
+            position: absolute;
+            bottom: 5px;
+            left: 5px;
+            width:fit-content;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            border-radius: 20px;
+            padding: 2px 5px;
+            display: none;
+            align-items: center;
+            gap: 5px;
+            z-index: 10;
+            border: 1px solid #eee;
+        }
+        .cart-item-group{
+            border:2px dashed rgba(0,0,0,0.1);
+            border-radius:1rem;
+            .orderedItem{
+                border: none !important;
+            }
+        }
+        .upsell-card-new .qty-control button {
+            width: 24px;
+            height: 24px;
+            font-size: 10px;
+            border: none;
+            background: #ffc119;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            padding: 0;
+            margin: 0;
+        }
+        .upsell-card-new .qty-control button i {
+            font-size: 8px;
+        }
+        .upsell-card-new .qty-control .upsell-qty-val {
+            font-size: 0.8rem;
+            font-weight: 700;
+            min-width: 15px;
+            text-align: center;
+            color: #333;
+        }
     </style>
     <style>
         /* زر العودة للأعلى - منضبط حسب منطق الرؤية */
@@ -815,22 +875,47 @@
     background-color: #128c7e;
 }
 .cart-item-badges{
-    margin-block: 0.5rem !important;
+        margin-block: 0.5rem !important;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: start;
+
 }
 
 .news-swipr {
     width: 100%;
     background: transparent;
-    padding: 40px 1rem 80px;
+    padding: 50px;
     height: auto;
-    overflow:hidden;
-    max-height:450px;
+    overflow:hidden !important;
+    max-height:400px;
 }
 
 .news-swipr .newsSwiper {
     width: 100%;
+     max-width:1200px;
+    margin: auto;
     overflow: visible !important;
+        max-height:360px;
+        .swiper-wrapper{
+        max-height:340px;
+        }
+
 }
+
+@media (max-width:600px){
+    .news-swipr{
+            padding: 1.5rem 0  !important;
+        max-height: 200px !important;
+    .swiper-wrapper{
+        max-height: 175px !important;
+    }
+    }
+}
+
+
 
 .news-swipr .swiper-pagination {
     bottom: -50px !important;
@@ -983,10 +1068,10 @@
     }
 </style>
 
-             <button class="icon-btn search-nav-icon" id="searchIconNav" role="button" style="display:none;" onclick="handleNavSearch(event)">
+             <button class="icon-btn search-nav-icon" id="searchIconNav" role="button" onclick="handleNavSearch(event)">
                 <i class="fa fa-search"></i>
             </button>
-             <button class="icon-btn fav-nav-icon" id="favIconNav" role="button" style="display:none;" onclick="handleNavFavorite(event, this)">
+             <button class="icon-btn fav-nav-icon" id="favIconNav" role="button" onclick="handleNavFavorite(event, this)">
                 <i class="fa-regular fa-heart"></i>
             </button>
             <button class="icon-btn" id="navShareBtn"  onclick="shareShopGlobal(event)">
@@ -1022,6 +1107,7 @@
 
         </div>
 
+        <svg class="relative block w-[calc(100%+1.3px)] h-[50px] md:h-[80px] svg-wave" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path class="xs:hidden" d="M0,60 C100,100 200,20 300,60 C400,100 500,20 600,60 C700,100 800,20 900,60 C1000,100 1100,20 1200,60 V120 H0 V60 Z" fill="var(--fd-blue)"></path><path class="hidden xs:block" d="M0,60 C150,90 350,10 600,60 C850,110 1050,30 1200,60 V120 H0 V60 Z" fill="var(--fd-blue)"></path></svg>
     </header>
 
         <asp:ContentPlaceHolder id="ContentPlaceHolder1" runat="server">
@@ -1131,7 +1217,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script src="js/cart.js"></script>
+    <script src="js/cart.js?v=1.6"></script>
     <script src="js/favorites.js"></script>
     <script src="js/main.js"></script>
     <script src="js/shopPage.js" charset="utf-8" defer></script>
@@ -1233,16 +1319,13 @@ document.addEventListener("DOMContentLoaded", function() {
             slidesPerView: 1.2,
             spaceBetween: 20,
             centeredSlides: true,
-            loop: true,
-            autoplay: {
-                delay: 3000,
-                disableOnInteraction: false,
-            },
-            pagination: {
-                el: ".swiper-pagination",
-                clickable: true,
-            },
+            loop: false,
+
             breakpoints: {
+                  1024: {
+                    slidesPerView: 3,
+                    centeredSlides: false,
+                },
                 768: {
                     slidesPerView: 2,
                     centeredSlides: false,
@@ -1353,14 +1436,15 @@ document.addEventListener("DOMContentLoaded", loadTextsOnStart);
         let focusNotes = !!arg3;
 
         let id = (typeof triggerEl === 'object' && triggerEl !== null) ? triggerEl.getAttribute('id') : triggerEl;
-        const shopId = String(document.getElementById('shopId')?.innerText.trim() || '');
+        // Fallback: if not on PlaceShop page (no #shopId element), get shopId from editItem
+        const shopId = String(document.getElementById('shopId')?.innerText.trim() || editItem?.shopId || '');
 
         if (!editItem && window.cart) {
             // Try to find the item in the cart by base ID or full ID
-            editItem = window.cart.items.find(i => (i.id === id || i.id.startsWith(id + '-size-')) && String(i.shopId) === shopId);
+            editItem = window.cart.items.find(i => (String(i.id) === String(id) || String(i.id).startsWith(id + '-size-')) && String(i.shopId) === String(shopId));
         }
 
-        if (!id && editItem) id = editItem.id.split('-size-')[0];
+        if (!id && editItem) id = String(editItem.id).split('-size-')[0];
 
         currentTriggeringProduct = (typeof triggerEl === 'object') ? triggerEl : null;
         currentEditItem = editItem;
@@ -1398,12 +1482,27 @@ document.addEventListener("DOMContentLoaded", loadTextsOnStart);
         const lang = (typeof getCookie === 'function' ? getCookie("lang") : "ar") || "ar";
         const t = modalTranslations[lang] || modalTranslations.ar;
 
+        let savedSize = null;
+        if (editItem) {
+            const editSizeId = editItem.customization?.size?.id || editItem.sizeId || (typeof editItem.customization?.size === 'string' || typeof editItem.customization?.size === 'number' ? editItem.customization.size : null);
+            if (editSizeId && data.sizes) {
+                const found = data.sizes.find(s => String(s.id) === String(editSizeId));
+                if (found) {
+                    savedSize = { id: found.id, name: found.name, price: found.price };
+                }
+            }
+            if (!savedSize && editItem.customization?.size && typeof editItem.customization.size === 'object') {
+                savedSize = { ...editItem.customization.size };
+            }
+        }
+
         currentCustomization = {
             baseItemId: data.id,
-            selectedSizeId: editItem?.customization?.size?.id || null,
-            size: editItem?.customization?.size ? { ...editItem.customization.size } : null,
-            extras: editItem?.customization?.extras ? [...editItem.customization.extras] : [],
-            upsells: editItem?.customization?.upsells ? [...editItem.customization.upsells] : [],
+            isCustomProduct: !!((data.sizes && data.sizes.length > 0) || (data.extras && data.extras.length > 0) || (data.upsellItems && data.upsellItems.length > 0) || editItem?.isCustomProduct),
+            selectedSizeId: savedSize?.id || null,
+            size: savedSize,
+            extras: editItem?.customization?.extras ? editItem.customization.extras.map(e => ({...e})) : [],
+            upsells: editItem?.customization?.upsells ? editItem.customization.upsells.map(u => ({...u})) : [],
             quantity: editItem?.amount || 1,
             notes: editItem?.customization?.notes || editItem?.notes || ''
         };
@@ -1416,7 +1515,8 @@ document.addEventListener("DOMContentLoaded", loadTextsOnStart);
         let sizesHtml = '';
         if (data.sizes && data.sizes.length > 0) {
             data.sizes.forEach(size => {
-                const activeClass = (currentCustomization.size && currentCustomization.size.id === size.id) ? 'active' : '';
+                const savedSizeId = currentCustomization.size?.id || currentCustomization.size;
+                const activeClass = (savedSizeId && String(savedSizeId) === String(size.id)) ? 'active' : '';
                 sizesHtml += `
                 <div class="option-row ${activeClass}" onclick="selectModalOption(this, ${size.price}, '${size.id}')">
                     <span>${size.name}</span>
@@ -1431,13 +1531,27 @@ document.addEventListener("DOMContentLoaded", loadTextsOnStart);
         let extrasHtml = '';
         if (data.extras && data.extras.length > 0) {
             data.extras.forEach(ex => {
-                const activeClass = currentCustomization.extras.some(e => e.id === ex.id) ? 'active' : '';
+                const existingExtra = currentCustomization.extras.find(e => String(e.id) === String(ex.id));
+                const isAdded = !!existingExtra;
+                const qty = existingExtra ? (existingExtra.qty || 1) : 1;
+                const activeClass = isAdded ? 'active' : '';
+
                 extrasHtml += `
-                <div class="option-row extra-item ${activeClass}" onclick="toggleExtra(this, ${ex.price}, '${ex.id}', '${ex.name}')">
-                    <span>${ex.name}</span>
-                    <div class="price-radio">
-                        <span>+ ${ex.price} ج.م</span>
-                        <div class="radio-circle"></div>
+                <div class="option-row extra-item ${activeClass}" data-extra-id="${ex.id}" data-price="${ex.price}" onclick="toggleExtra(this, ${ex.price}, '${ex.id}', '${ex.name}')">
+                    <div class="extra-main-info">
+                        <div class="extra-badge" style="display: ${isAdded ? 'flex' : 'none'};">${qty}</div>
+                        <span>${ex.name}</span>
+                        <span class="extra-unit-price">+ ${ex.price} ج.م</span>
+                    </div>
+                    <div class="extra-actions">
+                        <div class="qty-control extra-qty-control" style="display: ${isAdded ? 'flex' : 'none'};" onclick="event.stopPropagation()">
+                            <button onclick="updateExtraQty(event, -1, ${ex.price}, '${ex.id}')"><i class="fa-solid fa-minus"></i></button>
+                            <span class="extra-qty-val">${qty}</span>
+                            <button onclick="updateExtraQty(event, 1, ${ex.price}, '${ex.id}')"><i class="fa-solid fa-plus"></i></button>
+                        </div>
+                        <div class="price-radio">
+                            <div class="radio-circle"></div>
+                        </div>
                     </div>
                 </div>`;
             });
@@ -1447,7 +1561,7 @@ document.addEventListener("DOMContentLoaded", loadTextsOnStart);
         if (data.upsellItems && data.upsellItems.length > 0) {
             let upsellSlides = '';
             data.upsellItems.forEach(item => {
-                const existingUpsell = currentCustomization.upsells.find(u => u.id === item.id);
+                const existingUpsell = currentCustomization.upsells.find(u => String(u.id || u) === String(item.id));
                 const isAdded = !!existingUpsell;
                 const qty = existingUpsell ? existingUpsell.qty : 1;
                 const photo = item.photoUrl || 'images/placeholderImage.webp';
@@ -1533,19 +1647,84 @@ document.addEventListener("DOMContentLoaded", loadTextsOnStart);
 
     window.toggleExtra = function(el, price, id, name) {
         el.classList.toggle('active');
-        if (el.classList.contains('active')) {
-            if (!currentCustomization.extras.some(x => x.id === id)) currentCustomization.extras.push({ id: id, name: name, price: price });
+        const isAdded = el.classList.contains('active');
+
+        if (isAdded) {
+            // Add if not already there
+            if (!currentCustomization.extras.some(x => String(x.id) === String(id))) {
+                currentCustomization.extras.push({ id: id, name: name, price: price, qty: 1 });
+            }
         } else {
-            currentCustomization.extras = currentCustomization.extras.filter(x => x.id !== id);
+            // Remove
+            currentCustomization.extras = currentCustomization.extras.filter(x => String(x.id) !== String(id));
         }
+
+        // UI feedback for badge and controls — query within the row element directly
+        const badge = el.querySelector('.extra-badge');
+        const controls = el.querySelector('.extra-qty-control');
+        if (badge) {
+            badge.style.display = isAdded ? 'flex' : 'none';
+            badge.innerText = '1';
+        }
+        if (controls) {
+            controls.style.removeProperty('display');
+            controls.style.display = isAdded ? 'flex' : 'none';
+            const qtyVal = controls.querySelector('.extra-qty-val');
+            if (qtyVal) qtyVal.innerText = '1';
+        }
+
+        recalculateAddonsPrice();
+        updateModalTotal();
+    };
+
+    window.updateExtraQty = function(event, delta, price, id) {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+
+        const extra = currentCustomization.extras.find(x => String(x.id) === String(id));
+        if (!extra) return;
+
+        extra.qty = (extra.qty || 1) + delta;
+
+        if (extra.qty < 1) {
+            // Remove the extra if qty becomes 0
+            currentCustomization.extras = currentCustomization.extras.filter(x => String(x.id) !== String(id));
+            const row = document.querySelector(`.swal2-container .extra-item[data-extra-id="${id}"]`) || document.querySelector(`.extra-item[data-extra-id="${id}"]`);
+            if (row) {
+                row.classList.remove('active');
+                const badge = row.querySelector('.extra-badge');
+                if (badge) badge.style.display = 'none';
+                const controls = row.querySelector('.extra-qty-control');
+                if (controls) controls.style.display = 'none';
+            }
+        } else {
+            // Update display
+            const row = document.querySelector(`.swal2-container .extra-item[data-extra-id="${id}"]`) || document.querySelector(`.extra-item[data-extra-id="${id}"]`);
+            if (row) {
+                const badge = row.querySelector('.extra-badge');
+                if (badge) {
+                    badge.innerText = extra.qty;
+                    badge.style.display = 'flex';
+                }
+                const qtyVal = row.querySelector('.extra-qty-val');
+                if (qtyVal) qtyVal.innerText = extra.qty;
+            }
+        }
+
         recalculateAddonsPrice();
         updateModalTotal();
     };
 
     window.recalculateAddonsPrice = function() {
         let total = 0;
-        currentCustomization.extras.forEach(x => total += (x.price || 0));
-        currentCustomization.upsells.forEach(x => total += ((x.price || 0) * (x.qty || 0)));
+        if (currentCustomization.extras) {
+            currentCustomization.extras.forEach(x => total += (x.price || 0) * (x.qty || 1));
+        }
+        if (currentCustomization.upsells) {
+            currentCustomization.upsells.forEach(x => total += (x.price || 0) * (x.qty || 1));
+        }
         addonsPrice = total;
     };
 
@@ -1576,28 +1755,65 @@ document.addEventListener("DOMContentLoaded", loadTextsOnStart);
         const popup = document.querySelector('.swal2-popup');
         if (!popup) { Swal.close(); return; }
         const notes = popup.querySelector('#product-notes')?.value || '';
-        const shopId = String(document.getElementById('shopId')?.innerText.trim() || '');
-        const shopName = document.querySelector('.shop-header-info h1')?.innerText || '';
-        const baseId = currentCustomization.baseItemId || 'custom';
-        const uniqueId = baseId + (currentCustomization.size ? `-size-${currentCustomization.size.id}` : '');
+        // Fallback: if not on PlaceShop page (no #shopId element), get shopId/shopName from currentEditItem
+        const shopId = String(document.getElementById('shopId')?.innerText.trim() || currentEditItem?.shopId || '');
+        const shopName = document.querySelector('.shop-header-info h1')?.innerText || currentEditItem?.shopName || '';
 
-        const isCustomized = !!(currentCustomization.size || currentCustomization.extras.length > 0 || currentCustomization.upsells.length > 0 || notes);
+        const baseId = currentCustomization.baseItemId || 'custom';
+        const sizeId = (currentCustomization && currentCustomization.size) ? currentCustomization.size.id : '';
+        const uniqueId = baseId + (sizeId ? `-size-${sizeId}` : '');
+
+        const isCustomProduct = !!(currentCustomization.isCustomProduct || (typeof currentTriggeringProduct === 'object' && currentTriggeringProduct?.closest('.foodItem')?.classList.contains('custom-item')) || currentEditItem?.isCustomProduct);
+        const hasActualCustomizations = !!(currentCustomization.size || currentCustomization.extras.length > 0 || currentCustomization.upsells.length > 0 || notes);
 
         const mainItem = {
-            id: uniqueId, name: popup.querySelector('h1')?.innerText || 'Product',
-            price: basePrice, productBasePrice: currentProductBasePrice,
-            customization: { size: currentCustomization.size, extras: [...currentCustomization.extras], upsells: [...currentCustomization.upsells], notes: notes },
-            shopId: shopId, shopName: shopName, notes: notes,
-            image: popup.querySelector('.modal-banner img')?.src || '',
-            isCustomized: isCustomized
+            // Preserve all original cart item fields (deliveryFee, addId, areaId, etc.)
+            ...(currentEditItem || {}),
+            id: baseId,
+            cartItemId: uniqueId,
+            sizeId: sizeId,
+            name: popup.querySelector('h1')?.innerText || currentEditItem?.name || 'Product',
+            price: basePrice,
+            productBasePrice: currentProductBasePrice,
+            isCustomProduct: isCustomProduct,
+            isCustomized: isCustomProduct || hasActualCustomizations,
+            customization: {
+                size: currentCustomization.size,
+                extras: [...currentCustomization.extras],
+                upsells: [...currentCustomization.upsells],
+                notes: notes
+            },
+            shopId: shopId,
+            shopName: shopName,
+            notes: notes,
+            image: popup.querySelector('.modal-banner img')?.src || currentEditItem?.image || '',
         };
 
+        let addedStatus = false;
         if (window.cart) {
-            if (currentEditItem) window.cart.removeItem(currentEditItem.id, currentEditItem.shopId);
-            window.cart.addItem(mainItem, quantity);
+            const editItemId = currentEditItem ? (currentEditItem.cartItemId || currentEditItem.id) : null;
+            if (editItemId && String(editItemId) === String(uniqueId)) {
+                // Update in place
+                addedStatus = window.cart.addItem(mainItem, quantity, true);
+            } else {
+                // Remove and add (ID changed or new item)
+                const targetShopId = mainItem.shopId || GLOBAL_shop_ID;
+                const shopExists = window.cart.items.some(i => String(i.shopId) === String(targetShopId));
+                const isSameShopEdit = currentEditItem && String(currentEditItem.shopId) === String(targetShopId);
+                const isDifferentShop = !isSameShopEdit && !shopExists && window.cart.items.length > 0;
+
+                if (!isDifferentShop && currentEditItem) {
+                    window.cart.removeItem(editItemId, currentEditItem.shopId);
+                }
+                addedStatus = window.cart.addItem(mainItem, quantity, false);
+            }
         }
+        if (addedStatus === false) return;
         Swal.close();
-        setTimeout(() => { Swal.fire({ icon: 'success', title: 'تمت الإضافة', timer: 1500, showConfirmButton: false, toast: true, position: 'top-end' }); }, 100);
+        setTimeout(() => {
+            Swal.fire({ icon: 'success', title: 'تمت الإضافة', timer: 1500, showConfirmButton: false, toast: true, position: 'top-end' });
+            if (typeof syncProductBadges === 'function') syncProductBadges();
+        }, 100);
     };
 
     window.addUpsellItem = function(btn, price, id, name) {
