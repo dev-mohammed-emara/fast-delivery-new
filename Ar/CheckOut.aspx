@@ -1917,53 +1917,59 @@
                 return;
             }
 
-            // Simulated "Database"
-            const validCodes = [
-                { code: '123456', type: 'order', percentage: 20 },
-                { code: '7890', type: 'shipping', percentage: 20 }
-            ];
-
             const modeLabel = type === 'shipping' ? (window.texts && window.texts.ShippingDiscount) || "خصم التوصيل" : (window.texts && window.texts.OrderDiscount) || "خصم الطلب";
             msgEl.textContent = `${(window.texts && window.texts.CheckingPromo) || "جاري التحقق من"} ${modeLabel}...`;
             msgEl.className = "promo-msg";
             msgEl.style.display = 'block';
 
-            setTimeout(() => {
-                const found = validCodes.find(c => c.code === code && c.type === type);
+            const subtotalEl = document.getElementById("globalSubtotal");
+            const subtotal = parseFloat(subtotalEl?.innerText.replace(/[^\d.]/g, '')) || 0;
+            const deliveryEl = document.getElementById("globalTotalDelivery");
+            const delivery = parseFloat(deliveryEl?.innerText.replace(/[^\d.]/g, '')) || 0;
 
-                if (found) {
-                    const subtotalEl = document.getElementById("globalSubtotal");
-                    const subtotal = parseFloat(subtotalEl?.innerText.replace(/[^\d.]/g, '')) || 0;
-                    const deliveryEl = document.getElementById("globalTotalDelivery");
-                    const delivery = parseFloat(deliveryEl?.innerText.replace(/[^\d.]/g, '')) || 0;
+            const amountToSend = type === 'shipping' ? delivery : subtotal;
 
-                    let discountAmount = 0;
-                    if (found.type === 'shipping') {
-                        discountAmount = delivery * (found.percentage / 100);
+            $.ajax({
+                type: "POST",
+                url: "CheckOut.aspx/ValidateCoupon",
+                data: JSON.stringify({ couponCode: code, amount: amountToSend, type: type }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function(res) {
+                    const data = res.d;
+                    if (data && data.success) {
+                        const discountAmount = parseFloat(data.discountAmount) || 0;
+                        const percentage = parseFloat(data.percentage) || 0;
+
+                        promoState.code = code;
+                        promoState.amount = discountAmount;
+                        promoState.percentage = percentage;
+
+                        const successTitle = ((window.texts && window.texts.PromoAppliedSuccess) || "تم تطبيق {0} بنجاح").replace('{0}', modeLabel);
+                        const savedText = ((window.texts && window.texts.PromoSavedAmount) || "وفرت {0} {1} ({2}%)").replace('{0}', discountAmount.toFixed(2)).replace('{1}', (window.texts && window.texts.Currency) || "ج.م").replace('{2}', percentage);
+
+                        msgEl.innerHTML = `✅ <strong>${successTitle}</strong><br><small>${savedText}</small>`;
+                        msgEl.className = "promo-msg success";
+                        msgEl.style.display = 'block';
+
+                        applyBtn.textContent = (window.texts && window.texts.RemoveCoupon) || "إزالة الكوبون";
+                        applyBtn.classList.add('remove');
+                        codeInput.disabled = true;
                     } else {
-                        discountAmount = subtotal * (found.percentage / 100);
+                        const errorMsg = data && data.message ? data.message : ((window.texts && window.texts.PromoErrorInvalid) || "الكوبون غير صالح");
+                        msgEl.innerHTML = `❌ ${errorMsg}`;
+                        msgEl.className = "promo-msg error";
+                        msgEl.style.display = 'block';
+
+                        promoState.code = '';
+                        promoState.amount = 0;
+                        promoState.percentage = 0;
                     }
-
-                    promoState.code = found.code;
-                    promoState.amount = discountAmount;
-                    promoState.percentage = found.percentage;
-
-                    const successTitle = ((window.texts && window.texts.PromoAppliedSuccess) || "تم تطبيق {0} بنجاح").replace('{0}', modeLabel);
-                    const savedText = ((window.texts && window.texts.PromoSavedAmount) || "وفرت {0} {1} ({2}%)").replace('{0}', discountAmount.toFixed(2)).replace('{1}', (window.texts && window.texts.Currency) || "ج.م").replace('{2}', found.percentage);
-
-                    msgEl.innerHTML = `✅ <strong>${successTitle}</strong><br><small>${savedText}</small>`;
-                    msgEl.className = "promo-msg success";
-                    msgEl.style.display = 'block';
-
-                    // Update Button State
-                    applyBtn.textContent = (window.texts && window.texts.RemoveCoupon) || "إزالة الكوبون";
-                    applyBtn.classList.add('remove');
-                    codeInput.disabled = true;
-
                     if (typeof updateGlobalDeliveryCost === 'function') updateGlobalDeliveryCost();
                     if (typeof updateLiveSummary === 'function') updateLiveSummary();
-                } else {
-                    msgEl.innerHTML = `❌ ${(window.texts && window.texts.PromoErrorInvalid) || "الكوبون غير صالح"}`;
+                },
+                error: function() {
+                    msgEl.innerHTML = `❌ ${(window.texts && window.texts.ConnectionErrorText) || "حدثت مشكلة أثناء الاتصال بالخادم"}`;
                     msgEl.className = "promo-msg error";
                     msgEl.style.display = 'block';
 
@@ -1974,7 +1980,7 @@
                     if (typeof updateGlobalDeliveryCost === 'function') updateGlobalDeliveryCost();
                     if (typeof updateLiveSummary === 'function') updateLiveSummary();
                 }
-            }, 800);
+            });
         };
 
         window.selectPayment = function(el, method, isInitialLoad = false) {

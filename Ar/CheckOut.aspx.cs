@@ -65,4 +65,18 @@ public partial class Ar_CheckOut : System.Web.UI.Page
         };
     }
 
+    [WebMethod]
+    public static object ValidateCoupon(string couponCode, decimal amount, string type)
+    {
+        if (type == "order" && couponCode == "123456")
+        {
+            return new { success = true, percentage = 20, discountAmount = amount * 0.20m };
+        }
+        else if (type == "shipping" && couponCode == "7890")
+        {
+            return new { success = true, percentage = 20, discountAmount = amount * 0.20m };
+        }
+        return new { success = false, message = "الكوبون غير صالح" };
+    }
+
 }

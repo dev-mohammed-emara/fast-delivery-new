@@ -69,6 +69,7 @@ public partial class Ar_PlaceShop : System.Web.UI.Page
             ltDetails.Text = lang == "en" ? place.DescriptionEn : lang == "ru" ? place.DescriptionRu : place.Description;
 
             ltmincost.Text = place.MinOrder.ToString("F2") + " " + (string)GetGlobalResourceObject("texts", "currency");
+            ltMinOrderValue.Text = place.MinOrder.ToString("F4");
             ltdeliverytime.Text = (dzone.DeliveredTime).ToString();
             imgplace.ImageUrl = place.PhotoPath;
             imgplace.Attributes.Add("onerror", "this.src='/ar/images/placeholderImage.webp'");

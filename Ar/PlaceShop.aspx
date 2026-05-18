@@ -1332,6 +1332,9 @@
             <div id="shopName" hidden>
                 <asp:Literal ID="ltshopName" runat="server"></asp:Literal>
             </div>
+            <div id="minOrderValue" hidden>
+                <asp:Literal ID="ltMinOrderValue" runat="server"></asp:Literal>
+            </div>
             <div id="addid" hidden>
                 <asp:Literal ID="ltaddid" runat="server"></asp:Literal>
             </div>
@@ -4535,6 +4538,60 @@
                 const mobileBtn = document.getElementById('mobileNavShare');
                 if (desktopBtn) desktopBtn.style.display = 'inline-block';
                 if (mobileBtn) mobileBtn.style.display = 'flex';
+
+                // Intercept Checkout Submit to check Min Order Limit
+                document.addEventListener('click', function (e) {
+                    const targetLink = e.target.closest('a[href*="checkout.aspx"], a[href*="CheckOut.aspx"], button.submit');
+                    if (targetLink) {
+                        const currentShopId = String(document.getElementById('shopId')?.innerText.trim() || '');
+                        const minOrderVal = parseFloat(document.getElementById('minOrderValue')?.innerText.trim() || '0');
+                        
+                        if (minOrderVal > 0 && window.cart) {
+                            const shopItems = window.cart.items.filter(i => String(i.shopId).trim() === currentShopId);
+                            const shopSubtotal = shopItems.reduce((sum, item) => {
+                                const itemPrice = Number(item.price) || 0;
+                                let totalForItem = itemPrice * item.amount;
+
+                                if (item.customization) {
+                                    (item.customization.extras || []).forEach(e => {
+                                        totalForItem += (Number(e.price) || 0) * (e.qty || 1);
+                                    });
+                                    (item.customization.upsells || []).forEach(u => {
+                                        totalForItem += (Number(u.price) || 0) * (u.qty || 1);
+                                    });
+                                }
+                                return sum + totalForItem;
+                            }, 0);
+
+                            if (shopSubtotal < minOrderVal) {
+                                e.preventDefault();
+                                e.stopPropagation();
+
+                                const shopName = document.getElementById('shopName')?.innerText.trim() || 'المطعم';
+                                
+                                // Detect language
+                                const lang = '<%= System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName.ToLower() %>';
+                                let errorMsg = '';
+                                if (lang === 'en') {
+                                    errorMsg = `Sorry, the minimum order from ${shopName} is ${minOrderVal.toFixed(4)} EGP. Your current order total is ${shopSubtotal.toFixed(0)} EGP.`;
+                                } else if (lang === 'ru') {
+                                    errorMsg = `Извините, минимальный заказ из ${shopName} составляет ${minOrderVal.toFixed(4)} EGP. Текущая сумма вашего заказа ${shopSubtotal.toFixed(0)} EGP.`;
+                                } else {
+                                    errorMsg = `عفواً، الحد الأدنى للطلب من مطعم ${shopName} هو ${minOrderVal.toFixed(4)} ج.م. إجمالي طلبك الحالي هو ${shopSubtotal.toFixed(0)} ج.م.`;
+                                }
+
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: lang === 'en' ? 'Minimum Order Limit' : lang === 'ru' ? 'Минимальный заказ' : 'الحد الأدنى للطلب',
+                                    text: errorMsg,
+                                    confirmButtonText: lang === 'en' ? 'OK' : lang === 'ru' ? 'ОК' : 'حسناً',
+                                    confirmButtonColor: 'var(--fd-blue, #0d6efd)'
+                                });
+                                return false;
+                            }
+                        }
+                    }
+                }, true); // Capture phase is critical to intercept before other event listeners
             });
         </script>
     </asp:Content>
