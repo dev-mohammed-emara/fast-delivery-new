@@ -270,6 +270,7 @@ public partial class Ar_SaveLocalStorage : System.Web.UI.Page
                         cmd.Parameters.AddWithValue("@Order_id", newOrderId);
                         cmd.Parameters.AddWithValue("@MenuItems_id", currentSizeTableId);
                         cmd.Parameters.AddWithValue("@amount", row["amount"]);
+                        cmd.Parameters.AddWithValue("@price", row["price"]);
                         object notesVal = DBNull.Value;
                         if (row["notes"] != null && row["notes"] != DBNull.Value)
                         {
