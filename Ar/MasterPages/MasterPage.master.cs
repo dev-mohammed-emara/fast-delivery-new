@@ -12,8 +12,27 @@ public partial class Ar_MasterPages_MasterPage : System.Web.UI.MasterPage
 {
     public string CurrentLang = "ar"; // كل مرة تعيد تحميل الصفحة تبدأ من عربي
     public string CurrentDir = "rtl";
+    public bool isFirstOrder = false;
     protected void Page_Load(object sender, EventArgs e)
     {
+        if (HttpContext.Current.User.Identity.IsAuthenticated)
+        {
+            Users usr = new Users();
+            usr.Where.Email.Operator = WhereParameter.Operand.Equal;
+            usr.Where.Email.Value = HttpContext.Current.User.Identity.Name;
+            usr.Query.Load();
+            if (usr.RowCount > 0)
+            {
+                vw_Users vUsr = new vw_Users();
+                vUsr.Where.Id.Operator = WhereParameter.Operand.Equal;
+                vUsr.Where.Id.Value = usr.Id;
+                vUsr.Query.Load();
+                if (vUsr.RowCount > 0 && vUsr.Ocounts == 0)
+                {
+                    isFirstOrder = true;
+                }
+            }
+        }
         if (!IsPostBack)
         {
             Centers center = new Centers();
@@ -60,7 +79,7 @@ public partial class Ar_MasterPages_MasterPage : System.Web.UI.MasterPage
                 break;
         }
     }
-  
+
     protected void lblogout_Click(object sender, EventArgs e)
     {
         FormsAuthentication.SignOut();

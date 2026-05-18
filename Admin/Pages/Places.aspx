@@ -556,18 +556,21 @@ $('body').on('shown.bs.modal', '#MyPopup2', function () {
         ValidationExpression="^\d+$" ValidationGroup="Courses" 
         Display="Dynamic" ForeColor="Red"></asp:RegularExpressionValidator>
 </div>
-          		<div class="col-md-3">
-<label class="pull-right">  التقييم   </label>	
-				                    <asp:DropDownList ID="ddlrate" class="form-control input-height"  AppendDataBoundItems="true" runat="server">
-                                                        <asp:ListItem Value="0">0</asp:ListItem>
-                                        <asp:ListItem Value="1">1</asp:ListItem>
-                                        <asp:ListItem Value="2">2</asp:ListItem>
-                                        <asp:ListItem Value="3">3</asp:ListItem>
-                                        <asp:ListItem Value="4">4</asp:ListItem>
-                                        <asp:ListItem Value="5">5</asp:ListItem>
-                                                        </asp:DropDownList>
-										
- </div>	
+
+        <div class="col-md-3">
+    <label class="pull-right"> التقييم (مثلاً: 4.5)</label>    
+    <asp:TextBox ID="txtRate" runat="server" class="form-control" placeholder="0.0"></asp:TextBox>
+    
+    <%-- التأكد من إدخال رقم عشري بين 0 و 5 --%>
+    <asp:RegularExpressionValidator ID="revRate" runat="server" 
+        ControlToValidate="txtRate" 
+        ValidationGroup="Courses" 
+        Display="Dynamic" 
+        ForeColor="Red"
+        ErrorMessage="أرقام فقط (0-5)" 
+        ValidationExpression="^(?:[0-4](?:\.\d+)?|5(?:\.0+)?)$">
+    </asp:RegularExpressionValidator>
+</div>
          <div class="col-md-2">
 	<label>مكان نشط</label>
           
@@ -586,7 +589,28 @@ $('body').on('shown.bs.modal', '#MyPopup2', function () {
 </div>		
 </div>
                 
-                                
+                        <div class="form-group col-md-12">
+    <div class="row">
+        <div class="col-md-12">
+            <label class="pull-right">(800x200) صورة البانر (Banner)</label>
+            <asp:Image ID="imgBanner" runat="server" Width="100%" Height="100" class="text-right" />
+            <cc1:AsyncFileUpload ID="fileBanner" runat="server" ClientIDMode="AutoID" OnUploadedComplete="fileBanner_UploadedComplete" />
+        </div>
+    </div>
+</div>
+
+<div class="form-group col-md-12">
+    <div class="row">
+        <div class="col-md-6">
+            <label class="pull-right">اسم المستخدم (UserName)</label>
+            <asp:TextBox ID="txtUserName" runat="server" class="form-control"></asp:TextBox>
+        </div>
+        <div class="col-md-6">
+            <label class="pull-right">كلمة المرور (Pass)</label>
+            <asp:TextBox ID="txtPass" runat="server" class="form-control" TextMode="SingleLine"></asp:TextBox>
+        </div>
+    </div>
+</div>        
                 
                 
 

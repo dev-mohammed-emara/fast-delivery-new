@@ -3010,14 +3010,13 @@
                     isCustomProduct: isCustomProduct,
                     isCustomized: isCustomProduct || hasActualCustomizations,
                     hasActualCustomizations: hasActualCustomizations,
-                    customization: isCustomProduct
-                        ? {
-                            size: currentCustomization?.size || null,
-                            extras: currentCustomization?.extras || [],
-                            upsells: currentCustomization?.upsells || [],
-                            notes: notes || ''
-                        }
-                        : null,
+                    customization:
+                    {
+                        size: currentCustomization?.size || null,
+                        extras: currentCustomization?.extras || [],
+                        upsells: currentCustomization?.upsells || [],
+                        notes: notes || ''
+                    },
                     shopId: shopId,
                     shopName: shopName,
                     deliveryTime: deliveryTime,
@@ -3903,7 +3902,7 @@
                 right: 10px;
                 background: #e88b0e;
                 color: white;
-                width: 28px;
+                width: 26px;
                 height: 26px;
                 border-radius: 50%;
                 display: none;

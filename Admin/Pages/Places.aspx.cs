@@ -140,22 +140,26 @@ public partial class Admin_Pages_Places: System.Web.UI.Page
 
         }
     }
+   
     private void UpdatePlaces(int p)
     {
         Session["fs"] = null;
+        Session["banner_fs"] = null;
         Places Place = new Places();
         Place.LoadByPrimaryKey(p);
         txtName.Text = Place.Name;
         txtNameEn.Text = Place.NameEn;
         txtNameRu.Text = Place.NameRu;
-
+        txtUserName.Text = Place.UserName;
+        txtPass.Text = Place.Pass;
+        imgBanner.ImageUrl = "~/ar/" + Place.Banner;
         cbCategory2.SelectedValue = Place.s_Categories_id;
         Areas area = new Areas();
         area.LoadByPrimaryKey(Place.Areas_id);
         ddlGov.SelectedValue = area.s_Gov_id;
         BindAreas();
         ddlArea.SelectedValue = Place.s_Areas_id;
-        ddlrate.SelectedValue = Place.s_Rate;
+        txtRate.Text = Place.s_Rate;
         txtAddress.Text = Place.Address;
         txtDescription.Text = Place.Description;
         txtDescriptionEn.Text = Place.DescriptionEn;
@@ -163,8 +167,8 @@ public partial class Admin_Pages_Places: System.Web.UI.Page
 
         txtDeliveredTime.Text = Place.s_DeliveredTime;
         txtMinOrder.Text = Place.s_MinOrder;
-        cbActive.Checked = Place.Active;        
-        Image2.ImageUrl ="~/ar/" + Place.PhotoPath;
+        cbActive.Checked = Place.Active;
+        Image2.ImageUrl = "~/ar/" + Place.PhotoPath;
         btnSave.Text = "تعديل";
         string title = "تعديل الأماكن";
         ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "Popup", "ShowPopup('" + title + "');", true);
@@ -248,7 +252,9 @@ public partial class Admin_Pages_Places: System.Web.UI.Page
         Place.DescriptionEn = txtDescriptionEn.Text.Trim();
         Place.DescriptionRu = txtDescriptionRu.Text.Trim();
         Place.DeliveredTime = Convert.ToInt32(txtDeliveredTime.Text);
-        Place.Rate = Convert.ToInt32(ddlrate.SelectedValue);
+        decimal rate = 0;
+        decimal.TryParse(txtRate.Text, out rate);
+        Place.Rate = rate;
         Place.Areas_id = Convert.ToInt32(ddlArea.SelectedValue);
         if (Session["fs"] != null)
         {
@@ -256,9 +262,17 @@ public partial class Admin_Pages_Places: System.Web.UI.Page
             File.WriteAllBytes(Server.MapPath("~/ar/"+filePath), (byte[])Session["fs"]);
             Place.PhotoPath = filePath;
         }
+        if (Session["banner_fs"] != null)
+        {
+            string bannerPath = "images/Places/Banners/" + Guid.NewGuid().ToString() + ".png";
+            File.WriteAllBytes(Server.MapPath("~/ar/" + bannerPath), (byte[])Session["banner_fs"]);
+            Place.Banner = bannerPath;
+        }
         Place.MinOrder = Convert.ToDecimal(txtMinOrder.Text);
 
         Place.Active = cbActive.Checked;
+        Place.UserName = txtUserName.Text.Trim();
+        Place.Pass = txtPass.Text.Trim();
         if (!string.IsNullOrEmpty(txtPOrder.Text))
         {
             Place.POrder = Convert.ToInt32(txtPOrder.Text);
@@ -305,6 +319,10 @@ public partial class Admin_Pages_Places: System.Web.UI.Page
         txtMinOrder.Text = "0";
         txtDeliveredTime.Text ="0";
         txtSearch.Text = string.Empty;
+        txtUserName.Text = string.Empty;
+        txtPass.Text = string.Empty;
+        imgBanner.ImageUrl = "";
+        Session["banner_fs"] = null;
         txtName.Focus();
     }
     protected void btnSearch_Click(object sender, EventArgs e)
@@ -328,7 +346,15 @@ public partial class Admin_Pages_Places: System.Web.UI.Page
         ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "filePath", "top.$get(\"" + Image2.ClientID + "\").src = '" + ResolveClientUrl("data: image / png; base64," + Convert.ToBase64String(bytes)) + "';", true);
         return;
     }
-
+    protected void fileBanner_UploadedComplete(object sender, AjaxControlToolkit.AsyncFileUploadEventArgs e)
+    {
+        Stream fs = fileBanner.PostedFile.InputStream;
+        BinaryReader br = new BinaryReader(fs);
+        Byte[] bytes = br.ReadBytes((Int32)fs.Length);
+        Session["banner_fs"] = bytes; // استخدام Session مختلف للبانر
+        ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "bannerPath", "top.$get(\"" + imgBanner.ClientID + "\").src = '" + ResolveClientUrl("data:image/png;base64," + Convert.ToBase64String(bytes)) + "';", true);
+        return;
+    }
 
 
     protected void ddlGov_SelectedIndexChanged(object sender, EventArgs e)

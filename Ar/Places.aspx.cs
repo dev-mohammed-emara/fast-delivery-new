@@ -164,7 +164,7 @@ public partial class Ar_Places : System.Web.UI.Page
             // ويقوم بترتيبها بحيث المفتوح يظهر أولاً
             string sql = @"
                 SELECT p.id, p.Name, p.NameEn, p.NameRu, p.Address, p.Description, p.DescriptionEn, p.DescriptionRu,
-                       (p.DeliveredTime + dz.DeliveredTime) as DeliveredTime, p.MinOrder, p.Rate, p.PhotoPath, dz.DeliveryCost,
+                       (dz.DeliveredTime) as DeliveredTime, p.MinOrder, p.Rate, p.PhotoPath, dz.DeliveryCost,
                        CASE
                           WHEN s.StartTime IS NOT NULL
                                AND CAST(DATEADD(HOUR, 10, GETDATE()) AS TIME) BETWEEN s.StartTime AND s.EndTime

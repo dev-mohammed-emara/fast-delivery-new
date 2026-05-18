@@ -32,7 +32,7 @@ public partial class Admin_Pages_Orders : System.Web.UI.Page
         using (SqlConnection conn = new SqlConnection(connStr))
         {
             // تأكد أن جدول DeliveryMen موجود عندك وبهذه الأعمدة
-            string sql = "SELECT DriverID, DriverName FROM DeliveryMen WHERE Status = 1";
+            string sql = "SELECT DriverID, DriverName FROM DeliveryMen WHERE Status = 2";
             SqlDataAdapter da = new SqlDataAdapter(sql, conn);
             DataTable dt = new DataTable();
             da.Fill(dt);
@@ -93,72 +93,99 @@ public partial class Admin_Pages_Orders : System.Web.UI.Page
 
     #endregion
 
-    #region "أكوادك الأصلية كما هي"
+    #region "أكواد تحويل الثوابت الرقمية إلى نصوص"
 
-    protected void CheckBox1_CheckedChanged(object sender, EventArgs e)
+    public string GetPaymentMethodName(object methodId)
     {
-        CheckBox chkbox = (CheckBox)sender;
-        GridViewRow Grow = (GridViewRow)chkbox.NamingContainer;
-        string z = ((HiddenField)Grow.FindControl("hf")).Value;
-        using (SqlConnection con = new SqlConnection(connStr))
+        if (methodId == DBNull.Value || methodId == null) return "غير محدد";
+
+        switch (methodId.ToString())
         {
-            string sql = "UPDATE Orders SET Delivered=@Delivered  where ID=@ID";
-            SqlCommand cmd = new SqlCommand(sql, con);
-            cmd.Parameters.AddWithValue("@Delivered", chkbox.Checked);
-            cmd.Parameters.AddWithValue("@ID", Convert.ToInt32(z));
-            con.Open();
-            cmd.ExecuteNonQuery();
+            case "1": return "كاش (عند الاستلام)";
+            case "2": return "محفظة إلكترونية";
+            case "3": return "فيزا / ماستر كارد";
+            default: return "أخرى";
         }
     }
+
+    public string GetContactMethodName(object methodId)
+    {
+        if (methodId == DBNull.Value || methodId == null) return "غير محدد";
+
+        switch (methodId.ToString())
+        {
+            case "1": return "اتصال هاتفي";
+            case "2": return "واتساب";
+            case "3": return "عبر التطبيق";
+            default: return "أخرى";
+        }
+    }
+
+    #endregion
+
+    #region "أكوادك الأصلية كما هي"
+
 
     protected void Accepted_CheckedChanged(object sender, EventArgs e)
     {
         CheckBox chkbox = (CheckBox)sender;
-        GridViewRow Grow = (GridViewRow)chkbox.NamingContainer;
-        string z = ((HiddenField)Grow.FindControl("hfAccepted")).Value;
+        string z = ((HiddenField)((GridViewRow)chkbox.NamingContainer).FindControl("hfAccepted")).Value;
         using (SqlConnection con = new SqlConnection(connStr))
         {
-            string sql = "UPDATE Orders SET Accepted=@Accepted  where ID=@ID";
+            // إذا تم التفعيل نضع الوقت، إذا ألغي نجعله NULL
+            string sql = "UPDATE Orders SET Accepted=@Accepted, AcceptedTime = (CASE WHEN @Accepted = 1 THEN GETDATE() ELSE NULL END) WHERE ID=@ID";
             SqlCommand cmd = new SqlCommand(sql, con);
             cmd.Parameters.AddWithValue("@Accepted", chkbox.Checked);
             cmd.Parameters.AddWithValue("@ID", Convert.ToInt32(z));
-            con.Open();
-            cmd.ExecuteNonQuery();
+            con.Open(); cmd.ExecuteNonQuery();
         }
+        BindOrders(); // تحديث الجدول فوراً لرؤية الوقت
     }
 
     protected void Prepared_CheckedChanged(object sender, EventArgs e)
     {
         CheckBox chkbox = (CheckBox)sender;
-        GridViewRow Grow = (GridViewRow)chkbox.NamingContainer;
-        string z = ((HiddenField)Grow.FindControl("hfPrepared")).Value;
+        string z = ((HiddenField)((GridViewRow)chkbox.NamingContainer).FindControl("hfPrepared")).Value;
         using (SqlConnection con = new SqlConnection(connStr))
         {
-            string sql = "UPDATE Orders SET Prepared=@Prepared  where ID=@ID";
+            string sql = "UPDATE Orders SET Prepared=@Prepared, PreparedTime = (CASE WHEN @Prepared = 1 THEN GETDATE() ELSE NULL END) WHERE ID=@ID";
             SqlCommand cmd = new SqlCommand(sql, con);
             cmd.Parameters.AddWithValue("@Prepared", chkbox.Checked);
             cmd.Parameters.AddWithValue("@ID", Convert.ToInt32(z));
-            con.Open();
-            cmd.ExecuteNonQuery();
+            con.Open(); cmd.ExecuteNonQuery();
         }
+        BindOrders();
     }
 
     protected void InWay_CheckedChanged(object sender, EventArgs e)
     {
         CheckBox chkbox = (CheckBox)sender;
-        GridViewRow Grow = (GridViewRow)chkbox.NamingContainer;
-        string z = ((HiddenField)Grow.FindControl("hfInWay")).Value;
+        string z = ((HiddenField)((GridViewRow)chkbox.NamingContainer).FindControl("hfInWay")).Value;
         using (SqlConnection con = new SqlConnection(connStr))
         {
-            string sql = "UPDATE Orders SET InWay=@InWay  where ID=@ID";
+            string sql = "UPDATE Orders SET InWay=@InWay, InWayTime = (CASE WHEN @InWay = 1 THEN GETDATE() ELSE NULL END) WHERE ID=@ID";
             SqlCommand cmd = new SqlCommand(sql, con);
             cmd.Parameters.AddWithValue("@InWay", chkbox.Checked);
             cmd.Parameters.AddWithValue("@ID", Convert.ToInt32(z));
-            con.Open();
-            cmd.ExecuteNonQuery();
+            con.Open(); cmd.ExecuteNonQuery();
         }
+        BindOrders();
     }
 
+    protected void CheckBox1_CheckedChanged(object sender, EventArgs e) // تم التسليم
+    {
+        CheckBox chkbox = (CheckBox)sender;
+        string z = ((HiddenField)((GridViewRow)chkbox.NamingContainer).FindControl("hf")).Value;
+        using (SqlConnection con = new SqlConnection(connStr))
+        {
+            string sql = "UPDATE Orders SET Delivered=@Delivered, DeliveredTime = (CASE WHEN @Delivered = 1 THEN GETDATE() ELSE NULL END) WHERE ID=@ID";
+            SqlCommand cmd = new SqlCommand(sql, con);
+            cmd.Parameters.AddWithValue("@Delivered", chkbox.Checked);
+            cmd.Parameters.AddWithValue("@ID", Convert.ToInt32(z));
+            con.Open(); cmd.ExecuteNonQuery();
+        }
+        BindOrders();
+    }
     private void LoadGovs()
     {
         using (SqlConnection conn = new SqlConnection(connStr))
@@ -207,32 +234,66 @@ public partial class Admin_Pages_Orders : System.Web.UI.Page
     {
         BindOrders();
     }
+    public string GetDeliveryMethodName(object methodId)
+    {
+        if (methodId == DBNull.Value || methodId == null) return "غير محدد";
 
+        switch (methodId.ToString())
+        {
+            case "1": return "توصيل للمنزل (Delivery)";
+            case "2": return "استلام من المطعم (Takeaway)";
+            default: return "أخرى";
+        }
+    }
     private void BindOrders()
     {
         using (SqlConnection conn = new SqlConnection(connStr))
         {
             conn.Open();
-            // تم إضافة o.DriverID للاستعلام ليعمل الربط في الجريد
+
+            // الكويري يجمع بيانات الطلب، العميل، العنوان، ويحسب الإجماليات وأوقات التنفيذ مع الحقول المضافة حديثاً
             string query = @"
-                SELECT o.id, u.Name + ' ' + u.Lname AS UserName,
-                       g.Name AS Gov, a.Name AS Area,
-                       SUM(od.Amount * od.Price) AS total,
-                       o.DeliveryCost,
-                       SUM(od.Amount * od.Price) + o.DeliveryCost AS net,
-                       o.Delivered, o.Accepted, o.Prepared, o.InWay, o.DriverID,
-                       CAST(o.Odate AS DATE) AS Odate
-                FROM Orders o
-                INNER JOIN Order_Details od ON o.id = od.Order_id
-                INNER JOIN Addresses addr ON o.Address_id = addr.ID
-                INNER JOIN Users u ON addr.UserID = u.Id
-                INNER JOIN Areas a ON addr.Area_id = a.id
-                INNER JOIN Gov g ON a.gov_id = g.id
-                WHERE 1=1";
+            SELECT 
+                o.id, 
+                u.Name + ' ' + u.Lname AS UserName,
+                g.Name AS Gov, 
+                a.Name AS Area,
+                SUM(od.Amount * od.Price) AS total,
+                o.DeliveryCost,
+                SUM(od.Amount * od.Price) + o.DeliveryCost AS net,
+                o.Delivered, 
+                o.Accepted, 
+                o.Prepared, 
+                o.InWay, 
+                o.DriverID,
+                o.AcceptedTime, 
+                o.PreparedTime, 
+                o.InWayTime, 
+                o.DeliveredTime,
+                DATEDIFF(MINUTE, o.AcceptedTime, o.DeliveredTime) AS TotalTime,
+                CAST(o.Odate AS DATE) AS Odate,
+                o.DeliveryMethod,
+                o.PaymentMethod,
+                o.TransferPhoto,
+                o.WalletNumber,
+                ISNULL(o.CoponDiscountR, 0) AS CoponDiscountR,
+                ISNULL(o.CoponDiscountD, 0) AS CoponDiscountD,
+                o.CoponDiscountRU,
+                o.CoponDiscountDU,
+                o.ODTime,
+                o.ContactMethod
+            FROM Orders o
+            INNER JOIN Order_Details od ON o.id = od.Order_id
+            INNER JOIN Addresses addr ON o.Address_id = addr.ID
+            INNER JOIN Users u ON addr.UserID = u.Id
+            INNER JOIN Areas a ON addr.Area_id = a.id
+            INNER JOIN Gov g ON a.gov_id = g.id
+            WHERE 1=1";
 
             SqlCommand cmd = new SqlCommand();
             cmd.Connection = conn;
 
+            // فلترة التاريخ
             DateTime fromDate, toDate;
             if (!DateTime.TryParse(txtFromDate.Text, out fromDate)) fromDate = DateTime.Today;
             if (!DateTime.TryParse(txtToDate.Text, out toDate)) toDate = DateTime.Today;
@@ -241,21 +302,29 @@ public partial class Admin_Pages_Orders : System.Web.UI.Page
             cmd.Parameters.AddWithValue("@FromDate", fromDate);
             cmd.Parameters.AddWithValue("@ToDate", toDate);
 
+            // فلترة حالة التسليم
             if (ddlDelivered.SelectedValue != "-1")
             {
                 query += " AND o.Delivered = @Delivered";
                 cmd.Parameters.AddWithValue("@Delivered", ddlDelivered.SelectedValue == "1");
             }
 
+            // فلترة المحافظة والمنطقة
             int govId = int.Parse(ddlGov.SelectedValue);
             if (govId > 0) { query += " AND g.id = @GovId"; cmd.Parameters.AddWithValue("@GovId", govId); }
 
             int areaId = int.Parse(ddlArea.SelectedValue);
             if (areaId > 0) { query += " AND a.id = @AreaId"; cmd.Parameters.AddWithValue("@AreaId", areaId); }
 
+            // تجميع البيانات وترتيبها بالأحدث
             query += @"
-                GROUP BY o.id, u.Name, u.Lname, g.Name, a.Name, o.DeliveryCost, o.Delivered, o.Accepted, o.Prepared, o.InWay, o.DriverID, o.Odate
-                ORDER BY o.Odate DESC";
+            GROUP BY 
+                o.id, u.Name, u.Lname, g.Name, a.Name, o.DeliveryCost, 
+                o.Delivered, o.Accepted, o.Prepared, o.InWay, o.DriverID, 
+                o.AcceptedTime, o.PreparedTime, o.InWayTime, o.DeliveredTime, o.Odate,
+                o.PaymentMethod, o.TransferPhoto, o.WalletNumber, o.CoponDiscountR,
+                o.CoponDiscountD, o.CoponDiscountRU, o.CoponDiscountDU, o.ODTime, o.ContactMethod,o.DeliveryMethod
+            ORDER BY o.id DESC";
 
             cmd.CommandText = query;
             SqlDataAdapter da = new SqlDataAdapter(cmd);
@@ -264,7 +333,10 @@ public partial class Admin_Pages_Orders : System.Web.UI.Page
 
             gvOrders.DataSource = dt;
             gvOrders.DataBind();
+
             lblCount.Text = dt.Rows.Count.ToString();
+
+            // تحديث آخر ID للطلبات الجديدة
             if (dt.Rows.Count > 0)
             {
                 object maxId = dt.Compute("Max(id)", "");
@@ -272,7 +344,6 @@ public partial class Admin_Pages_Orders : System.Web.UI.Page
             }
         }
     }
-
     protected void tmrNewOrders_Tick(object sender, EventArgs e)
     {
         using (SqlConnection conn = new SqlConnection(connStr))

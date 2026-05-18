@@ -182,7 +182,7 @@ namespace DMS
             {
                 get
                 {
-                    return new SqlParameter("@Rate", SqlDbType.Int, 0);
+                    return new SqlParameter("@Rate", SqlDbType.Decimal, 0);
                 }
             }
 
@@ -226,6 +226,30 @@ namespace DMS
                 }
             }
 
+            public static SqlParameter Banner
+            {
+                get
+                {
+                    return new SqlParameter("@Banner", SqlDbType.NVarChar, 150);
+                }
+            }
+
+            public static SqlParameter UserName
+            {
+                get
+                {
+                    return new SqlParameter("@UserName", SqlDbType.NVarChar, 150);
+                }
+            }
+
+            public static SqlParameter Pass
+            {
+                get
+                {
+                    return new SqlParameter("@Pass", SqlDbType.NVarChar, 50);
+                }
+            }
+
         }
         #endregion
 
@@ -248,6 +272,9 @@ namespace DMS
             public const string Areas_id = "Areas_id";
             public const string Active = "Active";
             public const string POrder = "POrder";
+            public const string Banner = "Banner";
+            public const string UserName = "UserName";
+            public const string Pass = "Pass";
 
             static public string ToPropertyName(string columnName)
             {
@@ -271,6 +298,9 @@ namespace DMS
                     ht[Areas_id] = _Places.PropertyNames.Areas_id;
                     ht[Active] = _Places.PropertyNames.Active;
                     ht[POrder] = _Places.PropertyNames.POrder;
+                    ht[Banner] = _Places.PropertyNames.Banner;
+                    ht[UserName] = _Places.PropertyNames.UserName;
+                    ht[Pass] = _Places.PropertyNames.Pass;
 
                 }
                 return (string)ht[columnName];
@@ -299,6 +329,9 @@ namespace DMS
             public const string Areas_id = "Areas_id";
             public const string Active = "Active";
             public const string POrder = "POrder";
+            public const string Banner = "Banner";
+            public const string UserName = "UserName";
+            public const string Pass = "Pass";
 
             static public string ToColumnName(string propertyName)
             {
@@ -322,6 +355,9 @@ namespace DMS
                     ht[Areas_id] = _Places.ColumnNames.Areas_id;
                     ht[Active] = _Places.ColumnNames.Active;
                     ht[POrder] = _Places.ColumnNames.POrder;
+                    ht[Banner] = _Places.ColumnNames.Banner;
+                    ht[UserName] = _Places.ColumnNames.UserName;
+                    ht[Pass] = _Places.ColumnNames.Pass;
 
                 }
                 return (string)ht[propertyName];
@@ -350,6 +386,9 @@ namespace DMS
             public const string Areas_id = "s_Areas_id";
             public const string Active = "s_Active";
             public const string POrder = "s_POrder";
+            public const string Banner = "s_Banner";
+            public const string UserName = "s_UserName";
+            public const string Pass = "s_Pass";
 
         }
         #endregion
@@ -476,15 +515,15 @@ namespace DMS
             }
         }
 
-        public virtual int Rate
+        public virtual decimal Rate
         {
             get
             {
-                return base.Getint(ColumnNames.Rate);
+                return base.Getdecimal(ColumnNames.Rate);
             }
             set
             {
-                base.Setint(ColumnNames.Rate, value);
+                base.Setdecimal(ColumnNames.Rate, value);
             }
         }
 
@@ -545,6 +584,42 @@ namespace DMS
             set
             {
                 base.Setint(ColumnNames.POrder, value);
+            }
+        }
+
+        public virtual string Banner
+        {
+            get
+            {
+                return base.Getstring(ColumnNames.Banner);
+            }
+            set
+            {
+                base.Setstring(ColumnNames.Banner, value);
+            }
+        }
+
+        public virtual string UserName
+        {
+            get
+            {
+                return base.Getstring(ColumnNames.UserName);
+            }
+            set
+            {
+                base.Setstring(ColumnNames.UserName, value);
+            }
+        }
+
+        public virtual string Pass
+        {
+            get
+            {
+                return base.Getstring(ColumnNames.Pass);
+            }
+            set
+            {
+                base.Setstring(ColumnNames.Pass, value);
             }
         }
 
@@ -707,14 +782,14 @@ namespace DMS
         {
             get
             {
-                return this.IsColumnNull(ColumnNames.Rate) ? string.Empty : base.GetintAsString(ColumnNames.Rate);
+                return this.IsColumnNull(ColumnNames.Rate) ? string.Empty : base.GetdecimalAsString(ColumnNames.Rate);
             }
             set
             {
                 if (string.Empty == value)
                     this.SetColumnNull(ColumnNames.Rate);
                 else
-                    this.Rate = base.SetintAsString(ColumnNames.Rate, value);
+                    this.Rate = base.SetdecimalAsString(ColumnNames.Rate, value);
             }
         }
 
@@ -790,6 +865,51 @@ namespace DMS
                     this.SetColumnNull(ColumnNames.POrder);
                 else
                     this.POrder = base.SetintAsString(ColumnNames.POrder, value);
+            }
+        }
+
+        public virtual string s_Banner
+        {
+            get
+            {
+                return this.IsColumnNull(ColumnNames.Banner) ? string.Empty : base.GetstringAsString(ColumnNames.Banner);
+            }
+            set
+            {
+                if (string.Empty == value)
+                    this.SetColumnNull(ColumnNames.Banner);
+                else
+                    this.Banner = base.SetstringAsString(ColumnNames.Banner, value);
+            }
+        }
+
+        public virtual string s_UserName
+        {
+            get
+            {
+                return this.IsColumnNull(ColumnNames.UserName) ? string.Empty : base.GetstringAsString(ColumnNames.UserName);
+            }
+            set
+            {
+                if (string.Empty == value)
+                    this.SetColumnNull(ColumnNames.UserName);
+                else
+                    this.UserName = base.SetstringAsString(ColumnNames.UserName, value);
+            }
+        }
+
+        public virtual string s_Pass
+        {
+            get
+            {
+                return this.IsColumnNull(ColumnNames.Pass) ? string.Empty : base.GetstringAsString(ColumnNames.Pass);
+            }
+            set
+            {
+                if (string.Empty == value)
+                    this.SetColumnNull(ColumnNames.Pass);
+                else
+                    this.Pass = base.SetstringAsString(ColumnNames.Pass, value);
             }
         }
 
@@ -981,6 +1101,36 @@ namespace DMS
                     get
                     {
                         WhereParameter where = new WhereParameter(ColumnNames.POrder, Parameters.POrder);
+                        this._clause._entity.Query.AddWhereParameter(where);
+                        return where;
+                    }
+                }
+
+                public WhereParameter Banner
+                {
+                    get
+                    {
+                        WhereParameter where = new WhereParameter(ColumnNames.Banner, Parameters.Banner);
+                        this._clause._entity.Query.AddWhereParameter(where);
+                        return where;
+                    }
+                }
+
+                public WhereParameter UserName
+                {
+                    get
+                    {
+                        WhereParameter where = new WhereParameter(ColumnNames.UserName, Parameters.UserName);
+                        this._clause._entity.Query.AddWhereParameter(where);
+                        return where;
+                    }
+                }
+
+                public WhereParameter Pass
+                {
+                    get
+                    {
+                        WhereParameter where = new WhereParameter(ColumnNames.Pass, Parameters.Pass);
                         this._clause._entity.Query.AddWhereParameter(where);
                         return where;
                     }
@@ -1183,6 +1333,42 @@ namespace DMS
                 }
             }
 
+            public WhereParameter Banner
+            {
+                get
+                {
+                    if (_Banner_W == null)
+                    {
+                        _Banner_W = TearOff.Banner;
+                    }
+                    return _Banner_W;
+                }
+            }
+
+            public WhereParameter UserName
+            {
+                get
+                {
+                    if (_UserName_W == null)
+                    {
+                        _UserName_W = TearOff.UserName;
+                    }
+                    return _UserName_W;
+                }
+            }
+
+            public WhereParameter Pass
+            {
+                get
+                {
+                    if (_Pass_W == null)
+                    {
+                        _Pass_W = TearOff.Pass;
+                    }
+                    return _Pass_W;
+                }
+            }
+
             private WhereParameter _Id_W = null;
             private WhereParameter _Name_W = null;
             private WhereParameter _NameEn_W = null;
@@ -1199,6 +1385,9 @@ namespace DMS
             private WhereParameter _Areas_id_W = null;
             private WhereParameter _Active_W = null;
             private WhereParameter _POrder_W = null;
+            private WhereParameter _Banner_W = null;
+            private WhereParameter _UserName_W = null;
+            private WhereParameter _Pass_W = null;
 
             public void WhereClauseReset()
             {
@@ -1218,6 +1407,9 @@ namespace DMS
                 _Areas_id_W = null;
                 _Active_W = null;
                 _POrder_W = null;
+                _Banner_W = null;
+                _UserName_W = null;
+                _Pass_W = null;
 
                 this._entity.Query.FlushWhereParameters();
 
@@ -1434,6 +1626,36 @@ namespace DMS
                     }
                 }
 
+                public AggregateParameter Banner
+                {
+                    get
+                    {
+                        AggregateParameter aggregate = new AggregateParameter(ColumnNames.Banner, Parameters.Banner);
+                        this._clause._entity.Query.AddAggregateParameter(aggregate);
+                        return aggregate;
+                    }
+                }
+
+                public AggregateParameter UserName
+                {
+                    get
+                    {
+                        AggregateParameter aggregate = new AggregateParameter(ColumnNames.UserName, Parameters.UserName);
+                        this._clause._entity.Query.AddAggregateParameter(aggregate);
+                        return aggregate;
+                    }
+                }
+
+                public AggregateParameter Pass
+                {
+                    get
+                    {
+                        AggregateParameter aggregate = new AggregateParameter(ColumnNames.Pass, Parameters.Pass);
+                        this._clause._entity.Query.AddAggregateParameter(aggregate);
+                        return aggregate;
+                    }
+                }
+
 
                 private AggregateClause _clause;
             }
@@ -1631,6 +1853,42 @@ namespace DMS
                 }
             }
 
+            public AggregateParameter Banner
+            {
+                get
+                {
+                    if (_Banner_W == null)
+                    {
+                        _Banner_W = TearOff.Banner;
+                    }
+                    return _Banner_W;
+                }
+            }
+
+            public AggregateParameter UserName
+            {
+                get
+                {
+                    if (_UserName_W == null)
+                    {
+                        _UserName_W = TearOff.UserName;
+                    }
+                    return _UserName_W;
+                }
+            }
+
+            public AggregateParameter Pass
+            {
+                get
+                {
+                    if (_Pass_W == null)
+                    {
+                        _Pass_W = TearOff.Pass;
+                    }
+                    return _Pass_W;
+                }
+            }
+
             private AggregateParameter _Id_W = null;
             private AggregateParameter _Name_W = null;
             private AggregateParameter _NameEn_W = null;
@@ -1647,6 +1905,9 @@ namespace DMS
             private AggregateParameter _Areas_id_W = null;
             private AggregateParameter _Active_W = null;
             private AggregateParameter _POrder_W = null;
+            private AggregateParameter _Banner_W = null;
+            private AggregateParameter _UserName_W = null;
+            private AggregateParameter _Pass_W = null;
 
             public void AggregateClauseReset()
             {
@@ -1666,6 +1927,9 @@ namespace DMS
                 _Areas_id_W = null;
                 _Active_W = null;
                 _POrder_W = null;
+                _Banner_W = null;
+                _UserName_W = null;
+                _Pass_W = null;
 
                 this._entity.Query.FlushAggregateParameters();
 
@@ -1804,10 +2068,20 @@ namespace DMS
             p.SourceColumn = ColumnNames.POrder;
             p.SourceVersion = DataRowVersion.Current;
 
+            p = cmd.Parameters.Add(Parameters.Banner);
+            p.SourceColumn = ColumnNames.Banner;
+            p.SourceVersion = DataRowVersion.Current;
+
+            p = cmd.Parameters.Add(Parameters.UserName);
+            p.SourceColumn = ColumnNames.UserName;
+            p.SourceVersion = DataRowVersion.Current;
+
+            p = cmd.Parameters.Add(Parameters.Pass);
+            p.SourceColumn = ColumnNames.Pass;
+            p.SourceVersion = DataRowVersion.Current;
+
 
             return cmd;
         }
     }
 }
-
-

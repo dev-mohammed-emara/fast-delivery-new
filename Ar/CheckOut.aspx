@@ -3,14 +3,7 @@
     <title><asp:Literal ID="ltPageTitle" runat="server" Text="<%$ Resources:texts, CheckoutTitle %>" ></asp:Literal></title>
 </asp:Content>
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
-<!-- <div id="loader" class="loader-overlay">
-       <div class="loader-box">
-        <div class="spinner"></div>
-        <asp:Literal ID="ltLoaderText" runat="server" Text="<%$ Resources:texts, LoaderText %>" />
-    </div>
-</div> -->
-
-                    <style>
+<style>
 
     /* Premium Checkout Styling */
     .checkoutDetails {
@@ -172,7 +165,7 @@
 
     .cartItemAmountHandlers button,
     .cust-handlers button {
-        width: 28px;
+        width: 26px;
         height: 26px;
         border-radius: 8px;
         border: none;
@@ -276,8 +269,8 @@
 
     .checkout-customization-row .removeItem,
     .checkout-upsell-row .removeItem {
-        width: 28px !important;
-        height: 28px !important;
+        width: 26px !important;
+        height: 26px !important;
     }
 
     /* Checkout group total */
@@ -556,6 +549,24 @@
         padding: 8px 12px;
         border-radius: 8px;
     }
+    .multi-shop-alert-banner {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: #fff8eb;
+        border: 1.5px solid #ffe8cc;
+        border-radius: 12px;
+        padding: 12px 16px;
+        margin-bottom: 15px;
+        color: #b25e00;
+        font-size: 0.9rem;
+        font-weight: 600;
+        box-shadow: 0 2px 6px rgba(178, 94, 0, 0.05);
+    }
+    .multi-shop-alert-banner i {
+        font-size: 1.2rem;
+        color: #e8590c;
+    }
     </style>
 
 
@@ -584,8 +595,7 @@
                         <span></span>
                     </div>
                     <div id="cartItemsContainer">
-                        <!-- Items will be injected here by cart.js -->
-                    </div>
+                        </div>
                 </div>
             </article>
         </div>
@@ -596,17 +606,16 @@
             <h2><i class="fa-solid fa-ticket"></i> <asp:Literal ID="ltPromoCodeTitle" runat="server" Text="<%$ Resources:texts, PromoCode %>" /></h2>
         </div>
         <div class="paymentSection promo-dual-container">
-            <!-- Order Promo -->
-            <div class="promo-field-group">
+            <div class="promo-field-group" id="orderPromoGroup">
                 <label class="promo-field-label"><i class="fa-solid fa-bag-shopping"></i> <asp:Literal runat="server" Text="<%$ Resources:texts, OrderDiscount %>" /></label>
-                <div class="promo-input-wrap">
+                <div class="promo-input-wrap" id="orderPromoInputWrap">
                     <input type="text" id="promoInputOrder" placeholder="<%= GetGlobalResourceObject("texts", "EnterPromoCode") %>" class="auth-input" onkeydown="if(event.key === 'Enter') { applyPromo('order'); event.preventDefault(); }">
                     <button type="button" onclick="applyPromo('order')" id="applyBtnOrder" class="apply-btn"><asp:Literal runat="server" Text="<%$ Resources:texts, Apply %>" /></button>
                 </div>
                 <p class="promo-msg" id="promoMsgOrder" style="display:none;"></p>
+                <div id="orderPromoDisabledMsg" class="promo-msg error" style="display:none; background-color: #fff0f0; border: 1px solid #ffc9c9; color: #e03131; padding: 8px 12px; border-radius: 8px; font-size: 0.85rem; font-weight: bold; margin-top: 5px; display: flex; align-items: center; gap: 8px;"></div>
             </div>
 
-            <!-- Shipping Promo -->
             <div class="promo-field-group" id="shippingPromoGroup">
                 <label class="promo-field-label"><i class="fa-solid fa-truck"></i> <asp:Literal runat="server" Text="<%$ Resources:texts, ShippingDiscount %>" /></label>
                 <div class="promo-input-wrap">
@@ -639,13 +648,15 @@
             </button>
         </div>
         <div id="globalAreaDiscountMsg" class="promo-msg success m-10-1rem" style="display:none;">
-            <!-- Same Area Discount Message Injected via JS -->
-        </div>
+            </div>
         <div class="global-delivery-summary summary-container">
             <fieldset class="summary-fieldset">
 
-                <div class="summary-line">
-                    <span class="summary-label"><asp:Literal ID="ltDeliveryFeeLabel" runat="server" Text="<%$ Resources:texts, DeliveryFeeLabel %>" /></span>
+                <div class="summary-line" style="align-items: flex-start;">
+                    <div style="display: flex; gap:1rem;">
+                        <span class="summary-label"><asp:Literal ID="ltDeliveryFeeLabel" runat="server" Text="<%$ Resources:texts, DeliveryFeeLabel %>" /></span>
+                        <span id="firstOrderDeliveryMsg" class="promo-msg success" style="display: none; padding: 4px 8px; margin: 4px 0 0; font-size: 0.75rem; border-radius: 4px; border-inline-start: 2px solid #48bb78; line-height: 1.3;"></span>
+                    </div>
                     <strong id="globalTotalDelivery" class="summary-value">0 <asp:Literal ID="ltCurrency1" runat="server" Text="<%$ Resources:texts, Currency %>" /></strong>
                 </div>
                 <div class="summary-line">
@@ -657,8 +668,7 @@
                     <strong id="globalTotalDeliveryTime" class="summary-value">0 <asp:Literal ID="ltMinutesSummary" runat="server" Text="<%$ Resources:texts, Minutes %>" /></strong>
                 </div>
                 <div id="promoSummaryMsg" class="promo-msg success promo-summary-box" style="display:none;">
-                    <!-- Promo details injected here -->
-                </div>
+                    </div>
                 <div class="summary-total-line">
                     <div class="flex-col">
                         <span class="summary-total-label"><asp:Literal ID="ltFinalTotalLabel" runat="server" Text="<%$ Resources:texts, FinalTotalLabel %>" /></span>
@@ -749,13 +759,12 @@
                     <p class="card-text"><strong><asp:Literal ID="ltInstructionsLabel" runat="server" Text="<%$ Resources:texts, Instructions %>" />:</strong> <span id="Instructions"></span></p>
                     <p class="card-text"><strong><asp:Literal ID="ltAddressTypeLabel" runat="server" Text="<%$ Resources:texts, AddressType %>" />:</strong> <span id="AType"></span></p>
 
-                    <!-- Courier Contact Method (Hidden on Pickup) -->
                     <div id="contactMethodSection" class="contact-section">
                         <p class="contact-section-title">
                             <i class="fa-solid fa-headset"></i> <asp:Literal ID="ltContactMethodTitle" runat="server" Text="<%$ Resources:texts, ContactMethodTitle %>" />
                         </p>
                         <div class="pay-options contact-methods">
-                            <label class="pay-option selected contact-phone" data-method="phone" id="contact-method-3" onclick="selectContactMethod(this, 'phone')">
+                            <label class="pay-option selected contact-phone" data-method="phone" id="contact-method-1" onclick="selectContactMethod(this, 'phone')">
                                 <i class="fa-solid fa-phone icon-sm"></i>
                                 <span class="text-xs"><asp:Literal ID="ltCallPhone" runat="server" Text="<%$ Resources:texts, CallPhone %>" /></span>
                             </label>
@@ -763,14 +772,13 @@
                                 <i class="fa-brands fa-whatsapp icon-sm"></i>
                                 <span class="text-xs"><asp:Literal ID="ltWhatsApp" runat="server" Text="<%$ Resources:texts, WhatsApp %>" /></span>
                             </label>
-                            <label class="pay-option contact-bell" data-method="ring_bell" id="contact-method-1" onclick="selectContactMethod(this, 'ring_bell')">
+                            <label class="pay-option contact-bell" data-method="ring_bell" id="contact-method-3" onclick="selectContactMethod(this, 'ring_bell')">
                                 <i class="fa-solid fa-bell icon-sm"></i>
                                 <span class="text-xs"><asp:Literal ID="ltRingBell" runat="server" Text="<%$ Resources:texts, RingBell %>" /></span>
                             </label>
                         </div>
                     </div>
 
-                    <!-- Nested Delivery Time Fieldset -->
                     <fieldset class="checkoutDeliveryTime delivery-time-fieldset">
 
                         <div id="deliveryTimeDisplay" class="delivery-time-display">
@@ -780,8 +788,7 @@
                                     <span id="scheduledTime">--:--</span>
                                 </p>
                                 <small id="deliveryTimeHint" class="hint-text">
-                                    <i class="fa-regular fa-clock"></i> <!-- Text injected via JS -->
-                                </small>
+                                    <i class="fa-regular fa-clock"></i> </small>
                             </div>
                              <div class="flex-gap-8">
                                 <button id="rescheduleBtn" class="submit btn-reschedule" type="button">
@@ -803,7 +810,6 @@
                 <h2><i class="fa-solid fa-comment-dollar"></i> <asp:Literal ID="ltPaymentDetailsTitle" runat="server" Text="<%$ Resources:texts, PaymentDetailsTitle %>" /></h2>
             </div>
             <div class="paymentSection">
-                <!-- Order Live Summary -->
                 <div class="order-live-summary">
                 <div class="summary-item">
                     <span class="label"><i class="fa-solid fa-credit-card"></i> <asp:Literal ID="ltLivePayTitle" runat="server" Text="<%$ Resources:texts, PaymentMethod %>" />:</span>
@@ -958,7 +964,7 @@
 
     .cartItemAmountHandlers button,
     .cust-handlers button {
-        width: 28px;
+        width: 26px;
         height: 26px;
         border-radius: 8px;
         border: none;
@@ -1530,7 +1536,7 @@
             const scheduledTime = state.scheduledTime || '';
             const activeOrderType = state.deliveryMethod || 'delivery';
             const isPickup = activeOrderType === 'pickup' || activeOrderType === 'in-shop';
-            const contactMethod = state.contactMethod || 'ring_bell';
+            const contactMethod = state.contactMethod || 'phone';
 
             let payerPhone = "";
             let paymentProofBase64 = "";
@@ -1541,12 +1547,13 @@
 
                 const fileInput = document.getElementById('paymentProofFile');
 
+                const txts = window.texts || {};
                 if (fileInput && fileInput.files && fileInput.files.length > 0) {
                     const file = fileInput.files[0];
                     if (!file.type.startsWith('image/')) {
                          Swal.fire({
-                            title: "خطأ في الملف",
-                            text: "يرجى اختيار ملف صورة صحيح",
+                            title: txts.FileErrorTitle || "خطأ في الملف",
+                            text: txts.FileErrorText || "يرجى اختيار ملف صورة صحيح",
                             icon: "error"
                         });
                         return;
@@ -1565,8 +1572,8 @@
 
                 if (!paymentProofBase64) {
                     Swal.fire({
-                        title: "مطلوب إثبات الدفع",
-                        text: "يرجى إرفاق صورة إثبات الدفع (سكرين شوت التحويل)",
+                        title: txts.ProofRequiredTitle || "مطلوب إثبات الدفع",
+                        text: txts.ProofRequiredText || "يرجى إرفاق صورة إثبات الدفع (سكرين شوت التحويل)",
                         icon: "error"
                     });
                     return;
@@ -1574,8 +1581,8 @@
 
                 if (!payerPhone) {
                     Swal.fire({
-                        title: "مطلوب رقم الهاتف",
-                        text: "يرجى إدخال رقم الهاتف الذي تم التحويل منه",
+                        title: txts.PhoneRequiredTitle || "مطلوب رقم الهاتف",
+                        text: txts.PhoneRequiredText || "يرجى إدخال رقم الهاتف الذي تم التحويل منه",
                         icon: "error"
                     });
                     return;
@@ -1585,40 +1592,79 @@
             if (typeof updateLiveSummary === 'function') updateLiveSummary();
 
             if (!data) {
+                const txts = window.texts || {};
                 Swal.fire({
-                    title: "السلة فارغة",
+                    title: txts.EmptyCartTitle || "السلة فارغة",
                     icon: "warning"
                 });
                 return;
             }
+
+            // Safe mapping function to ensure null is sent instead of undefined or empty string
+            const safeVal = (v) => (v === undefined || v === null || v === "" || v === "undefined") ? null : v;
+
+            let finalScheduledTime = null;
+            if (scheduledTime) {
+                const cleanTime = scheduledTime.trim();
+                const isNow = !cleanTime || cleanTime.includes('الآن') || cleanTime.includes('Now');
+                if (!isNow) {
+                    finalScheduledTime = cleanTime;
+                }
+            }
+
+            const finalContactMethod = isPickup ? null : contactMethod;
+
+            const orderCoupon = (window.promoOrder && window.promoOrder.code) ? window.promoOrder.code : null;
+            const deliveryCoupon = (window.promoShipping && window.promoShipping.code) ? window.promoShipping.code : null;
+
+            const totalCostEl = document.getElementById("globalFinalTotal");
+            let totalCost = null;
+            if (totalCostEl) {
+                const parsed = parseFloat(totalCostEl.textContent.replace(/[^\d.]/g, ""));
+                totalCost = isNaN(parsed) ? null : parsed;
+            }
+
             $("#loader").css("display", "flex");
             let saveUrl = '<%= ResolveUrl("~/Ar/SaveLocalStorage.aspx/SaveLocalStorage") %>';
             fetch(saveUrl, {
                 method: "POST",
                 headers: { "Content-Type": "application/json; charset=utf-8" },
                 body: JSON.stringify({
-                    cart: data,
+                    cart: safeVal(data),
                     action: "update",
                     id: 1,
-                    deliveryCost: deliveryCost,
-                    paymentMethod: paymentMethod,
-                    scheduledTime: scheduledTime,
-                    contactMethod: isPickup ? "" : contactMethod,
-                    orderType: activeOrderType,
-                    payerPhone: payerPhone,
-                    paymentProofBase64: paymentProofBase64
+                    deliveryCost: safeVal(deliveryCost),
+                    paymentMethod: safeVal(paymentMethod),
+                    scheduledTime: safeVal(finalScheduledTime),
+                    contactMethod: safeVal(finalContactMethod),
+                    orderType: safeVal(activeOrderType),
+                    payerPhone: safeVal(payerPhone),
+
+                    // Extra explicit fields requested by the user
+                    totalCost: safeVal(totalCost),
+                    orderCoupon: safeVal(orderCoupon),
+                    deliveryCoupon: safeVal(deliveryCoupon),
+
+                    // Arabic equivalents as requested explicitly
+                    "طريقة الاستلام": safeVal(activeOrderType),
+                    "إجمالي الدفع": safeVal(totalCost),
+                    "طريقة التواصل مع المندوب": safeVal(finalContactMethod),
+                    "المجدول": safeVal(finalScheduledTime),
+                    "كوبون الطلب": safeVal(orderCoupon),
+                    "كوبون التوصيل": safeVal(deliveryCoupon)
                 })
             })
             .then(res => res.json())
             .then(result => {
+                const txts = window.texts || {};
                 if (result.d.success) {
                     localStorage.removeItem("cartItems");
                     $("#loader").hide();
                     Swal.fire({
-                        title: "تم ارسال طلبكم بنجاح فى انتظار التنفيذ",
+                        title: txts.OrderSuccessTitle || "تم ارسال طلبكم بنجاح فى انتظار التنفيذ",
                         text: result.d.Message || "",
                         icon: "success",
-                        confirmButtonText: "متابعة"
+                        confirmButtonText: txts.ContinueBtn || "متابعة"
                     }).then(sw => {
                         if (sw.isConfirmed) {
                             window.location.href = "POrders.aspx";
@@ -1628,7 +1674,7 @@
                 } else {
                     $("#loader").hide();
                     Swal.fire({
-                        title: "خطأ",
+                        title: txts.ErrorTitle || "خطأ",
                         text: result.d.error,
                         icon: "error"
                     });
@@ -1638,9 +1684,10 @@
             .catch(err => {
                 $("#loader").hide();
                 console.error(err);
+                const txts = window.texts || {};
                 Swal.fire({
-                    title: "خطأ في الاتصال",
-                    text: "حدثت مشكلة أثناء تنفيذ العملية",
+                    title: txts.ConnectionErrorTitle || "خطأ في الاتصال",
+                    text: txts.ConnectionErrorText || "حدثت مشكلة أثناء تنفيذ العملية",
                     icon: "error"
                 });
             });
@@ -1650,10 +1697,31 @@
 
         window.updateLiveSummary = function() {
             const texts = window.texts || {};
-            const state = (window.cart && window.cart.checkoutState) ? window.cart.checkoutState : {};
+            let state = {};
+            if (window.cart && window.cart.checkoutState) {
+                state = window.cart.checkoutState;
+            } else {
+                try {
+                    state = JSON.parse(localStorage.getItem("checkoutState")) || {};
+                } catch(e) {}
+            }
+            if (!state.paymentMethod) state.paymentMethod = 'cash';
+            if (!state.contactMethod) state.contactMethod = 'phone';
+            if (!state.deliveryMethod) state.deliveryMethod = 'delivery';
 
             // 1. Payment Method
             const payVal = state.paymentMethod || 'cash';
+
+            // ربط وتلوين كلاس الزر النشط في الرسوميات وتفعيل الـ Radio برمجياً
+            document.querySelectorAll('.pay-options-grid .pay-option').forEach(opt => opt.classList.remove('selected'));
+            const currentPayBtn = document.querySelector(`.pay-option.pay-${payVal.replace('_', '')}`) ||
+                                 document.querySelector(`.pay-option[onclick*="'${payVal}'"]`);
+            if (currentPayBtn) {
+                currentPayBtn.classList.add('selected');
+                const radio = currentPayBtn.querySelector('input');
+                if (radio) radio.checked = true;
+            }
+
             const payLabelMap = {
                 'cash': texts.Cash || 'نقدي',
                 'visa': texts.Visa || 'فيزا / ماستر كارد',
@@ -1688,7 +1756,17 @@
             const contactWrap = document.getElementById('live-contact-wrap');
             if (contactWrap) {
                 contactWrap.style.display = isPickup ? 'none' : 'flex';
-                const contactVal = state.contactMethod || 'ring_bell';
+                const contactVal = state.contactMethod || 'phone';
+
+                // ربط وتلوين كلاس الزر النشط في الرسوميات للمندوب
+                document.querySelectorAll('.contact-methods .pay-option').forEach(opt => opt.classList.remove('selected'));
+                const currentContactBtn = document.querySelector(`.contact-methods .pay-option[data-method="${contactVal}"]`) ||
+                                         document.querySelector(`.contact-methods .pay-option.contact-${contactVal.replace('_', '')}`) ||
+                                         document.querySelector(`.contact-methods .pay-option[onclick*="'${contactVal}'"]`);
+                if (currentContactBtn) {
+                    currentContactBtn.classList.add('selected');
+                }
+
                 const contactLabelMap = {
                     'phone': texts.CallPhone || 'مكالمة هاتفية',
                     'whatsapp': texts.WhatsApp || 'واتساب',
@@ -1739,43 +1817,56 @@
         };
 
         document.addEventListener('DOMContentLoaded', function() {
-            // Load state and sync UI
-            if (window.cart && window.cart.checkoutState) {
-                const state = window.cart.checkoutState;
+            let state = {};
+            try {
+                state = JSON.parse(localStorage.getItem("checkoutState")) || {};
+            } catch(e) {}
 
-                // Sync Delivery Type
-                if (state.deliveryMethod) {
-                    setGlobalOrderType(state.deliveryMethod);
-                }
-
-                // Sync Payment Method
-                if (state.paymentMethod) {
-                    const payBtn = document.querySelector(`.pay-option.pay-${state.paymentMethod.replace('_', '')}`) ||
-                                 document.querySelector(`.pay-option[onclick*="'${state.paymentMethod}'"]`);
-                    if (payBtn) selectPayment(payBtn, state.paymentMethod, true);
-                }
-
-                // Sync Contact Method
-                if (state.contactMethod) {
-                    const contactBtn = document.querySelector(`.pay-option.contact-${state.contactMethod.replace('_', '')}`) ||
-                                     document.querySelector(`.pay-option[onclick*="'${state.contactMethod}'"]`);
-                    if (contactBtn) selectContactMethod(contactBtn, state.contactMethod);
-                }
-
-                // Sync Payer Phone
-                const phoneInput = document.getElementById('payerPhone');
-                if (phoneInput) {
-                    phoneInput.value = state.payerPhone || '';
-                    phoneInput.addEventListener('input', (e) => {
-                        window.cart.checkoutState.payerPhone = e.target.value;
-                        window.cart.saveCheckoutState();
-                    });
-                }
+            // Ensure defaults are present in our local variable and localStorage
+            let changed = false;
+            if (!state.paymentMethod) {
+                state.paymentMethod = 'cash';
+                changed = true;
+            }
+            if (!state.contactMethod || !state.contactMethodMigrated) {
+                state.contactMethod = 'phone';
+                state.contactMethodMigrated = true;
+                changed = true;
+            }
+            if (!state.deliveryMethod) {
+                state.deliveryMethod = 'delivery';
+                changed = true;
+            }
+            if (changed) {
+                localStorage.setItem("checkoutState", JSON.stringify(state));
             }
 
+            if (window.cart) {
+                window.cart.checkoutState = state;
+            }
+
+            // Sync Delivery Type
+            setGlobalOrderType(state.deliveryMethod || 'delivery');
+
+            // تشغيل الملخص الرسومي فوراً
+            if (typeof updateLiveSummary === 'function') updateLiveSummary();
+
+            // Sync Payer Phone
+            const phoneInput = document.getElementById('payerPhone');
+            if (phoneInput) {
+                phoneInput.value = state.payerPhone || '';
+                phoneInput.addEventListener('input', (e) => {
+                    if (window.cart && window.cart.checkoutState) {
+                        window.cart.checkoutState.payerPhone = e.target.value;
+                        window.cart.saveCheckoutState();
+                    }
+                });
+            }
+
+            // استدعاء حاسم متأخر: للتغلب على أي مسح للكلاسات أو تصفير يتم من دوال الـ Ajax الخارجية أو cart.js
             setTimeout(() => {
                 if (typeof updateLiveSummary === 'function') updateLiveSummary();
-            }, 500); // Small delay to ensure texts are loaded
+            }, 1000);
         });
 
         window.promoOrder = { code: '', amount: 0, percentage: 0 };
@@ -2073,18 +2164,37 @@
             const summary = JSON.parse(localStorage.getItem("cartSummary") || "{}");
             let globalOrderTotalDelivery = isPickup ? 0 : (parseFloat(summary.delivery) || 0);
 
+            // First Order Free Delivery Banner next to delivery fee
+            const firstOrderMsgEl = document.getElementById("firstOrderDeliveryMsg");
+            if (firstOrderMsgEl) {
+                if (window.isFirstOrder && !isPickup && globalOrderTotalDelivery === 0) {
+                    firstOrderMsgEl.style.display = "block";
+                    firstOrderMsgEl.innerHTML = `<i class="fa-solid fa-gift"></i> ${texts.FirstOrderFreeDelivery || "توصيل مجاني بمناسبة طلبك الأول!"}`;
+                } else {
+                    firstOrderMsgEl.style.display = "none";
+                }
+            }
+
             // Update Global Summary UI
             let shippingDiscount = isPickup ? 0 : (window.promoShipping?.amount || 0);
             const displayDeliveryValue = Math.max(0, globalOrderTotalDelivery - shippingDiscount);
 
             const globalTotalDeliveryEl = document.getElementById("globalTotalDelivery");
             if (globalTotalDeliveryEl) {
-                globalTotalDeliveryEl.innerText = `${displayDeliveryValue.toFixed(2)} ${texts.Currency || 'ج.م'}`;
+                if (shippingDiscount > 0) {
+                    globalTotalDeliveryEl.innerHTML = `<span style="text-decoration: line-through; color: #888; margin-inline-end: 8px; font-weight: normal;">${globalOrderTotalDelivery.toFixed(2)} ${texts.Currency || 'ج.م'}</span><span style="color: #2b8a3e; font-weight: bold;">${displayDeliveryValue.toFixed(2)} ${texts.Currency || 'ج.م'}</span>`;
+                } else {
+                    globalTotalDeliveryEl.innerHTML = `<strong>${globalOrderTotalDelivery.toFixed(2)} ${texts.Currency || 'ج.م'}</strong>`;
+                }
             }
 
             const globalDeliveryEl = document.getElementById("Deliverycost");
             if (globalDeliveryEl) {
-                globalDeliveryEl.innerText = `${displayDeliveryValue.toFixed(2)} ${texts.Currency || 'ج.م'}`;
+                if (shippingDiscount > 0) {
+                    globalDeliveryEl.innerHTML = `<span style="text-decoration: line-through; color: #888; margin-inline-end: 8px; font-weight: normal;">${globalOrderTotalDelivery.toFixed(2)} ${texts.Currency || 'ج.م'}</span><span style="color: #2b8a3e; font-weight: bold;">${displayDeliveryValue.toFixed(2)} ${texts.Currency || 'ج.م'}</span>`;
+                } else {
+                    globalDeliveryEl.innerHTML = `<strong>${displayDeliveryValue.toFixed(2)} ${texts.Currency || 'ج.م'}</strong>`;
+                }
             }
 
             // Update Final Total
@@ -2092,8 +2202,16 @@
             const finalTotalEl = document.getElementById("globalFinalTotal");
 
             if (subtotalEl && finalTotalEl) {
-                const subtotal = parseFloat(subtotalEl.innerText.replace(/[^\d.]/g, '')) || 0;
+                const subtotal = parseFloat(summary.subtotal) || 0;
                 let orderDiscount = window.promoOrder?.amount || 0;
+
+                if (orderDiscount > 0) {
+                    const discountedSubtotal = Math.max(0, subtotal - orderDiscount);
+                    subtotalEl.innerHTML = `<span style="text-decoration: line-through; color: #888; margin-inline-end: 8px; font-weight: normal;">${subtotal.toFixed(2)} ${texts.Currency || 'ج.م'}</span><span style="color: #2b8a3e; font-weight: bold;">${discountedSubtotal.toFixed(2)} ${texts.Currency || 'ج.م'}</span>`;
+                } else {
+                    subtotalEl.innerHTML = `<strong>${subtotal.toFixed(2)} ${texts.Currency || 'ج.م'}</strong>`;
+                }
+
                 const newTotal = (subtotal + globalOrderTotalDelivery) - orderDiscount - shippingDiscount;
                 finalTotalEl.innerText = `${newTotal.toFixed(2)} ${texts.Currency || 'ج.م'}`;
             }
@@ -2145,8 +2263,3 @@ locationModal.addEventListener('hidden.bs.modal', function () {
 </script>
 
 </asp:Content>
-
-
-
-
-

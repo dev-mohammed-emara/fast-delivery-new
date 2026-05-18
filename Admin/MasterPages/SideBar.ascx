@@ -69,17 +69,29 @@
     <li class="nav-item">
 								<a href="../pages/PlaceTypes.aspx" id="PlaceTypes" runat="server" visible="false"  class="nav-link nav-toggle" > <i class="material-icons">dashboard</i>
 									<span class="title">فئات الأماكن </span>
+								</a>							
+							</li>     
+     <li class="nav-item">
+								<a href="../pages/Coupons.aspx" id="Coupons" runat="server" visible="false"  class="nav-link nav-toggle" > <i class="material-icons">dashboard</i>
+									<span class="title">الكوبونات </span>
 								</a>
 							
 							</li>
-      <li class="nav-item">
+    
+     <li class="nav-item">
 								<a href="../pages/places.aspx" id="places" runat="server" visible="false"  class="nav-link nav-toggle" > <i class="material-icons">dashboard</i>
 									<span class="title">الأماكن </span>
 								</a>
 							
 							</li>
 
-     <li class="nav-item">
+   
+      <li class="nav-item">
+								<a href="../pages/sizes.aspx" id="sizes" runat="server" visible="false"  class="nav-link nav-toggle" > <i class="material-icons">dashboard</i>
+									<span class="title">الأحجام </span>
+								</a>							
+							</li>
+      <li class="nav-item">
 								<a href="../pages/Menus.aspx" id="Menus" runat="server" visible="false"  class="nav-link nav-toggle" > <i class="material-icons">dashboard</i>
 									<span class="title">إدارة القوائم </span>
 								</a>							
