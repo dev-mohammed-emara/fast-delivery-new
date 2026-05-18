@@ -1686,7 +1686,7 @@
                 "كوبون التوصيل": safeVal(deliveryCoupon)
             };
 
-            // Parse cart payload to beautiful format for rendering inside the alert
+            // Parse cart payload to clean object representation for the alert
             let formattedCart = [];
             try {
                 formattedCart = JSON.parse(payload.cart) || [];
@@ -1699,15 +1699,7 @@
                 cart: formattedCart
             };
 
-            // Show beautiful alert showing the data being sent
-            await Swal.fire({
-                title: "البيانات المرسلة (Data Sent)",
-                html: `<div style="text-align: left; background: #2d3748; color: #a0aec0; border-radius: 8px; padding: 12px; margin-top: 10px;">
-                        <pre style="max-height: 250px; overflow-y: auto; margin: 0; font-family: 'Consolas', 'Courier New', Courier, monospace; font-size: 11px; white-space: pre-wrap; word-break: break-all;">${JSON.stringify(alertPayload, null, 2)}</pre>
-                       </div>`,
-                icon: "info",
-                confirmButtonText: "تأكيد وإرسال الطلب (Confirm & Send)"
-            });
+            alert(JSON.stringify(alertPayload, null, 2));
 
             $("#loader").css("display", "flex");
             let saveUrl = '<%= ResolveUrl("~/Ar/SaveLocalStorage.aspx/SaveLocalStorage") %>';
