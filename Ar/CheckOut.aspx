@@ -1661,35 +1661,60 @@
                 totalCost = isNaN(parsed) ? null : parsed;
             }
 
+            const payload = {
+                cart: safeVal(data),
+                action: "update",
+                id: 1,
+                deliveryCost: safeVal(deliveryCost),
+                paymentMethod: safeVal(paymentMethod),
+                scheduledTime: safeVal(finalScheduledTime),
+                contactMethod: safeVal(finalContactMethod),
+                orderType: safeVal(activeOrderType),
+                payerPhone: safeVal(payerPhone),
+
+                // Extra explicit fields requested by the user
+                totalCost: safeVal(totalCost),
+                orderCoupon: safeVal(orderCoupon),
+                deliveryCoupon: safeVal(deliveryCoupon),
+
+                // Arabic equivalents as requested explicitly
+                "طريقة الاستلام": safeVal(activeOrderType),
+                "إجمالي الدفع": safeVal(totalCost),
+                "طريقة التواصل مع المندوب": safeVal(finalContactMethod),
+                "المجدول": safeVal(finalScheduledTime),
+                "كوبون الطلب": safeVal(orderCoupon),
+                "كوبون التوصيل": safeVal(deliveryCoupon)
+            };
+
+            // Parse cart payload to beautiful format for rendering inside the alert
+            let formattedCart = [];
+            try {
+                formattedCart = JSON.parse(payload.cart) || [];
+            } catch(e) {
+                formattedCart = payload.cart;
+            }
+
+            const alertPayload = {
+                ...payload,
+                cart: formattedCart
+            };
+
+            // Show beautiful alert showing the data being sent
+            await Swal.fire({
+                title: "البيانات المرسلة (Data Sent)",
+                html: `<div style="text-align: left; background: #2d3748; color: #a0aec0; border-radius: 8px; padding: 12px; margin-top: 10px;">
+                        <pre style="max-height: 250px; overflow-y: auto; margin: 0; font-family: 'Consolas', 'Courier New', Courier, monospace; font-size: 11px; white-space: pre-wrap; word-break: break-all;">${JSON.stringify(alertPayload, null, 2)}</pre>
+                       </div>`,
+                icon: "info",
+                confirmButtonText: "تأكيد وإرسال الطلب (Confirm & Send)"
+            });
+
             $("#loader").css("display", "flex");
             let saveUrl = '<%= ResolveUrl("~/Ar/SaveLocalStorage.aspx/SaveLocalStorage") %>';
             fetch(saveUrl, {
                 method: "POST",
                 headers: { "Content-Type": "application/json; charset=utf-8" },
-                body: JSON.stringify({
-                    cart: safeVal(data),
-                    action: "update",
-                    id: 1,
-                    deliveryCost: safeVal(deliveryCost),
-                    paymentMethod: safeVal(paymentMethod),
-                    scheduledTime: safeVal(finalScheduledTime),
-                    contactMethod: safeVal(finalContactMethod),
-                    orderType: safeVal(activeOrderType),
-                    payerPhone: safeVal(payerPhone),
-
-                    // Extra explicit fields requested by the user
-                    totalCost: safeVal(totalCost),
-                    orderCoupon: safeVal(orderCoupon),
-                    deliveryCoupon: safeVal(deliveryCoupon),
-
-                    // Arabic equivalents as requested explicitly
-                    "طريقة الاستلام": safeVal(activeOrderType),
-                    "إجمالي الدفع": safeVal(totalCost),
-                    "طريقة التواصل مع المندوب": safeVal(finalContactMethod),
-                    "المجدول": safeVal(finalScheduledTime),
-                    "كوبون الطلب": safeVal(orderCoupon),
-                    "كوبون التوصيل": safeVal(deliveryCoupon)
-                })
+                body: JSON.stringify(payload)
             })
             .then(res => res.json())
             .then(result => {
