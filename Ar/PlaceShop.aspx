@@ -875,7 +875,7 @@
 
             #closeCartBtn {
                 position: absolute;
-                top: 1.25rem;
+                top: 0.5rem;
                 right: 1.25rem;
                 font-size: 1.8rem;
                 color: #bbb;
@@ -2423,8 +2423,24 @@
                 transition: all 0.3s ease !important;
             }
 
+            #favIconNav.active i,
+            #favIconNav.is-favorite i,
             .fav-nav-icon.active i,
-            .favorite-heart.active i {
+            .fav-nav-icon.is-favorite i,
+            .favorite-heart.active i,
+            .favorite-heart.is-favorite i {
+                color: #ff4d4f !important;
+                font-weight: 900 !important;
+            }
+
+            #favIconNav i,
+            .fav-nav-icon i {
+                transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.3s ease !important;
+            }
+
+            #favIconNav:hover i,
+            .fav-nav-icon:hover i {
+                transform: scale(1.2) !important;
                 color: #ff4d4f !important;
             }
 
@@ -3225,27 +3241,27 @@
                     event.stopPropagation();
                 }
 
-                const urlParams = new URLSearchParams(window.location.search);
-                const shopId = urlParams.get('id');
+                // First try to get ID from element, fallback to URL param
+                const shopId = element?.getAttribute('data-id') || new URLSearchParams(window.location.search).get('id');
                 if (!shopId) return;
 
                 let favorites = JSON.parse(localStorage.getItem('favoriteShops') || '[]');
                 const index = favorites.findIndex(f => String(f.id) === String(shopId));
 
                 if (index === -1) {
-                    // Add to favorites
+                    // Add to favorites - try element data attributes first, fallback to DOM selectors
                     const shopData = {
                         id: shopId,
-                        name: document.getElementById('shopNameContent')?.innerText.trim() || document.querySelector('.availableShopName')?.innerText.trim() || '',
-                        nameEn: '',
-                        img: document.querySelector('.shop-profile-img')?.src || document.querySelector('.availableShop img')?.src || '',
-                        desc: document.getElementById('shopFoodsContent')?.innerText.trim() || '',
-                        descEn: '',
-                        deliveryTime: document.querySelector('.timer')?.innerText.trim() || '',
-                        deliveryCost: document.getElementById('deliveryCostValue')?.innerText.trim() || '',
-                        rate: (() => { const raw = document.getElementById('rawRating')?.innerText.trim() || document.querySelector('.shopRating .rating-number')?.innerText.trim() || '0'; return parseFloat(raw.replace(/[^\d.]/g, '')).toFixed(1); })(),
-                        isOpened: document.getElementById('isOpened')?.innerText.trim() || '',
-                        url: window.location.href
+                        name: element?.getAttribute('data-name') || document.getElementById('shopNameContent')?.innerText.trim() || document.querySelector('.availableShopName')?.innerText.trim() || '',
+                        nameEn: element?.getAttribute('data-name-en') || '',
+                        img: element?.getAttribute('data-img') || document.querySelector('.shop-profile-img')?.src || document.querySelector('.availableShop img')?.src || '',
+                        desc: element?.getAttribute('data-desc') || document.getElementById('shopFoodsContent')?.innerText.trim() || '',
+                        descEn: element?.getAttribute('data-desc-en') || '',
+                        deliveryTime: element?.getAttribute('data-delivery-time') || document.querySelector('.timer')?.innerText.trim() || '',
+                        deliveryCost: element?.getAttribute('data-delivery-cost') || document.getElementById('deliveryCostValue')?.innerText.trim() || '',
+                        rate: element?.getAttribute('data-rate') || (() => { const raw = document.getElementById('rawRating')?.innerText.trim() || document.querySelector('.shopRating .rating-number')?.innerText.trim() || '0'; return parseFloat(raw.replace(/[^\d.]/g, '')).toFixed(1); })(),
+                        isOpened: element?.getAttribute('data-is-opened') || document.getElementById('isOpened')?.innerText.trim() || '',
+                        url: element?.getAttribute('data-url') || window.location.href
                     };
                     favorites.push(shopData);
                 } else {
@@ -3273,7 +3289,7 @@
                 const isFav = favorites.some(f => String(f.id) === String(shopId));
 
                 const hearts = [
-                    document.querySelector('[id$="shopHeartIcon"]'),
+                    document.querySelector('[id$="shopHeartIcon"]') || document.getElementById('shopHeartIcon'),
                     document.getElementById('favIconNav')
                 ];
 
@@ -3332,6 +3348,21 @@
             }
 
             function initFavorites() {
+                const cardHeart = document.querySelector('[id$="shopHeartIcon"]') || document.getElementById('shopHeartIcon');
+                const navFavBtn = document.getElementById('favIconNav');
+
+                if (cardHeart && navFavBtn) {
+                    // Copy all attributes (including data-attributes, classes, etc.)
+                    Array.from(cardHeart.attributes).forEach(attr => {
+                        if (attr.name !== 'id' && attr.name !== 'onclick' && attr.name !== 'style') {
+                            navFavBtn.setAttribute(attr.name, attr.value);
+                        }
+                    });
+
+                    // Make sure it has 'favorite-heart' class
+                    navFavBtn.classList.add('favorite-heart');
+                }
+
                 syncAllHearts(false);
             }
 
@@ -4541,11 +4572,11 @@
 
                 // Intercept Checkout Submit to check Min Order Limit
                 document.addEventListener('click', function (e) {
-                    const targetLink = e.target.closest('a[href*="checkout.aspx"], a[href*="CheckOut.aspx"], button.submit');
+                    const targetLink = e.target.closest('a[href*="checkout.aspx"], a[href*="CheckOut.aspx"], .confirmCartActions button.submit, .confirmCartActions .submit');
                     if (targetLink) {
                         const currentShopId = String(document.getElementById('shopId')?.innerText.trim() || '');
                         const minOrderVal = parseFloat(document.getElementById('minOrderValue')?.innerText.trim() || '0');
-                        
+
                         if (minOrderVal > 0 && window.cart) {
                             const shopItems = window.cart.items.filter(i => String(i.shopId).trim() === currentShopId);
                             const shopSubtotal = shopItems.reduce((sum, item) => {
@@ -4568,7 +4599,7 @@
                                 e.stopPropagation();
 
                                 const shopName = document.getElementById('shopName')?.innerText.trim() || 'المطعم';
-                                
+
                                 // Detect language
                                 const lang = '<%= System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName.ToLower() %>';
                                 let errorMsg = '';
