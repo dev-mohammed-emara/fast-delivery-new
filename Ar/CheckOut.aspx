@@ -1600,6 +1600,43 @@
                 return;
             }
 
+            // Map cart items to guarantee they contain proofbase64, phone, customization, and notes columns with values or null
+            let itemsArr = [];
+            try {
+                itemsArr = JSON.parse(data) || [];
+            } catch (e) {
+                itemsArr = [];
+            }
+
+            itemsArr = itemsArr.map(item => {
+                let custVal = null;
+                if (item.customization !== undefined && item.customization !== null) {
+                    custVal = item.customization;
+                }
+
+                let notesVal = null;
+                if (item.notes !== undefined && item.notes !== null && item.notes !== "") {
+                    notesVal = item.notes;
+                } else if (item.customization && item.customization.notes !== undefined && item.customization.notes !== null && item.customization.notes !== "") {
+                    notesVal = item.customization.notes;
+                }
+
+                const actualProof = paymentProofBase64 ? paymentProofBase64 : null;
+                const actualPhone = payerPhone ? payerPhone : null;
+
+                return {
+                    ...item,
+                    proofbase64: actualProof,
+                    phone: actualPhone,
+                    phoneNumber: actualPhone,
+                    phone_number: actualPhone,
+                    customization: custVal,
+                    notes: notesVal
+                };
+            });
+
+            data = JSON.stringify(itemsArr);
+
             // Safe mapping function to ensure null is sent instead of undefined or empty string
             const safeVal = (v) => (v === undefined || v === null || v === "" || v === "undefined") ? null : v;
 
