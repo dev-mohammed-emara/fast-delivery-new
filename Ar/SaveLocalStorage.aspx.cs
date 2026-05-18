@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Web.Services;
 using System.Web.Script.Services;
 using Newtonsoft.Json.Linq;
@@ -211,7 +211,16 @@ public partial class Ar_SaveLocalStorage : System.Web.UI.Page
                     cmd.Parameters.AddWithValue("@paymentMethod", paymentMethodInt);
                     cmd.Parameters.AddWithValue("@contactMethod", contactMethodInt);
                     cmd.Parameters.AddWithValue("@DeliveryMethod", DeliveryMethodInt);
-                    cmd.Parameters.AddWithValue("@WalletNumber", payerPhone);
+                    object walletVal = DBNull.Value;
+                    if (payerPhone != null)
+                    {
+                        string wStr = payerPhone.Trim();
+                        if (!string.IsNullOrEmpty(wStr) && wStr != "null" && wStr != "undefined")
+                        {
+                            walletVal = wStr;
+                        }
+                    }
+                    cmd.Parameters.AddWithValue("@WalletNumber", walletVal);
                     cmd.Parameters.AddWithValue("@ODTime", scheduledDateTime);
 
                     newOrderId = Convert.ToInt32(cmd.ExecuteScalar());
@@ -261,8 +270,16 @@ public partial class Ar_SaveLocalStorage : System.Web.UI.Page
                         cmd.Parameters.AddWithValue("@Order_id", newOrderId);
                         cmd.Parameters.AddWithValue("@MenuItems_id", currentSizeTableId);
                         cmd.Parameters.AddWithValue("@amount", row["amount"]);
-                        cmd.Parameters.AddWithValue("@price", row["price"]);
-                        cmd.Parameters.AddWithValue("@notes", row["notes"]);
+                        object notesVal = DBNull.Value;
+                        if (row["notes"] != null && row["notes"] != DBNull.Value)
+                        {
+                            string nStr = row["notes"].ToString();
+                            if (!string.IsNullOrEmpty(nStr) && nStr != "null" && nStr != "undefined")
+                            {
+                                notesVal = nStr;
+                            }
+                        }
+                        cmd.Parameters.AddWithValue("@notes", notesVal);
                         cmd.Parameters.AddWithValue("@SizeTableID", currentSizeTableId);
                         cmd.Parameters.AddWithValue("@AddressID", addressId);
                         cmd.Parameters.AddWithValue("@PlaceID", currentShopId);
