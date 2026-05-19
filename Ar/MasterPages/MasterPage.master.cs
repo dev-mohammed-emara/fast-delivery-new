@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Security;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Data.SqlClient;
 
 public partial class Ar_MasterPages_MasterPage : System.Web.UI.MasterPage
 {
@@ -27,9 +28,23 @@ public partial class Ar_MasterPages_MasterPage : System.Web.UI.MasterPage
                 vUsr.Where.Id.Operator = WhereParameter.Operand.Equal;
                 vUsr.Where.Id.Value = usr.Id;
                 vUsr.Query.Load();
-                if (vUsr.RowCount > 0 && vUsr.Ocounts == 0)
+                if (vUsr.RowCount > 0)
                 {
-                    isFirstOrder = true;
+                    // Direct SQL count query to prevent view caching and latency
+                    using (SqlConnection conn = new SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["Conn"].ConnectionString))
+                    {
+                        conn.Open();
+                        using (SqlCommand sqlCmd = new SqlCommand(
+                            "SELECT COUNT(*) FROM dbo.Orders O INNER JOIN dbo.Addresses A ON O.Address_id = A.ID WHERE A.UserID = @UserID", conn))
+                        {
+                            sqlCmd.Parameters.AddWithValue("@UserID", usr.Id);
+                            int orderCount = Convert.ToInt32(sqlCmd.ExecuteScalar());
+                            if (orderCount == 0)
+                            {
+                                isFirstOrder = true;
+                            }
+                        }
+                    }
                 }
             }
         }

@@ -1638,7 +1638,7 @@
             data = JSON.stringify(itemsArr);
 
             // Safe mapping function to ensure null is sent instead of undefined or empty string
-            const safeVal = (v) => (v === undefined || v === null || v === "" || v === "undefined") ? null : v;
+            const safeVal = (v) => (v === undefined || v === null || v === "" || v === "undefined" || v === "--:--" || v === "---") ? null : v;
 
             let finalScheduledTime = null;
             if (scheduledTime) {
@@ -1671,19 +1671,10 @@
                 contactMethod: safeVal(finalContactMethod),
                 orderType: safeVal(activeOrderType),
                 payerPhone: safeVal(payerPhone),
-
-                // Extra explicit fields requested by the user
                 totalCost: safeVal(totalCost),
                 orderCoupon: safeVal(orderCoupon),
                 deliveryCoupon: safeVal(deliveryCoupon),
-
-                // Arabic equivalents as requested explicitly
-                "طريقة الاستلام": safeVal(activeOrderType),
-                "إجمالي الدفع": safeVal(totalCost),
-                "طريقة التواصل مع المندوب": safeVal(finalContactMethod),
-                "المجدول": safeVal(finalScheduledTime),
-                "كوبون الطلب": safeVal(orderCoupon),
-                "كوبون التوصيل": safeVal(deliveryCoupon)
+                paymentProofBase64: safeVal(paymentProofBase64)
             };
 
             // Parse cart payload to clean object representation for the alert
@@ -1699,6 +1690,7 @@
                 cart: formattedCart
             };
 
+            console.log("Checkout Payload:", alertPayload);
             alert(JSON.stringify(alertPayload, null, 2));
 
             $("#loader").css("display", "flex");
@@ -1713,6 +1705,12 @@
                 const txts = window.texts || {};
                 if (result.d.success) {
                     localStorage.removeItem("cartItems");
+                    localStorage.removeItem("cartSummary");
+                    localStorage.removeItem("checkoutState");
+                    if (window.cart) {
+                        window.cart.checkoutState = {};
+                    }
+                    window.isFirstOrder = false;
                     $("#loader").hide();
                     Swal.fire({
                         title: txts.OrderSuccessTitle || "تم ارسال طلبكم بنجاح فى انتظار التنفيذ",
@@ -1871,6 +1869,11 @@
         };
 
         document.addEventListener('DOMContentLoaded', function() {
+            // Recalculate cart summary on load with the fresh server-injected window.isFirstOrder
+            if (window.cart && typeof window.cart.saveSummary === 'function') {
+                window.cart.saveSummary();
+            }
+
             let state = {};
             try {
                 state = JSON.parse(localStorage.getItem("checkoutState")) || {};
@@ -1910,8 +1913,10 @@
             if (phoneInput) {
                 phoneInput.value = state.payerPhone || '';
                 phoneInput.addEventListener('input', (e) => {
+                    let val = e.target.value.replace(/\D/g, '');
+                    e.target.value = val;
                     if (window.cart && window.cart.checkoutState) {
-                        window.cart.checkoutState.payerPhone = e.target.value;
+                        window.cart.checkoutState.payerPhone = val;
                         window.cart.saveCheckoutState();
                     }
                 });
