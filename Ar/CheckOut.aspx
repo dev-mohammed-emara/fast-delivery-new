@@ -1677,6 +1677,7 @@
                 paymentProofBase64: safeVal(paymentProofBase64)
             };
 
+            /*
             // Parse cart payload to clean object representation for the alert
             let formattedCart = [];
             try {
@@ -1692,6 +1693,7 @@
 
             console.log("Checkout Payload:", alertPayload);
             alert(JSON.stringify(alertPayload, null, 2));
+            */
 
             $("#loader").css("display", "flex");
             let saveUrl = '<%= ResolveUrl("~/Ar/SaveLocalStorage.aspx/SaveLocalStorage") %>';
