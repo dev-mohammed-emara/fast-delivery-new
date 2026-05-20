@@ -113,7 +113,7 @@ function loadFavorites() {
                     <p class="shopFoods">${desc}</p>
                     <div class="shopDelivery">
                         <span class="deliveryTime">${isEn ? 'Receive in' : '\u064A\u0635\u0644 \u062E\u0644\u0627\u0644'} <span class="timer">${sanitize(shop.deliveryTime) || '--'}</span> ${isEn ? 'minutes' : '\u062F\u0642\u064A\u0642\u0629'}</span>
-                        <span class="deliveryPayment">${isEn ? 'Delivery' : '\u0627\u0644\u062A\u0648\u0633\u064A\u0644'}: <span class="deliveryPaymentAmount">${formatPrice(sanitize(shop.deliveryCost))}</span> ${isEn ? 'EGP' : '\u062C.\u0645'}</span>
+                        <span class="deliveryPayment">${isEn ? 'Delivery' : '\u0627\u0644\u062a\u0648\u0635\u064a\u0644'}: <span class="deliveryPaymentAmount">${formatPrice(sanitize(shop.deliveryCost))}</span> ${isEn ? 'EGP' : '\u062c.\u0645'}</span>
                     </div>
                 </div>
             </div>

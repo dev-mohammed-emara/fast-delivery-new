@@ -925,14 +925,24 @@ function filterByJS(typeId, btn) {
     $('.category-pill').removeClass('active');
     $(btn).addClass('active');
 
-    // 2. الفلترة
+    // 2. الفلترة - تحديث المتغيرات العامة
+    window.selectedCategoryId = typeId;
+
+    // 3. إعادة تشغيل الفلترة الكاملة (وتشمل الفلترة حسب الفئة)
+    if (window.applyFiltersWithCategory) {
+        window.applyFiltersWithCategory();
+    } else {
+        // fallback في حالة عدم تحميل selectedLocation.js بعد
+        filterShopsLocally(typeId);
+    }
+}
+
+function filterShopsLocally(typeId) {
     if (typeId === '0') {
-        // لو اختار الكل اظهر كل المحلات
         $('.availableShop').fadeIn();
     } else {
-        // اخفي الكل وابدأ اظهر المطابق بس
         $('.availableShop').each(function() {
-            var types = $(this).attr('data-types'); // بيجيب حاجة زي "1,4"
+            var types = $(this).attr('data-types');
             if (types) {
                 var typesArray = types.split(',');
                 if (typesArray.indexOf(typeId) !== -1) {

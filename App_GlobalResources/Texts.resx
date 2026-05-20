@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <root xmlns="http://www.w3.org/XML/1998/namespace" xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  
+
   <xs:schema id="root">
     <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xs:element name="root" ns1:IsDataSet="true">
@@ -249,7 +249,7 @@
     <value>الحد الأدني للطلب:</value>
   </data>
   <data name="LiveTracking" space="preserve">
-    <value>تتبع مباشر</value>
+    <value>توصيل بواسطة fastdelivery</value>
   </data>
   <data name="SafeDelivery" space="preserve">
     <value>توصيل آمن</value>
